@@ -54,44 +54,52 @@ const YDXHome = () => {
           </div>
         </div>
       </div>
-
       <hr />
-      <div
-        className="row ml-5 mb-4 mt-5 p-2"
-        style={{
-          height: 25,
-          width: 1000,
-          backgroundColor: '#fff4de',
-          border: '1.8px #bd805e solid',
-          borderRadius: '10px',
-          position: 'relative',
-        }}
-      >
-        <div style={{ width: 1000, position: 'absolute' }}>
-          {/* ProgressBar */}
-          <Draggable
-            axis="x"
-            bounds={{ left: 10, right: 950 }}
-            // defaultPosition={{ x: -3, y: 0 }}
-            // position={draggableTime}
-            // onDrag={dragProgressBar}
-            // onStop={stopProgressBar}
+      <div className="row">
+        <div className="col-2 text-white">
+          <p className="margin-dialog-timeline-text">
+            Dialog Timeline <br />
+            (00:00:03:51)
+          </p>
+        </div>
+        <div className="col-10 mt-2">
+          <div
+            className="row mx-3"
+            style={{
+              height: 23,
+              backgroundColor: 'white',
+              border: '1.8px #bd805e solid',
+              borderRadius: '10px',
+              position: 'relative',
+            }}
           >
-            <div
-              id="progress_bar_timeline"
-              tabIndex={0}
-              style={{
-                float: 'left',
-                cursor: 'ew-resize',
-                width: '3px',
-                height: '85px',
-                backgroundColor: '#7b2b2b',
-                position: 'absolute',
-                zIndex: 1,
-                marginTop: '-37px',
-              }}
-            ></div>
-          </Draggable>
+            <div style={{ width: 1000, position: 'absolute' }}>
+              {/* ProgressBar */}
+              <Draggable
+                axis="x"
+                bounds={{ left: 10, right: 950 }}
+                // defaultPosition={{ x: -3, y: 0 }}
+                // position={draggableTime}
+                // onDrag={dragProgressBar}
+                // onStop={stopProgressBar}
+              >
+                <div
+                  id="progress_bar_timeline"
+                  tabIndex={0}
+                  style={{
+                    float: 'left',
+                    cursor: 'ew-resize',
+                    width: '2px',
+                    height: '45px',
+                    backgroundColor: 'red',
+                    position: 'absolute',
+                    zIndex: 1,
+                    marginTop: '-12px',
+                  }}
+                />
+              </Draggable>
+            </div>
+          </div>
         </div>
       </div>
     </div>
