@@ -57,45 +57,27 @@ const YDXHome = () => {
       <hr />
       <div className="row">
         <div className="col-2 text-white">
-          <p className="margin-dialog-timeline-text">
+          <p className="margin-dialog-timeline-text text-center">
             Dialog Timeline <br />
             (00:00:03:51)
           </p>
         </div>
         <div className="col-10 mt-2">
-          <div
-            className="row mx-3"
-            style={{
-              height: 23,
-              backgroundColor: 'white',
-              border: '1.8px #bd805e solid',
-              borderRadius: '10px',
-              position: 'relative',
-            }}
-          >
-            <div style={{ width: 1000, position: 'absolute' }}>
+          <div className="row mx-3 timeline-div">
+            <div className="draggable-div">
               {/* ProgressBar */}
               <Draggable
                 axis="x"
-                bounds={{ left: 10, right: 950 }}
-                // defaultPosition={{ x: -3, y: 0 }}
+                bounds="parent"
+                defaultPosition={{ x: 0, y: 0 }}
                 // position={draggableTime}
                 // onDrag={dragProgressBar}
                 // onStop={stopProgressBar}
               >
                 <div
-                  id="progress_bar_timeline"
+                  // id="progress_bar_timeline"
                   tabIndex={0}
-                  style={{
-                    float: 'left',
-                    cursor: 'ew-resize',
-                    width: '2px',
-                    height: '45px',
-                    backgroundColor: 'red',
-                    position: 'absolute',
-                    zIndex: 1,
-                    marginTop: '-12px',
-                  }}
+                  className="progress-bar-div"
                 />
               </Draggable>
             </div>

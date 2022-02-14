@@ -1,3 +1,4 @@
+/* rectangular container */
 .home-container {
     height: 89vh;
     width: 75%;
@@ -7,26 +8,53 @@
     /* margin-bottom: 3%; */
 }
 
+/* primary color */
+.primary-btn-color {
+    background-color: #3F51B5;
+}
+
+/* Notes section */
 .notes-bg {
     background-color: rgb(80, 80, 80);
     width: 450px;
     height: 260px
 }
-
 .notes-textarea {
     background-color: white;
     width: 400px;
     height: 184px;
 }
 
-.primary-btn-color {
-    background-color: #3F51B5;
-}
-
+/* horizontal line color */
 hr {
     background-color: #ffffff;
 }
 
+/* dialog timeline */
+/* margin for label of dialog timeline */
 .margin-dialog-timeline-text {
     margin-left: 2rem;
+}
+/* white div - dialog timeline */
+.timeline-div {
+    height: 23px;
+    background-color: white;
+    border: 1.8px #e4a48b solid;
+    border-radius: 10px;
+    position: relative;
+}
+/* draggable component - div - dialog timeline */
+.draggable-div {
+    position: absolute;
+}
+/* red draggable div progress bar - dialog timeline */
+.progress-bar-div {
+    /* float: 'left'; */
+    cursor: ew-resize;
+    width: 2px;
+    height: 45px;
+    background-color: red;
+    position: absolute;
+    z-index: 1;
+    margin-top: -12px;
 }
