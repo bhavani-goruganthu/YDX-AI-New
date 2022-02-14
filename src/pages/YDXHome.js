@@ -78,7 +78,11 @@ const YDXHome = () => {
                   // id="progress_bar_timeline"
                   tabIndex={0}
                   className="progress-bar-div"
-                />
+                >
+                  <p className="mt-5 text-white progress-bar-time">
+                    00:00:00:00
+                  </p>
+                </div>
               </Draggable>
             </div>
           </div>
