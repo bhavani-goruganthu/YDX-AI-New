@@ -24,6 +24,13 @@
     width: 400px;
     height: 184px;
 }
+.notes-save-btn {
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-top: -3px;
+}
 
 /* horizontal line color */
 hr {
@@ -31,9 +38,10 @@ hr {
 }
 
 /* dialog timeline */
-/* margin for label of dialog timeline */
-.margin-dialog-timeline-text {
+/* label of dialog timeline */
+.dialog-timeline-text {
     margin-left: 2rem;
+    font-size: large;
 }
 /* white div - dialog timeline */
 .timeline-div {
@@ -60,6 +68,6 @@ hr {
 }
 /* time of the progress-bar draggable */
 .progress-bar-time{
-    font-size: 0.76rem;
+    font-size: 0.86rem;
     margin-left: -26px;
 }

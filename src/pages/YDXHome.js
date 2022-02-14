@@ -45,10 +45,9 @@ const YDXHome = () => {
             <div className="mx-auto text-center mt-2">
               <button
                 type="button"
-                className="btn rounded btn-sm text-white primary-btn-color"
+                className="btn rounded btn-md text-white primary-btn-color notes-save-btn"
               >
-                <i className="fa fa-save" />
-                <b> Save</b>
+                <i className="fa fa-save" /> {'  '} Save
               </button>
             </div>
           </div>
@@ -57,7 +56,7 @@ const YDXHome = () => {
       <hr />
       <div className="row">
         <div className="col-2 text-white">
-          <p className="margin-dialog-timeline-text text-center">
+          <p className="dialog-timeline-text text-center font-weight-bolder">
             Dialog Timeline <br />
             (00:00:03:51)
           </p>
