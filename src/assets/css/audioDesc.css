@@ -1,0 +1,64 @@
+@import '../css/index.css';
+.component {
+    background-color: rgb(80, 80, 80);
+    margin-right: 3%;
+}
+
+.ad-title-input {
+    margin-top: -16px;
+}
+
+.nudge-btns-div {
+    background-color: #3F51B5;
+    border: solid 1px;
+    border-radius: 10px;
+    height: 30px;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+.nudge-icons {
+    font-size: 15px;
+    cursor: pointer;
+}
+.fa-chevron-down {
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 40px;
+}
+
+/* audio description column widths */
+.component-column-width-1 {
+    width: 14%
+}
+.component-column-width-2 {
+    width: 7%
+}
+.component-column-width-3 {
+    width: 71%
+}
+.component-column-width-4 {
+    width: 3%
+}
+.component-timeline-div {
+    height: 20px;
+    background-color: white;
+    border: 1.8px #e4a48b solid;
+    border-radius: 10px;
+    position: relative;
+    margin-left: 1.3rem;
+}
+
+.inline-bg  {
+ background-color: var(--secondary-color);
+}
+.extended-bg {    
+    background-color: var(--primary-color);    
+}
+.inline-extended-radio {
+    font-weight: 500;
+    border: 1.8px solid;
+    border-radius: 10px;
+}
+.inline-extended-label {
+    margin-bottom: 0;
+}
