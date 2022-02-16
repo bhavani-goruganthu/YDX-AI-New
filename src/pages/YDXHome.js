@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import YouTube from 'react-youtube';
 import Draggable from 'react-draggable';
 import '../assets/css/home.css';
+import AudioDescriptionComponent from '../components/AudioDescriptionComponent';
 
 const YDXHome = () => {
   const opts = {
@@ -54,14 +55,14 @@ const YDXHome = () => {
         </div>
       </div>
       <hr />
-      <div className="row">
-        <div className="col-2 text-white">
+      <div className="row div-below-hr">
+        <div className="col-3 text-white timeline-column-width-1">
           <p className="dialog-timeline-text text-center font-weight-bolder">
             Dialog Timeline <br />
             (00:00:03:51)
           </p>
         </div>
-        <div className="col-10 mt-2">
+        <div className="col-8 mt-3 timeline-column-width-2">
           <div className="row mx-3 timeline-div">
             <div className="draggable-div">
               {/* ProgressBar */}
@@ -86,7 +87,10 @@ const YDXHome = () => {
             </div>
           </div>
         </div>
+        <div className="col-1 timeline-column-width-3"></div>
       </div>
+
+      <AudioDescriptionComponent />
     </div>
   );
 };

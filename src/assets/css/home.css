@@ -37,6 +37,11 @@ hr {
     background-color: #ffffff;
 }
 
+/* pushing the timeline div a bit higher */
+.div-below-hr {
+    margin-top: -10px;
+}
+
 /* dialog timeline */
 /* label of dialog timeline */
 .dialog-timeline-text {
@@ -45,7 +50,7 @@ hr {
 }
 /* white div - dialog timeline */
 .timeline-div {
-    height: 23px;
+    height: 20px;
     background-color: white;
     border: 1.8px #e4a48b solid;
     border-radius: 10px;
@@ -64,10 +69,22 @@ hr {
     background-color: red;
     position: absolute;
     z-index: 1;
-    margin-top: -12px;
+    margin-top: -14px;
 }
 /* time of the progress-bar draggable */
 .progress-bar-time{
     font-size: 0.86rem;
     margin-left: -26px;
+}
+
+
+/* timeline column widths */
+ .timeline-column-width-1 {
+    width: 21%;
+}
+.timeline-column-width-2 {
+    width: 71%;
+}
+.timeline-column-width-3 {
+    width: 8%;
 }
