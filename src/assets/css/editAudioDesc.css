@@ -1,0 +1,7 @@
+@import '../css/index.css';
+.edit-component {
+    background-color: #848484;
+    opacity: 65%;
+    margin-right: 2%;
+    margin-left: 2%;
+}

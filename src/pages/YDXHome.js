@@ -90,7 +90,14 @@ const YDXHome = () => {
         <div className="col-1 timeline-column-width-3"></div>
       </div>
 
-      <AudioDescriptionComponent />
+      <div className="audio-desc-component-list">
+        <AudioDescriptionComponent />
+        <AudioDescriptionComponent />
+        <AudioDescriptionComponent />
+        <AudioDescriptionComponent />
+        <AudioDescriptionComponent />
+        <AudioDescriptionComponent />
+      </div>
     </div>
   );
 };
