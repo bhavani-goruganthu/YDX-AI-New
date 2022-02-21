@@ -23,34 +23,30 @@ const YDXHome = () => {
   };
   return (
     <div className="container home-container">
-      <div className="row mt-1">
-        <div className="col">
-          <div className="">
-            <YouTube videoId="Q9Xp77AENXI" opts={opts} />
-          </div>
+      <div className="d-flex justify-content-around">
+        <div className="">
+          <YouTube videoId="Q9Xp77AENXI" opts={opts} />
         </div>
-        <div className="col">
-          <div className="notes-bg">
-            <div className="my-auto align-items-center pt-1 px-3">
-              <h6 className="text-white">Notes:</h6>
-            </div>
-            <div className="mx-auto my-auto notes-textarea align-items-center border rounded">
-              <textarea
-                className="form-control border rounded"
-                style={{ resize: 'none' }}
-                rows="7"
-                id="notes"
-                name="notes"
-              ></textarea>
-            </div>
-            <div className="mx-auto text-center mt-2">
-              <button
-                type="button"
-                className="btn rounded btn-md text-white primary-btn-color notes-save-btn"
-              >
-                <i className="fa fa-save" /> {'  '} Save
-              </button>
-            </div>
+        <div className="notes-bg">
+          <div className="my-auto align-items-center pt-1 px-3">
+            <h6 className="text-white">Notes:</h6>
+          </div>
+          <div className="mx-auto my-auto notes-textarea align-items-center border rounded">
+            <textarea
+              className="form-control border rounded"
+              style={{ resize: 'none' }}
+              rows="7"
+              id="notes"
+              name="notes"
+            ></textarea>
+          </div>
+          <div className="mx-auto text-center mt-2">
+            <button
+              type="button"
+              className="btn rounded btn-md text-white primary-btn-color notes-save-btn"
+            >
+              <i className="fa fa-save" /> {'  '} Save
+            </button>
           </div>
         </div>
       </div>
@@ -97,6 +93,24 @@ const YDXHome = () => {
         <AudioDescriptionComponent />
         <AudioDescriptionComponent />
         <AudioDescriptionComponent />
+      </div>
+      <div className="d-flex justify-content-between my-2">
+        <div className="insert-new-buttons">
+          <button type="button" className="btn inline-bg text-dark">
+            <i className="fa fa-plus" /> {'   '}
+            Insert New Inline
+          </button>
+          <button type="button" className="btn mx-5 extended-bg text-white">
+            <i className="fa fa-plus" /> {'   '}
+            Insert New Extended
+          </button>
+        </div>
+        <div className="publish-buttons mx-4">
+          <button type="button" className="btn publish-bg text-white">
+            <i class="fa fa-upload" /> {'   '}
+            Publish
+          </button>
+        </div>
       </div>
     </div>
   );
