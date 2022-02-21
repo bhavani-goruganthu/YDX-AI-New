@@ -21,8 +21,9 @@ code {
 }
 
 :root {
-  --primary-color: #9C27B0;
-  --secondary-color: #FFEB3B;
-  --secondary-color2: #004f71;
+  --primary-color: #3F51B5;
+  --extended-color: #9C27B0;
+  --inline-color: #FFEB3B;
+  --success-color: #19887E;  
   --inactive-color: #cdcdcd;
 }
