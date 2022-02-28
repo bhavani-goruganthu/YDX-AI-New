@@ -11,27 +11,8 @@
 
 /* primary color */
 .primary-btn-color {
-    background-color: var(--primary-color);
-}
+    background-color: var(--primary-color);}
 
-/* Notes section */
-.notes-bg {
-    background-color: rgb(80, 80, 80);
-    width: 450px;
-    height: 260px
-}
-.notes-textarea {
-    background-color: white;
-    width: 400px;
-    height: 184px;
-}
-.notes-save-btn {
-    padding-left: 7px;
-    padding-right: 7px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin-top: -3px;
-}
 
 /* horizontal line color */
 hr {
@@ -89,7 +70,6 @@ hr {
 .timeline-column-width-3 {
     width: 7%;
 }
-
 .audio-desc-component-list {
     overflow-y: scroll;
     height: 45vh;
