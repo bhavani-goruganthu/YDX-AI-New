@@ -7,8 +7,8 @@ import Notes from '../components/NotesComponent';
 
 const YDXHome = () => {
   const opts = {
-    height: '260',
-    width: '450',
+    height: '290',
+    width: '520',
     playerVars: {
       autoplay: 0,
       enablejsapi: 1,
@@ -30,6 +30,7 @@ const YDXHome = () => {
         </div>
         <Notes />
       </div>
+      {/* <p className="text-white px-5">Current Video Time is 00:00:00:00</p> */}
       <hr />
       <div className="row div-below-hr">
         <div className="col-3 text-white timeline-column-width-1">
