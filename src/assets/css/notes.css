@@ -6,11 +6,14 @@
     width: 450px;
     height: 291px
 }
-.notes-textarea {
+.notes-textarea-div {
     background-color: white;
     width: 430px;
-    height: 214px;
+    height: 210px;
     overflow-y: scroll;
+}
+.notes-textarea {
+    resize: none;
 }
 .notes-save-btn {
     padding-left: 3px;

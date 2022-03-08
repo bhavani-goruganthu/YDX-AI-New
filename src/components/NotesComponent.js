@@ -3,23 +3,52 @@ import '../assets/css/editAudioDesc.css';
 import '../assets/css/notes.css';
 
 const Notes = () => {
-  const n = 8;
+  // const n = 8;
+  const [noteValue, setNoteValue] = useState('');
+  const handleNewNoteLine = (e) => {
+    const tempNoteValue = noteValue;
+    let keycode = e.keyCode ? e.keyCode : e.which;
+    if (keycode == '13') {
+      setNoteValue(tempNoteValue + '02:00:23:01 - ');
+    }
+  };
+  const handleTextAreaFocus = (e) => {
+    let tempNoteValue = noteValue;
+    if (noteValue == '') {
+      setNoteValue(tempNoteValue + '02:00:22:01 - ');
+    }
+  };
+
   return (
     <div className="notes-bg">
       <div className="d-flex justify-content-between align-items-center pt-1 px-3">
         <h6 className="text-white">Notes:</h6>
-        <h6 className="text-white mx-4">Timestamp:</h6>
+        {/* <h6 className="text-white mx-4">Timestamp:</h6> */}
       </div>
-      {/* <div className="mx-auto my-auto notes-textarea align-items-center border rounded">
+      <div className="mx-auto my-auto notes-textarea-div align-items-center border rounded">
         <textarea
-          className="form-control border rounded"
-          style={{ resize: 'none' }}
-          rows="7"
+          className="form-control border rounded notes-textarea"
+          rows="8"
           id="notes"
           name="notes"
+          placeholder="Start taking your Notes.."
+          onFocus={handleTextAreaFocus}
+          onKeyUp={handleNewNoteLine}
+          onChange={(e) => setNoteValue(e.target.value)}
+          value={noteValue}
         ></textarea>
-      </div> */}
-      <div className="mx-auto notes-textarea border rounded">
+      </div>
+      <div className="d-flex justify-content-center mt-2">
+        <button
+          type="button"
+          className="btn rounded btn-md text-white primary-btn-color notes-save-btn mx-auto"
+        >
+          <i className="fa fa-save" /> {'  '} Save
+        </button>
+      </div>
+
+      {/* code to get multiple sections of notes */}
+      {/* <div className="mx-auto notes-textarea border rounded">
         {[...Array(n)].map((elementInArray, index) => (
           <div className="d-flex justify-content-around align-items-center">
             <p className="mt-1">{index + 1}:</p>
@@ -49,7 +78,7 @@ const Notes = () => {
         >
           <i className="fa fa-save" /> {'  '} Save
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

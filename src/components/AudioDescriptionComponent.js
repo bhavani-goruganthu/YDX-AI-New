@@ -36,7 +36,7 @@ const AudioDescriptionComponent = () => {
                   value="option1"
                   checked
                 />
-                <label className="form-check-label" for="inlineRadio1">
+                <label className="form-check-label" labelFor="inlineRadio1">
                   <div className="inline-bg text-dark inline-extended-radio px-2">
                     <h6 className="inline-extended-label">Inline</h6>
                   </div>
@@ -50,7 +50,7 @@ const AudioDescriptionComponent = () => {
                   id="inlineRadio2"
                   value="option2"
                 />
-                <label className="form-check-label" for="inlineRadio2">
+                <label className="form-check-label" labelFor="inlineRadio2">
                   <div className="extended-bg text-white inline-extended-radio px-2">
                     <h6 className="inline-extended-label">Extended</h6>
                   </div>

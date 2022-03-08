@@ -4,7 +4,7 @@ import '../assets/css/editAudioDesc.css';
 const EditDescriptionComponent = () => {
   return (
     <div className="edit-component text-white">
-      <p>dom</p>
+      <p>Edit Component</p>
     </div>
   );
 };
