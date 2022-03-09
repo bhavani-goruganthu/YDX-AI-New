@@ -3,9 +3,11 @@ import '../assets/css/audioDesc.css';
 import EditDescriptionComponent from './EditDescriptionComponent';
 
 const AudioDescriptionComponent = () => {
+  // toggle variable to show or hide the edit component.
   const [showEditComponent, setShowEditComponent] = useState(false);
   return (
     <React.Fragment>
+      {/* React Fragments allow you to wrap or group multiple elements without adding an extra node to the DOM. */}
       <div className="text-white component mt-2 rounded">
         <div className="row align-items-center">
           <div className="col-2 component-column-width-1">
@@ -59,7 +61,7 @@ const AudioDescriptionComponent = () => {
               </div>
             </div>
           </div>
-
+          {/* toggle the chevron to show or hide the edit Description component */}
           <div className="col-1 component-column-width-4">
             {showEditComponent ? (
               <i
@@ -75,6 +77,7 @@ const AudioDescriptionComponent = () => {
           </div>
         </div>
       </div>
+      {/* Based on the state of the showEditComponent variable, the edit component will be displayed*/}
       {showEditComponent ? <EditDescriptionComponent /> : <> </>}
     </React.Fragment>
   );

@@ -15,12 +15,13 @@ const EditDescriptionComponent = () => {
               name="description"
               value="a car driving down a street next to a tree and a sign that is on the side of the car."
             ></textarea>
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white bg-dark"
-            >
-              02:03:20:00
-            </button>
+            <div className="edit-time-div">
+              <input
+                className="text-white bg-dark edit-time-input text-center"
+                type="text"
+                value="02:03:20:00"
+              />
+            </div>
           </div>
           <div className="my-2 d-flex justify-content-around align-items-center w-75">
             <button
