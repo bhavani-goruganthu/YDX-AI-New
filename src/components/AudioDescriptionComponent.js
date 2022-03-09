@@ -3,6 +3,7 @@ import '../assets/css/audioDesc.css';
 import EditDescriptionComponent from './EditDescriptionComponent';
 
 const AudioDescriptionComponent = () => {
+  const [showEditComponent, setShowEditComponent] = useState(false);
   return (
     <React.Fragment>
       <div className="text-white component mt-2 rounded">
@@ -58,12 +59,23 @@ const AudioDescriptionComponent = () => {
               </div>
             </div>
           </div>
+
           <div className="col-1 component-column-width-4">
-            <i className="fa fa-chevron-down" />
+            {showEditComponent ? (
+              <i
+                className="fa fa-chevron-up"
+                onClick={() => setShowEditComponent(false)}
+              />
+            ) : (
+              <i
+                className="fa fa-chevron-down"
+                onClick={() => setShowEditComponent(true)}
+              />
+            )}
           </div>
         </div>
       </div>
-      <EditDescriptionComponent />
+      {showEditComponent ? <EditDescriptionComponent /> : <> </>}
     </React.Fragment>
   );
 };
