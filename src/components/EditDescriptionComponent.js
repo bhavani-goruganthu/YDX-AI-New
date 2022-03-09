@@ -39,6 +39,9 @@ const EditDescriptionComponent = () => {
             <button
               type="button"
               className="btn rounded btn-sm primary-btn-color text-white"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Play this Description"
             >
               <i className="fa fa-play" /> {'  '} Play
             </button>
@@ -67,6 +70,9 @@ const EditDescriptionComponent = () => {
             <button
               type="button"
               className="btn rounded btn-sm text-white primary-btn-color"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Replace the AI's Voice with your Voice"
             >
               Replace
             </button>
@@ -75,6 +81,9 @@ const EditDescriptionComponent = () => {
             <button
               type="button"
               className="btn rounded btn-sm text-white primary-btn-color"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="YouTube Video plays/pauses along with the Audio Description"
             >
               <i className="fa fa-play play-pause-icons" />
               <i className="fa fa-pause play-pause-icons" /> {'  '} Play/Pause
