@@ -8,13 +8,13 @@ const Notes = () => {
   const handleNewNoteLine = (e) => {
     const tempNoteValue = noteValue;
     let keycode = e.keyCode ? e.keyCode : e.which;
-    if (keycode == '13') {
+    if (keycode === '13') {
       setNoteValue(tempNoteValue + '02:00:23:01 - ');
     }
   };
   const handleTextAreaFocus = (e) => {
     let tempNoteValue = noteValue;
-    if (noteValue == '') {
+    if (noteValue === '') {
       setNoteValue(tempNoteValue + '02:00:22:01 - ');
     }
   };
