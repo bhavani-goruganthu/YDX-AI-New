@@ -22,19 +22,20 @@ const EditDescriptionComponent = () => {
               02:03:20:00
             </button>
           </div>
-          <div className="mx-5 my-2 d-flex justify-content-between align-items-center">
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white save-desc-btn"
-            >
-              <i className="fa fa-save" /> {'  '} Save
-            </button>
+          <div className="my-2 d-flex justify-content-around align-items-center w-75">
             <button
               type="button"
               className="btn rounded btn-sm text-white bg-danger"
             >
               <i className="fa fa-trash" /> {'  '} Delete
             </button>
+            <button
+              type="button"
+              className="btn rounded btn-sm text-white save-desc-btn"
+            >
+              <i className="fa fa-save" /> {'  '} Save
+            </button>
+
             <button
               type="button"
               className="btn rounded btn-sm primary-btn-color text-white"
