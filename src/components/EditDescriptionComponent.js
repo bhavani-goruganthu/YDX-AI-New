@@ -5,7 +5,7 @@ const EditDescriptionComponent = () => {
   return (
     <div className="edit-component text-white">
       <div className="d-flex justify-content-around align-items-center">
-        <div className="w-50">
+        <div className="w-50 mt-1">
           <h6 className="text-white">Visual Description:</h6>
           <div className="d-flex justify-content-around align-items-center">
             <textarea
@@ -70,13 +70,13 @@ const EditDescriptionComponent = () => {
               Replace
             </button>
           </div>
-          <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex justify-content-center align-items-center bg-white w-50 rounded mx-auto p-1">
             <button
               type="button"
               className="btn rounded btn-sm text-white primary-btn-color"
             >
-              <i className="fa fa-play" />
-              <i className="fa fa-pause" /> {'  '} Play/Pause
+              <i className="fa fa-play play-pause-icons" />
+              <i className="fa fa-pause play-pause-icons" /> {'  '} Play/Pause
             </button>
           </div>
         </div>
