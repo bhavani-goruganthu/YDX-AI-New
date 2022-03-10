@@ -68,15 +68,20 @@ const EditDescriptionComponent = () => {
             >
               Listen
             </button>
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white primary-btn-color"
-              data-bs-toggle="tooltip"
+            <div
+              data-bs-toggle="toggle"
               data-bs-placement="bottom"
               title="Replace the AI's Voice with your Voice"
             >
-              Replace
-            </button>
+              <button
+                type="button"
+                className="btn rounded btn-sm text-white primary-btn-color"
+                data-bs-toggle="modal"
+                data-bs-target="#replaceModal"
+              >
+                Replace
+              </button>
+            </div>
           </div>
           <div className="d-flex justify-content-center align-items-center bg-white w-50 rounded mx-auto p-1">
             <button
@@ -89,6 +94,45 @@ const EditDescriptionComponent = () => {
               <i className="fa fa-play play-pause-icons" />
               <i className="fa fa-pause play-pause-icons" /> {'  '} Play/Pause
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* <!-- Replace Modal --> */}
+      <div className="modal fade text-dark" id="replaceModal">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            {/* <!-- Modal Header --> */}
+            <div className="modal-header">
+              <h4 className="modal-title">Replace</h4>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            {/* <!-- Modal body --> */}
+            <div className="modal-body text-center">
+              Are you sure you want to replace AI's voice with the one you
+              recorded?
+            </div>
+            {/* <!-- Modal footer --> */}
+            <div className="modal-footer d-flex justify-content-center align-items-center">
+              <button
+                type="button"
+                className="btn primary-btn-color text-center m-1 text-white"
+                data-dismiss="modal"
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="btn primary-btn-color text-white"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
