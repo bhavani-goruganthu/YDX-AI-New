@@ -88,7 +88,7 @@ const YDXHome = () => {
         </div>
         <div className="publish-buttons mx-4">
           <button type="button" className="btn publish-bg text-white">
-            <i class="fa fa-upload" /> {'   '}
+            <i className="fa fa-upload" /> {'   '}
             Publish
           </button>
         </div>
