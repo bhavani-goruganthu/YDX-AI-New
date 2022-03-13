@@ -1,7 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useReactMediaRecorder } from 'react-media-recorder';
 import '../assets/css/editAudioDesc.css';
 
 const EditDescriptionComponent = () => {
+  // variable and function declaration of the react-media-recorder package
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({ audio: true }); // using only the audio recorder here
+  // this state variable keeps track of the play/pause state of the recorded audio
+  const [isRecordedAudioPlaying, setIsRecordedAudioPlaying] = useState(false);
+  // this state variable is updated whenever mediaBlobUrl is updated. i.e. whenever a new recording is created
+  const [audio, setAudio] = useState('');
+
+  useEffect(() => {
+    // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
+    if (mediaBlobUrl !== null) {
+      setAudio(new Audio(mediaBlobUrl));
+    }
+  }, [mediaBlobUrl]);
+
+  // function for toggling play pause functionality of the recorded audio
+  const handlePlayPauseRecordedAudio = () => {
+    if (isRecordedAudioPlaying) {
+      audio.pause();
+      setIsRecordedAudioPlaying(false);
+    } else {
+      audio.play();
+      setIsRecordedAudioPlaying(true);
+      // this is for setting setIsRecordedAudioPlaying variable to false, once the playback is completed.
+      audio.addEventListener('ended', function () {
+        setIsRecordedAudioPlaying(false);
+      });
+    }
+  };
+
   return (
     <div className="edit-component text-white">
       <div className="d-flex justify-content-around align-items-center">
@@ -13,13 +44,14 @@ const EditDescriptionComponent = () => {
               rows="2"
               id="description"
               name="description"
-              value="a car driving down a street next to a tree and a sign that is on the side of the car."
+              defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
             ></textarea>
             <div className="edit-time-div">
               <input
                 className="text-white bg-dark edit-time-input text-center"
                 type="text"
-                value="02:03:20:00"
+                defaultValue="02:03:20:00"
+                readOnly
               />
             </div>
           </div>
@@ -50,24 +82,64 @@ const EditDescriptionComponent = () => {
         </div>
         <div>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
-            <h6>Click to Record</h6>
+            <h6>Click to Record{/* <p>- {status}</p> */}</h6>
             <div className="mx-1">
+              {status === 'recording' ? (
+                <button
+                  type="button"
+                  className="btn rounded btn-sm mx-auto border bg-light"
+                  onClick={stopRecording} // default functions given by the react-media-recorder package
+                >
+                  <i className="fa fa-stop text-danger" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn rounded btn-sm mx-auto border bg-light"
+                  onClick={startRecording} // default functions given by the react-media-recorder package
+                >
+                  <i className="fa fa-microphone text-danger" />
+                </button>
+              )}
+            </div>
+            {mediaBlobUrl === null ? (
+              <div
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="No recording to Play"
+              >
+                <button
+                  type="button"
+                  className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                  disabled
+                >
+                  Listen
+                </button>
+              </div>
+            ) : isRecordedAudioPlaying ? (
               <button
                 type="button"
-                className="btn rounded btn-sm mx-auto border bg-light"
+                className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Listen to your recording"
+                onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
               >
-                <i className="fa fa-microphone text-danger" />
+                Pause/Stop
               </button>
-            </div>
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white primary-btn-color mx-3"
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="Listen to your recording"
-            >
-              Listen
-            </button>
+            ) : (
+              <button
+                type="button"
+                className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Listen to your recording"
+                onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
+              >
+                Listen
+              </button>
+            )}
+
             <div
               data-bs-toggle="toggle"
               data-bs-placement="bottom"
@@ -98,7 +170,7 @@ const EditDescriptionComponent = () => {
         </div>
       </div>
 
-      {/* <!-- Replace Modal --> */}
+      {/* <!-- Replace Modal --> Confirmation Modal - opens when user hits Replace and asks for a confirmation if AI's audio is to be replaced with the user recorded audio*/}
       <div className="modal fade text-dark" id="replaceModal">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
