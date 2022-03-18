@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import YouTube from 'react-youtube';
 import Draggable from 'react-draggable';
 import '../assets/css/home.css';
@@ -32,10 +33,12 @@ const YDXHome = () => {
   const [currentState, setCurrentState] = useState(-1); // stores YouTube video's PLAYING, CUED, PAUSED, UNSTARTED, BUFFERING, ENDED state values
   const [currentTime, setCurrentTime] = useState(0.0); //stores current running time of the YouTube video
   const [timer, setTimer] = useState(0); // stores TBD
+  const [unitLength, setUnitLength] = useState(0); // stores unit length based on the video length to maintain colored div's on the timelines
   const [draggableTime, setDraggableTime] = useState({ x: -3, y: 0 }); // stores the position of the draggable bar on the #draggable-div
+  const [videoDialogTimestamps, setVideoDialogTimestamps] = useState([]); // stores dialog-timestamps data for a video from backend db
 
-  useEffect(() => {
-    // for calculating the div width of the timeline
+  // for calculating the draggable-div width of the timeline
+  const calculateDraggableDivWidth = () => {
     // remove the left & right margin - leaving about 96% of the total width of the draggable-div
     const currWidth = divRef.current.clientWidth;
     const draggableDivWidth = (96 * currWidth) / 100;
@@ -46,7 +49,49 @@ const YDXHome = () => {
     //   const draggableDivWidth = (96 * newWidth) / 100;
     //   setDraggableDivWidth(draggableDivWidth);
     // });
-  }, [draggableDivWidth]);
+  };
+  // calculate unit length of the timeline width based on video length
+  const calculateUnitLength = () => {
+    let unitLength = draggableDivWidth / videoEndTime; // let unitlength = 644 / 299;
+    setUnitLength(unitLength);
+  };
+  // use axios and get dialog timestamps for the Dialog Timeline
+  const fetchDialogData = () => {
+    axios
+      .get('http://localhost:4000/api/dialog_timestamps/get-video-dialog/1')
+      .then((res) => {
+        const dialogData = res.data;
+        return dialogData;
+      })
+      .then((dialogData) => {
+        const updatedDialogData = [];
+        dialogData.forEach((dialog) => {
+          const x = dialog.dialog_start_time * unitLength;
+          const width = dialog.dialog_duration * unitLength;
+          const dialog_start_time = {
+            dialog_seq_no: dialog.dialog_sequence_num,
+            controlledPosition: { x: x, y: 0 },
+            width: width,
+          };
+          updatedDialogData.push(dialog_start_time);
+        });
+        setVideoDialogTimestamps(updatedDialogData);
+      });
+  };
+
+  useEffect(() => {
+    // order of the below function call's is important
+    calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
+    calculateUnitLength(); // calculate unit length of the timeline width based on video length
+    fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline
+  }, [draggableDivWidth, unitLength]);
+
+  // function to update currentime state variable & draggable bar time.
+  const updateTime = () => {
+    setCurrentTime(currentEvent.getCurrentTime());
+    // for updating the draggable component position based on current time
+    setDraggableTime({ x: unitLength * currentEvent.getCurrentTime(), y: 0 });
+  };
 
   // converts seconds to hh:mm:ss format
   const convertSecondsToCardFormat = (timeInSeconds) => {
@@ -107,12 +152,22 @@ const YDXHome = () => {
     event.target.pauseVideo();
   };
 
-  // function to update currentime state variable & draggable bar time.
-  const updateTime = () => {
-    setCurrentTime(currentEvent.getCurrentTime());
-    // for updating the draggable component position based on current time
-    let unitlength = draggableDivWidth / videoEndTime; // let unitlength = 644 / 299;
-    setDraggableTime({ x: unitlength * currentEvent.getCurrentTime(), y: 0 });
+  // Dialog Timeline Draggable Functions
+  const stopProgressBar = (event, position) => {
+    setDraggableTime({ x: position.x, y: 0 });
+    let progressBarTime = 0.0;
+    progressBarTime = position.x / unitLength;
+    currentEvent.seekTo(progressBarTime);
+    const currentTime = currentEvent.getCurrentTime();
+    setCurrentTime(currentTime);
+  };
+  const dragProgressBar = (event, position) => {
+    // setDraggableTime({ x: position.x, y: 0 });
+    let progressBarTime = 0.0;
+    progressBarTime = position.x / unitLength;
+    currentEvent.seekTo(progressBarTime);
+    const currentTime = currentEvent.getCurrentTime();
+    setCurrentTime(currentTime);
   };
 
   return (
@@ -144,20 +199,34 @@ const YDXHome = () => {
         <div className="col-8 mt-3 timeline-column-width-2">
           <div className="row mx-3 timeline-div">
             <div id="draggable-div" className="draggable-div" ref={divRef}>
+              {/* Dialog Timeline blue & white div's */}
+              {videoDialogTimestamps.map((dialog, key) => (
+                <Draggable
+                  axis="x"
+                  key={key}
+                  position={dialog.controlledPosition}
+                  bounds="parent"
+                >
+                  <div
+                    className="dialog-timestamps-div"
+                    style={{
+                      width: dialog.width,
+                      height: '18px',
+                    }}
+                  ></div>
+                </Draggable>
+              ))}
+
               {/* ProgressBar */}
               <Draggable
                 axis="x"
                 bounds="parent"
                 defaultPosition={{ x: 0, y: 0 }}
                 position={draggableTime}
-                // onDrag={dragProgressBar}
-                // onStop={stopProgressBar}
+                onDrag={dragProgressBar}
+                onStop={stopProgressBar}
               >
-                <div
-                  // id="progress_bar_timeline"
-                  tabIndex={0}
-                  className="progress-bar-div"
-                >
+                <div tabIndex={0} className="progress-bar-div">
                   <p className="mt-5 text-white progress-bar-time">
                     {convertSecondsToCardFormat(currentTime)}
                   </p>

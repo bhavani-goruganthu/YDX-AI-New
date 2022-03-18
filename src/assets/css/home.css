@@ -41,7 +41,7 @@ hr {
 }
 /* draggable component - div - dialog timeline */
 .draggable-div {
-    position: absolute;
+    position: relative;
 }
 /* red draggable div progress bar - dialog timeline */
 .progress-bar-div {
@@ -85,4 +85,11 @@ hr {
 }
 .publish-bg {
     background-color: var(--success-color);
+}
+
+.dialog-timestamps-div {
+    float: left;
+    /* cursor: ew-resize; */
+    position: absolute;
+    background-color: #64B5F6
 }
