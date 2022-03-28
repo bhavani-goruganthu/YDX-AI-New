@@ -103,57 +103,89 @@ const EditDescriptionComponent = () => {
               )}
             </div>
             {mediaBlobUrl === null ? (
-              <div
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="No recording to Play"
-              >
+              <>
+                <div
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="No recording to Play"
+                >
+                  <button
+                    type="button"
+                    className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                    disabled
+                  >
+                    Listen
+                  </button>
+                </div>
+                <div
+                  data-bs-toggle="toggle"
+                  data-bs-placement="bottom"
+                  title="Replace the AI's Voice with your Voice"
+                >
+                  <button
+                    type="button"
+                    className="btn rounded btn-sm text-white primary-btn-color"
+                    disabled
+                  >
+                    Replace
+                  </button>
+                </div>
+              </>
+            ) : isRecordedAudioPlaying ? (
+              <>
                 <button
                   type="button"
                   className="btn rounded btn-sm text-white primary-btn-color mx-3"
-                  disabled
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Listen to your recording"
+                  onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
+                >
+                  Pause/Stop
+                </button>
+                <div
+                  data-bs-toggle="toggle"
+                  data-bs-placement="bottom"
+                  title="Replace the AI's Voice with your Voice"
+                >
+                  <button
+                    type="button"
+                    className="btn rounded btn-sm text-white primary-btn-color"
+                    data-bs-toggle="modal"
+                    data-bs-target="#replaceModal"
+                  >
+                    Replace
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Listen to your recording"
+                  onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
                 >
                   Listen
                 </button>
-              </div>
-            ) : isRecordedAudioPlaying ? (
-              <button
-                type="button"
-                className="btn rounded btn-sm text-white primary-btn-color mx-3"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Listen to your recording"
-                onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
-              >
-                Pause/Stop
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn rounded btn-sm text-white primary-btn-color mx-3"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Listen to your recording"
-                onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
-              >
-                Listen
-              </button>
+                <div
+                  data-bs-toggle="toggle"
+                  data-bs-placement="bottom"
+                  title="Replace the AI's Voice with your Voice"
+                >
+                  <button
+                    type="button"
+                    className="btn rounded btn-sm text-white primary-btn-color"
+                    data-bs-toggle="modal"
+                    data-bs-target="#replaceModal"
+                  >
+                    Replace
+                  </button>
+                </div>
+              </>
             )}
-
-            <div
-              data-bs-toggle="toggle"
-              data-bs-placement="bottom"
-              title="Replace the AI's Voice with your Voice"
-            >
-              <button
-                type="button"
-                className="btn rounded btn-sm text-white primary-btn-color"
-                data-bs-toggle="modal"
-                data-bs-target="#replaceModal"
-              >
-                Replace
-              </button>
-            </div>
           </div>
           <div className="d-flex justify-content-center align-items-center bg-white w-50 rounded mx-auto p-1">
             <button
