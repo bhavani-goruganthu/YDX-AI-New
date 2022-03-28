@@ -50,7 +50,7 @@ const EditDescriptionComponent = () => {
               <input
                 className="text-white bg-dark edit-time-input text-center"
                 type="text"
-                defaultValue="02:03:20:00"
+                defaultValue="00:01:20"
                 readOnly
               />
             </div>

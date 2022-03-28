@@ -10,14 +10,14 @@ const Notes = () => {
     const tempNoteValue = noteValue;
     let keycode = e.keyCode ? e.keyCode : e.which;
     if (keycode === parseInt('13')) {
-      setNoteValue(tempNoteValue + '02:00:23:01 - ');
+      setNoteValue(tempNoteValue + '00:00:23 - ');
     }
   };
   // for focus event of Notes Textarea -> if the notes is empty, timestamp is inserted
   const handleTextAreaFocus = (e) => {
     let tempNoteValue = noteValue;
     if (noteValue === '') {
-      setNoteValue(tempNoteValue + '02:00:22:01 - ');
+      setNoteValue(tempNoteValue + '00:00:22 - ');
     }
     // TODO: what if notes is not empty
   };
