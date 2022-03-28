@@ -6,10 +6,13 @@
     width: 450px;
     height: 291px
 }
+.notes-label {
+    margin-bottom: -5px;
+}
 .notes-textarea-div {
     background-color: white;
     width: 430px;
-    height: 210px;
+    height: 256px;
     overflow-y: scroll;
 }
 .notes-textarea {
