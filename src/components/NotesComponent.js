@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../assets/css/editAudioDesc.css';
 import '../assets/css/notes.css';
 
-const Notes = () => {
+const Notes = ({ currentTime }) => {
   const [noteValue, setNoteValue] = useState(''); // to store Notes
   // this function handles keyUp event in the Notes textarea -> whenever an enter key is hit,
   // a timestamp is inserted in the Notes
@@ -10,14 +10,14 @@ const Notes = () => {
     const tempNoteValue = noteValue;
     let keycode = e.keyCode ? e.keyCode : e.which;
     if (keycode === parseInt('13')) {
-      setNoteValue(tempNoteValue + '00:00:23 - ');
+      setNoteValue(tempNoteValue + currentTime + ' - ');
     }
   };
   // for focus event of Notes Textarea -> if the notes is empty, timestamp is inserted
   const handleTextAreaFocus = (e) => {
     let tempNoteValue = noteValue;
     if (noteValue === '') {
-      setNoteValue(tempNoteValue + '00:00:22 - ');
+      setNoteValue(tempNoteValue + currentTime + ' - ');
     }
     // TODO: what if notes is not empty
   };
