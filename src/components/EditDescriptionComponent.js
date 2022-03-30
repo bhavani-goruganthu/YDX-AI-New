@@ -187,7 +187,7 @@ const EditDescriptionComponent = () => {
               </>
             )}
           </div>
-          <div className="d-flex justify-content-center align-items-center bg-white w-50 rounded mx-auto p-1">
+          <div className="d-flex justify-content-center align-items-center w-50 rounded mx-auto p-1">
             <button
               type="button"
               className="btn rounded btn-sm text-white primary-btn-color"
@@ -196,7 +196,8 @@ const EditDescriptionComponent = () => {
               title="YouTube Video plays/pauses along with the Audio Description"
             >
               <i className="fa fa-play play-pause-icons" />
-              <i className="fa fa-pause play-pause-icons" /> {'  '} Play/Pause
+              <i className="fa fa-pause play-pause-icons" />
+              {'  '} Play/Pause Video
             </button>
           </div>
         </div>
