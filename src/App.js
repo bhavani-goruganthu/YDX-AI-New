@@ -1,14 +1,16 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import YDXHome from './pages/YDXHome';
+import PageNotFound from './pages/PageNotFound';
 
 const App = () => {
   return (
-    <div>
-      <h2 className="mx-auto text-center mt-1 text-white">
-        <u>Welcome to YouDescribeX</u>
-      </h2>
-      <YDXHome />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/:videoId/:userId" element={<YDXHome />} />
+        <Route path="/*" element={<PageNotFound />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

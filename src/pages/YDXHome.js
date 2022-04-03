@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom'; /* to use params on the url */
 import axios from 'axios';
 import YouTube from 'react-youtube';
 import Draggable from 'react-draggable';
@@ -7,7 +8,9 @@ import AudioDescriptionComponent from '../components/AudioDescriptionComponent';
 import Notes from '../components/NotesComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 
-const YDXHome = () => {
+const YDXHome = (props) => {
+  /* to use params on the url and get userId & videoId */
+  const { userId, videoId } = useParams();
   const opts = {
     height: '290',
     width: '520',
@@ -24,10 +27,11 @@ const YDXHome = () => {
       wmode: 'opaque',
     },
   };
-  const divRef = useRef(null); // use a reference for the #draggable-div
+  const divRef = useRef(null); // use a reference for the #draggable-div to get the width and use in calculateDraggableDivWidth()
 
   // State Variables
-  const videoId = 'Q9Xp77AENXI';
+  // const userId = props.userId;
+  // const videoId = props.videoId;
   const videoEndTime = 299;
   const [draggableDivWidth, setDraggableDivWidth] = useState(0.0); //stores width of #draggable-div
   const [currentEvent, setCurrentEvent] = useState(0); //stores YouTube video's event
@@ -59,7 +63,7 @@ const YDXHome = () => {
   // use axios and get dialog timestamps for the Dialog Timeline
   const fetchDialogData = () => {
     axios
-      .get('http://localhost:4000/api/dialog_timestamps/get-video-dialog/1')
+      .get('http://localhost:4000/api/dialog-timestamps/get-video-dialog/1')
       .then((res) => {
         const dialogData = res.data;
         return dialogData;
