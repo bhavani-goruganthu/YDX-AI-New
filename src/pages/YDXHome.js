@@ -41,6 +41,8 @@ const YDXHome = (props) => {
   const [unitLength, setUnitLength] = useState(0); // stores unit length based on the video length to maintain colored div's on the timelines
   const [draggableTime, setDraggableTime] = useState({ x: -3, y: 0 }); // stores the position of the draggable bar on the #draggable-div
   const [videoDialogTimestamps, setVideoDialogTimestamps] = useState([]); // stores dialog-timestamps data for a video from backend db
+  const [isPublished, setIsPublished] = useState(false); // holds the published state of the Video & Audio Description
+  const [audioClips, setAudioClips] = useState([]); // stores list of Audio Descriptions data for a video from backend db
 
   useEffect(() => {
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
@@ -90,9 +92,8 @@ const YDXHome = (props) => {
       });
   };
 
-  // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
+  // fetch videoId based on the youtubeVideoId which is later used to get audioDescriptions
   const fetchUserVideoData = () => {
-    // fetch videoId based on the youtubeVideoId which is later used to get audioDescriptions
     axios
       .get(
         `http://localhost:4000/api/videos/get-by-youtubevideo/${youtubeVideoId}`
@@ -108,6 +109,27 @@ const YDXHome = (props) => {
         calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
         calculateUnitLength(video_length); // calculate unit length of the timeline width based on video length
         fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline});
+        fetchAudioDescriptions();
+      });
+  };
+
+  // use axios to get audio descriptions for the videoId (set in fetchUserVideoData()) & userId passed to the url Params
+  const fetchAudioDescriptions = () => {
+    axios
+      .get(
+        `http://localhost:4000/api/audio-descriptions/get-user-ad/${videoId}&${userId}`
+      )
+      .then((res) => {
+        const ad_id = res.data.ad_id;
+        setIsPublished(res.data.is_published);
+        return ad_id;
+      })
+      .then((ad_id) => {
+        axios
+          .get(`http://localhost:4000/api/audio-clips/get-user-ad/${ad_id}`)
+          .then((res) => {
+            setAudioClips(res.data);
+          });
       });
   };
 
@@ -243,12 +265,15 @@ const YDXHome = (props) => {
       </div>
 
       <div className="audio-desc-component-list">
-        <AudioDescriptionComponent />
-        <AudioDescriptionComponent />
-        <AudioDescriptionComponent />
-        <AudioDescriptionComponent />
-        <AudioDescriptionComponent />
-        <AudioDescriptionComponent />
+        {audioClips.map((clip, key) => (
+          <AudioDescriptionComponent
+            key={key}
+            clip_sequence_num={clip.clip_sequence_num}
+            clip_description_type={clip.description_type}
+            clip_playback_type={clip.playback_type}
+            clip_title={clip.clip_title}
+          />
+        ))}
       </div>
       <div className="d-flex justify-content-between my-2">
         <div className="insert-new-buttons">
