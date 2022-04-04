@@ -42,26 +42,9 @@ const YDXHome = (props) => {
   const [draggableTime, setDraggableTime] = useState({ x: -3, y: 0 }); // stores the position of the draggable bar on the #draggable-div
   const [videoDialogTimestamps, setVideoDialogTimestamps] = useState([]); // stores dialog-timestamps data for a video from backend db
 
-  // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
-  const fetchUserVideoData = () => {
-    // fetch videoId based on the youtubeVideoId which is later used to get audioDescriptions
-    axios
-      .get(
-        `http://localhost:4000/api/videos/get-by-youtubevideo/${youtubeVideoId}`
-      )
-      .then((res) => {
-        const video_id = res.data.video_id;
-        const video_length = res.data.video_length;
-        setVideoId(video_id);
-        return video_length;
-      })
-      .then((video_length) => {
-        // order of the below function calls is important
-        calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
-        calculateUnitLength(video_length); // calculate unit length of the timeline width based on video length
-        fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline});
-      });
-  };
+  useEffect(() => {
+    fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
+  }, [draggableDivWidth, unitLength, videoId, youtubeVideoId]);
 
   // for calculating the draggable-div width of the timeline
   const calculateDraggableDivWidth = () => {
@@ -107,9 +90,26 @@ const YDXHome = (props) => {
       });
   };
 
-  useEffect(() => {
-    fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
-  }, [draggableDivWidth, unitLength, videoId, youtubeVideoId]);
+  // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
+  const fetchUserVideoData = () => {
+    // fetch videoId based on the youtubeVideoId which is later used to get audioDescriptions
+    axios
+      .get(
+        `http://localhost:4000/api/videos/get-by-youtubevideo/${youtubeVideoId}`
+      )
+      .then((res) => {
+        const video_id = res.data.video_id;
+        const video_length = res.data.video_length;
+        setVideoId(video_id);
+        return video_length;
+      })
+      .then((video_length) => {
+        // order of the below function calls is important
+        calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
+        calculateUnitLength(video_length); // calculate unit length of the timeline width based on video length
+        fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline});
+      });
+  };
 
   // function to update currentime state variable & draggable bar time.
   const updateTime = () => {
