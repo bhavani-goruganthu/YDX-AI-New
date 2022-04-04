@@ -7,7 +7,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/:videoId/:userId" element={<YDXHome />} />
+        <Route path="/:youtubeVideoId/:userId" element={<YDXHome />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
