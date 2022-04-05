@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
+import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import '../assets/css/editAudioDesc.css';
 
-const EditDescriptionComponent = () => {
+const EditDescriptionComponent = (props) => {
   // variable and function declaration of the react-media-recorder package
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true }); // using only the audio recorder here
@@ -44,13 +45,15 @@ const EditDescriptionComponent = () => {
               rows="2"
               id="description"
               name="description"
-              defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
+              // defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
+              value={props.clip_description_text}
             ></textarea>
             <div className="edit-time-div">
               <input
                 className="text-white bg-dark edit-time-input text-center"
                 type="text"
-                defaultValue="00:01:20"
+                // defaultValue="00:01:20"
+                value={convertSecondsToCardFormat(props.clip_start_time)}
                 readOnly
               />
             </div>

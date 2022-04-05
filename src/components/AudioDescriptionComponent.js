@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import '../assets/css/audioDesc.css';
 import EditDescriptionComponent from './EditDescriptionComponent';
 
-const AudioDescriptionComponent = () => {
+const AudioDescriptionComponent = (props) => {
   // toggle variable to show or hide the edit component.
   const [showEditComponent, setShowEditComponent] = useState(false);
+  const [clipPlaybackType, setClipPlayBackType] = useState(
+    props.clip_playback_type
+  );
+  const [clipTitle, setClipTitle] = useState(props.clip_title);
+
   return (
     <React.Fragment>
       {/* React Fragments allow you to wrap or group multiple elements without adding an extra node to the DOM. */}
@@ -12,13 +17,19 @@ const AudioDescriptionComponent = () => {
         <div className="row align-items-center">
           <div className="col-2 component-column-width-1">
             <div className="mx-1 text-center">
-              <p>Audio Desc 1</p>
+              <p>Audio Desc {props.clip_sequence_num}</p>
               <input
                 type="text"
                 className="form-control form-control-sm ad-title-input text-center"
                 placeholder="Title goes here.."
+                value={clipTitle}
+                onChange={(e) => setClipTitle(e.target.value)}
               />
-              <h6 className="mt-1 text-white">Type - Visual</h6>
+              <h6 className="mt-1 text-white">
+                Type:{' '}
+                {props.clip_description_type.charAt(0).toUpperCase() +
+                  props.clip_description_type.slice(1)}
+              </h6>
             </div>
           </div>
           <div className="col-1 component-column-width-2">
@@ -34,22 +45,25 @@ const AudioDescriptionComponent = () => {
                 <input
                   className="form-check-input"
                   type="radio"
-                  name="inlineRadioOptions"
-                  id="inlineRadio1"
-                  value="option1"
+                  name={props.clip_sequence_num}
+                  id="radio1"
+                  value="inline"
+                  checked={clipPlaybackType === 'inline' ? true : false}
+                  onChange={(e) => setClipPlayBackType(e.target.value)}
                 />
-
                 <div className="inline-bg text-dark inline-extended-radio px-2">
-                  <h6 className="inline-extended-label">Inline</h6>
+                  <label className="inline-extended-label">Inline</label>
                 </div>
               </div>
               <div className="form-check form-check-inline">
                 <input
                   className="form-check-input"
                   type="radio"
-                  name="inlineRadioOptions"
-                  id="inlineRadio2"
-                  value="option2"
+                  name={props.clip_sequence_num}
+                  id="radio2"
+                  value="extended"
+                  checked={clipPlaybackType === 'extended' ? true : false}
+                  onChange={(e) => setClipPlayBackType(e.target.value)}
                 />
                 <div className="extended-bg text-white inline-extended-radio px-2">
                   <h6 className="inline-extended-label">Extended</h6>
@@ -74,7 +88,14 @@ const AudioDescriptionComponent = () => {
         </div>
       </div>
       {/* Based on the state of the showEditComponent variable, the edit component will be displayed*/}
-      {showEditComponent ? <EditDescriptionComponent /> : <> </>}
+      {showEditComponent ? (
+        <EditDescriptionComponent
+          clip_description_text={props.clip_description_text}
+          clip_start_time={props.clip_start_time}
+        />
+      ) : (
+        <> </>
+      )}
     </React.Fragment>
   );
 };

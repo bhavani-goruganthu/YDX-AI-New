@@ -272,6 +272,8 @@ const YDXHome = (props) => {
             clip_description_type={clip.description_type}
             clip_playback_type={clip.playback_type}
             clip_title={clip.clip_title}
+            clip_description_text={clip.description_text}
+            clip_start_time={clip.clip_start_time}
           />
         ))}
       </div>
