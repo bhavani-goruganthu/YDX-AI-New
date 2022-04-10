@@ -28,15 +28,11 @@ const AudioDescriptionComponent = (props) => {
     x: 0,
     y: 0,
   });
-  const [adBgColor, setAdBgColor] = useState('');
 
   useEffect(() => {
-    // set c
+    // set draggable position & width
     setAdDraggablePosition({ x: clip_start_time * unitLength, y: 0 });
     setAdDraggableWidth(clip_duration * unitLength);
-    clipPlaybackType === 'inline'
-      ? setAdBgColor('var(--inline-color')
-      : setAdBgColor('var(--extended-color');
   }, [unitLength, clip_start_time, clip_duration, clip_end_time]);
 
   return (
@@ -75,14 +71,25 @@ const AudioDescriptionComponent = (props) => {
                   position={adDraggablePosition}
                   bounds="parent"
                 >
-                  <div
-                    className="ad-timestamp-div"
-                    style={{
-                      width: adDraggableWidth,
-                      height: '20px',
-                      backgroundColor: adBgColor,
-                    }}
-                  ></div>
+                  {clipPlaybackType === 'inline' ? (
+                    <div
+                      className="ad-timestamp-div"
+                      style={{
+                        width: adDraggableWidth,
+                        height: '20px',
+                        backgroundColor: 'var(--inline-color)',
+                      }}
+                    ></div>
+                  ) : (
+                    <div
+                      className="ad-timestamp-div"
+                      style={{
+                        width: '1px',
+                        height: '20px',
+                        backgroundColor: 'var(--extended-color)',
+                      }}
+                    ></div>
+                  )}
                 </Draggable>
               </div>
             </div>
