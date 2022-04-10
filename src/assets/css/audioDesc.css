@@ -47,10 +47,10 @@
 .component-timeline-div {
     height: 20px;
     background-color: white;
-    border: 1.8px #e4a48b solid;
+    outline: 1.8px #e4a48b solid;
     border-radius: 10px;
     position: relative;
-    margin-left: 1.3rem;
+    margin-left: 1.4rem;
 }
 
 .inline-bg  {
@@ -71,7 +71,7 @@
 
 /* draggable component - div - dialog timeline */
 .ad-draggable-div {
-    position: relative;
+    position: relative;    
 }
 .ad-timestamp-div {
     float: left;

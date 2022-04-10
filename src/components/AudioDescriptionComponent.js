@@ -79,7 +79,7 @@ const AudioDescriptionComponent = (props) => {
                     className="ad-timestamp-div"
                     style={{
                       width: adDraggableWidth,
-                      height: '18px',
+                      height: '20px',
                       backgroundColor: adBgColor,
                     }}
                   ></div>

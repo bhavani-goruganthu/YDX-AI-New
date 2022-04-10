@@ -237,7 +237,7 @@ const YDXHome = (props) => {
                     className="dialog-timestamps-div"
                     style={{
                       width: dialog.width,
-                      height: '18px',
+                      height: '20px',
                     }}
                   ></div>
                 </Draggable>

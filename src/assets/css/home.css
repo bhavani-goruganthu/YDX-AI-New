@@ -35,7 +35,7 @@ hr {
 .timeline-div {
     height: 20px;
     background-color: white;
-    border: 1.8px #e4a48b solid;
+    outline: 1.8px #e4a48b solid;
     border-radius: 10px;
     position: relative;
 }
