@@ -96,7 +96,7 @@ const YDXHome = (props) => {
   const fetchUserVideoData = () => {
     axios
       .get(
-        `http://localhost:4000/api/videos/get-by-youtubevideo/${youtubeVideoId}`
+        `http://localhost:4000/api/videos/get-by-youtubeVideo/${youtubeVideoId}`
       )
       .then((res) => {
         const video_id = res.data.video_id;
@@ -268,12 +268,8 @@ const YDXHome = (props) => {
         {audioClips.map((clip, key) => (
           <AudioDescriptionComponent
             key={key}
-            clip_sequence_num={clip.clip_sequence_num}
-            clip_description_type={clip.description_type}
-            clip_playback_type={clip.playback_type}
-            clip_title={clip.clip_title}
-            clip_description_text={clip.description_text}
-            clip_start_time={clip.clip_start_time}
+            clip={clip}
+            unitLength={unitLength}
           />
         ))}
       </div>
