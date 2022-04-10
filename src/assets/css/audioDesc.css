@@ -68,3 +68,14 @@
 .inline-extended-label {
     margin-bottom: 0;
 }
+
+/* draggable component - div - dialog timeline */
+.ad-draggable-div {
+    position: relative;
+}
+.ad-timestamp-div {
+    float: left;
+    cursor: ew-resize;
+    position: absolute;
+    background-color: #64B5F6
+}
