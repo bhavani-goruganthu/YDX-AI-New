@@ -36,9 +36,14 @@ const EditDescriptionComponent = (props) => {
 
   return (
     <div className="edit-component text-white">
-      <div className="d-flex justify-content-around align-items-center">
-        <div className="w-50 mt-1">
-          <h6 className="text-white">Visual Description:</h6>
+      <div className="d-flex justify-content-evenly align-items-center">
+        <div className="description-section mt-1">
+          <div className="d-flex justify-content-between">
+            <h6 className="text-white text-center">Visual Description</h6>
+            <h6 className="text-white text-center start-time-title">
+              Start Time
+            </h6>
+          </div>
           <div className="d-flex justify-content-around align-items-center">
             <textarea
               className="form-control form-control-sm border rounded text-center description-textarea"
@@ -83,9 +88,14 @@ const EditDescriptionComponent = (props) => {
             </button>
           </div>
         </div>
-        <div>
+        <div className="vertical-divider-div">
+          <p></p>
+        </div>
+        <div className="">
+          <h6 className="text-white text-center">
+            Record & Replace AI's voice
+          </h6>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
-            <h6>Click to Record{/* <p>- {status}</p> */}</h6>
             <div className="mx-1">
               {status === 'recording' ? (
                 <button
@@ -190,7 +200,7 @@ const EditDescriptionComponent = (props) => {
               </>
             )}
           </div>
-          <div className="d-flex justify-content-center align-items-center w-50 rounded mx-auto p-1">
+          <div className="d-flex justify-content-center align-items-center rounded mx-auto p-1">
             <button
               type="button"
               className="btn rounded btn-sm text-white primary-btn-color"

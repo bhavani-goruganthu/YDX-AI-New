@@ -25,10 +25,25 @@
 
 .edit-time-div {
     width: 25%;
+    margin-bottom: 23px;
 }
 
 .edit-time-input {
     width: 75%;
     border: solid white 1px;
     border-radius: 10px;
+}
+
+.start-time-title {
+    margin-right: 60px;
+}
+
+.description-section {
+    width: 65%;
+}
+
+.vertical-divider-div {
+    background-color: wheat;
+    width: 2px;
+    height: 110px;
 }
