@@ -44,7 +44,7 @@ const AudioDescriptionComponent = (props) => {
         <div className="row align-items-center">
           <div className="col-2 component-column-width-1">
             <div className="mx-1 text-center">
-              <p>Audio Desc {clip_sequence_num}</p>
+              <p className="ad-title">Audio Description {clip_sequence_num}:</p>
               <input
                 type="text"
                 className="form-control form-control-sm ad-title-input text-center"
@@ -60,7 +60,12 @@ const AudioDescriptionComponent = (props) => {
             </div>
           </div>
           <div className="col-1 component-column-width-2">
-            <div className="nudge-btns-div d-flex justify-content-around align-items-center">
+            <div
+              className="nudge-btns-div d-flex justify-content-around align-items-center"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Nudge the description (0.5s)"
+            >
               <i className="fa fa-chevron-left p-2 nudge-icons" />
               <i className="fa fa-chevron-right p-2 nudge-icons" />
             </div>
@@ -145,7 +150,9 @@ const AudioDescriptionComponent = (props) => {
       {/* Based on the state of the showEditComponent variable, the edit component will be displayed*/}
       {showEditComponent ? (
         <EditDescriptionComponent
+          clip_description_type={clip_description_type}
           clip_description_text={clip_description_text}
+          clip_playback_type={clip_playback_type}
           clip_start_time={clip_start_time}
           is_recorded={is_recorded}
           recorded_audio_path={recorded_audio_path}
