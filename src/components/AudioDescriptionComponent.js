@@ -61,8 +61,8 @@ const AudioDescriptionComponent = (props) => {
           </div>
           <div className="col-1 component-column-width-2">
             <div className="nudge-btns-div d-flex justify-content-around align-items-center">
-              <i className="fa fa-arrow-left p-2 nudge-icons" />
-              <i className="fa fa-arrow-right p-2 nudge-icons" />
+              <i className="fa fa-chevron-left p-2 nudge-icons" />
+              <i className="fa fa-chevron-right p-2 nudge-icons" />
             </div>
           </div>
           <div className="col-8 component-column-width-3">

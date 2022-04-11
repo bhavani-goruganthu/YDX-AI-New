@@ -20,6 +20,14 @@ code {
     monospace;
 }
 
+button {
+  box-shadow: 1px 0px 4px 1px rgb(206, 246, 240)
+}
+
+button:hover {
+  box-shadow: 0 1px 4px 2px bisque, 0px 1px 2px 2px white
+}
+
 :root {
   --primary-color: #3F51B5;
   --extended-color: #9C27B0;
