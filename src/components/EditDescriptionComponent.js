@@ -99,16 +99,22 @@ const EditDescriptionComponent = (props) => {
             <div className="mx-1">
               {status === 'recording' ? (
                 <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Click to Stop Recording"
                   type="button"
-                  className="btn rounded btn-sm mx-auto border bg-light"
+                  className="btn rounded btn-sm mx-auto border border-warning bg-light"
                   onClick={stopRecording} // default functions given by the react-media-recorder package
                 >
                   <i className="fa fa-stop text-danger" />
                 </button>
               ) : (
                 <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Click to Start Recording your voice"
                   type="button"
-                  className="btn rounded btn-sm mx-auto border bg-light"
+                  className="btn rounded btn-sm mx-auto border border-warning bg-light"
                   onClick={startRecording} // default functions given by the react-media-recorder package
                 >
                   <i className="fa fa-microphone text-danger" />
