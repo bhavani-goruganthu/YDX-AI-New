@@ -66,29 +66,29 @@ const EditDescriptionComponent = (props) => {
     <div className="edit-component text-white">
       <div className="d-flex justify-content-evenly align-items-center">
         <div className="description-section mt-1">
-          <div className="d-flex justify-content-between">
-            <h6 className="text-white text-center">Description:</h6>
-            <h6 className="text-white text-center start-time-title">
-              Start Time
-            </h6>
-          </div>
-          <div className="d-flex justify-content-around align-items-center">
-            <textarea
-              className="form-control form-control-sm border rounded text-center description-textarea"
-              rows="2"
-              id="description"
-              name="description"
-              // defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
-              value={clip_description_text}
-            ></textarea>
-            <div className="edit-time-div">
-              <input
-                className="text-white bg-dark edit-time-input text-center"
-                type="text"
-                // defaultValue="00:01:20"
-                value={convertSecondsToCardFormat(clip_start_time)}
-                readOnly
-              />
+          <div className="d-flex justify-content-evenly align-items-center">
+            <div className="d-flex justify-content-center align-items-start flex-column">
+              <h6 className="text-white">Description:</h6>
+              <textarea
+                className="form-control form-control-sm border rounded text-center description-textarea"
+                rows="2"
+                id="description"
+                name="description"
+                // defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
+                value={clip_description_text}
+              ></textarea>
+            </div>
+            <div className="d-flex justify-content-center align-items-start flex-column">
+              <h6 className="text-white">Start Time</h6>
+              <div className="edit-time-div">
+                <input
+                  className="text-white bg-dark edit-time-input text-center"
+                  type="text"
+                  // defaultValue="00:01:20"
+                  value={convertSecondsToCardFormat(clip_start_time)}
+                  readOnly
+                />
+              </div>
             </div>
           </div>
           <div className="my-2 d-flex justify-content-around align-items-center w-75">

@@ -24,7 +24,8 @@
   box-shadow: 0px 0px 4px 1px rgb(175, 184, 182);
 }
 .nudge-btns-div:hover {
-  box-shadow: 0px 1px 4px 2px rgb(180, 180, 179), 0px 1px 2px 2px rgb(151, 147, 147);
+  box-shadow: 0px 1px 4px 2px rgb(180, 180, 179),
+    0px 1px 2px 2px rgb(151, 147, 147);
 }
 .nudge-icons {
   font-size: 15px;
@@ -50,7 +51,7 @@
   margin-bottom: 36px;
 }
 .component-column-width-3 {
-  width: 64%;
+  width: 63.745%;
 }
 .component-column-width-4 {
   width: 4%;
@@ -61,7 +62,7 @@
   outline: 1.8px #e4a48b solid;
   border-radius: 10px;
   position: relative;
-  margin-left: 0.88px;
+  margin-left: -1.93px;
 }
 
 .inline-bg {

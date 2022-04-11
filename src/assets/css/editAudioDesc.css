@@ -13,6 +13,8 @@
 
 .description-textarea{
     resize: none;
+    min-width: 520px;
+    max-width: 560px;
 }
 
 .play-pause-icons {
@@ -24,7 +26,7 @@
 }
 
 .edit-time-div {
-    width: 25%;
+    /* width: 25%; */
     margin-bottom: 23px;
 }
 
@@ -34,8 +36,8 @@
     border-radius: 10px;
 }
 
-.start-time-title {
-    margin-right: 60px;
+.edit-component-title-div {
+    margin-right: 3.3rem;
 }
 
 .description-section {

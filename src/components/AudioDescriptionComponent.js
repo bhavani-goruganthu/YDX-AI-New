@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import '../assets/css/audioDesc.css';
 import Draggable from 'react-draggable';
 import EditDescriptionComponent from './EditDescriptionComponent';
+import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 
 const AudioDescriptionComponent = (props) => {
   // destructuring props
   const unitLength = props.unitLength;
+  const currentTime = props.currentTime;
 
   // all audio clip data
   // const clip_id = props.clip.clip_id;
@@ -36,15 +38,27 @@ const AudioDescriptionComponent = (props) => {
 
   useEffect(() => {
     // set draggable position & width
-    setAdDraggablePosition({ x: clip_start_time * unitLength, y: 0 });
+    setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
     setAdDraggableWidth(clip_duration * unitLength);
-  }, [unitLength, clip_start_time, clip_duration, clip_end_time]);
+  }, [unitLength, clipStartTime]);
 
   // Dialog Timeline Draggable Functions
   const stopADBar = (event, position) => {
     setAdDraggablePosition({ x: position.x, y: 0 });
     let adBarTime = position.x / unitLength;
     setClipStartTime(adBarTime);
+  };
+
+  // Handle Nudge icons -> add/remove 1 second to start_time
+  const handleLeftNudgeClick = (e) => {
+    setClipStartTime(clipStartTime - 1);
+    // Also update the draggable div position based on start time
+    setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
+  };
+  const handleRightNudgeClick = (e) => {
+    setClipStartTime(clipStartTime + 1);
+    // Also update the draggable div position based on start time
+    setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
   };
 
   return (
@@ -74,10 +88,16 @@ const AudioDescriptionComponent = (props) => {
               className="nudge-btns-div d-flex justify-content-around align-items-center"
               data-bs-toggle="tooltip"
               data-bs-placement="bottom"
-              title="Nudge the description (0.5s)"
+              title="Nudge the audio block (1s)"
             >
-              <i className="fa fa-chevron-left p-2 nudge-icons" />
-              <i className="fa fa-chevron-right p-2 nudge-icons" />
+              <i
+                className="fa fa-chevron-left p-2 nudge-icons"
+                onClick={handleLeftNudgeClick}
+              />
+              <i
+                className="fa fa-chevron-right p-2 nudge-icons"
+                onClick={handleRightNudgeClick}
+              />
             </div>
           </div>
           <div className="col-8 component-column-width-3">
@@ -93,6 +113,9 @@ const AudioDescriptionComponent = (props) => {
                   {clipPlaybackType === 'inline' ? (
                     <div
                       className="ad-timestamp-div"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title={convertSecondsToCardFormat(clipStartTime)}
                       style={{
                         width: adDraggableWidth,
                         height: '20px',
@@ -102,6 +125,9 @@ const AudioDescriptionComponent = (props) => {
                   ) : (
                     <div
                       className="ad-timestamp-div"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title={convertSecondsToCardFormat(clipStartTime)}
                       style={{
                         width: '2px',
                         height: '20px',
