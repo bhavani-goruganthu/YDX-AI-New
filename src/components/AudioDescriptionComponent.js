@@ -21,10 +21,13 @@ const AudioDescriptionComponent = (props) => {
   const is_recorded = props.clip.is_recorded;
   const recorded_audio_path = props.clip.recorded_audio_path;
 
-  // toggle variable to show or hide the edit component.
-  const [showEditComponent, setShowEditComponent] = useState(false);
+  // React State Variables
   const [clipPlaybackType, setClipPlayBackType] = useState(clip_playback_type);
   const [clipTitle, setClipTitle] = useState(clip_title);
+  const [clipStartTime, setClipStartTime] = useState(clip_start_time);
+
+  // toggle variable to show or hide the edit component.
+  const [showEditComponent, setShowEditComponent] = useState(false);
   const [adDraggableWidth, setAdDraggableWidth] = useState(0.0);
   const [adDraggablePosition, setAdDraggablePosition] = useState({
     x: 0,
@@ -36,6 +39,13 @@ const AudioDescriptionComponent = (props) => {
     setAdDraggablePosition({ x: clip_start_time * unitLength, y: 0 });
     setAdDraggableWidth(clip_duration * unitLength);
   }, [unitLength, clip_start_time, clip_duration, clip_end_time]);
+
+  // Dialog Timeline Draggable Functions
+  const stopADBar = (event, position) => {
+    setAdDraggablePosition({ x: position.x, y: 0 });
+    let adBarTime = position.x / unitLength;
+    setClipStartTime(adBarTime);
+  };
 
   return (
     <React.Fragment>
@@ -75,7 +85,9 @@ const AudioDescriptionComponent = (props) => {
               <div id="ad-draggable-div" className="ad-draggable-div">
                 <Draggable
                   axis="x"
+                  defaultPosition={{ x: 0, y: 0 }}
                   position={adDraggablePosition}
+                  onStop={stopADBar}
                   bounds="parent"
                 >
                   {clipPlaybackType === 'inline' ? (
@@ -153,7 +165,7 @@ const AudioDescriptionComponent = (props) => {
           clip_description_type={clip_description_type}
           clip_description_text={clip_description_text}
           clip_playback_type={clip_playback_type}
-          clip_start_time={clip_start_time}
+          clip_start_time={clipStartTime}
           is_recorded={is_recorded}
           recorded_audio_path={recorded_audio_path}
           clip_audio_path={clip_audio_path}

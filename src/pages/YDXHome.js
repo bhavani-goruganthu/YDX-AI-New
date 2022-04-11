@@ -33,6 +33,7 @@ const YDXHome = (props) => {
 
   // State Variables
   const [videoId, setVideoId] = useState(0); // retrieved from db, stored to fetch audio_descriptions
+  const [videoLength, setVideoLength] = useState(0); // retrieved from db, stored to display as a label for the dialog timeline
   const [draggableDivWidth, setDraggableDivWidth] = useState(0.0); //stores width of #draggable-div
   const [currentEvent, setCurrentEvent] = useState(0); //stores YouTube video's event
   const [currentState, setCurrentState] = useState(-1); // stores YouTube video's PLAYING, CUED, PAUSED, UNSTARTED, BUFFERING, ENDED state values
@@ -101,6 +102,7 @@ const YDXHome = (props) => {
       .then((res) => {
         const video_id = res.data.video_id;
         const video_length = res.data.video_length;
+        setVideoLength(video_length);
         setVideoId(video_id);
         return video_length;
       })
@@ -218,7 +220,7 @@ const YDXHome = (props) => {
       <div className="row div-below-hr">
         <div className="col-3 text-white timeline-column-width-1">
           <h6 className="dialog-timeline-text text-center font-weight-bolder">
-            Dialog Timeline (00:04:59):
+            Dialog Timeline ({convertSecondsToCardFormat(videoLength)}):
           </h6>
         </div>
         <div className="col-8 mt-3 timeline-column-width-2">
