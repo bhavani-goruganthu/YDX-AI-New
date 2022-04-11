@@ -4,32 +4,60 @@ import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardF
 import '../assets/css/editAudioDesc.css';
 
 const EditDescriptionComponent = (props) => {
+  // destructuring props
+  const clip_description_text = props.clip_description_text;
+  const clip_playback_type = props.clip_playback_type;
+  const clip_start_time = props.clip_start_time;
+  const is_recorded = props.is_recorded;
+  const recorded_audio_path = props.recorded_audio_path;
+  const clip_audio_path = props.clip_audio_path.replace(
+    '..',
+    'http://18.221.192.73:5001'
+  );
+
   // variable and function declaration of the react-media-recorder package
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true }); // using only the audio recorder here
   // this state variable keeps track of the play/pause state of the recorded audio
   const [isRecordedAudioPlaying, setIsRecordedAudioPlaying] = useState(false);
   // this state variable is updated whenever mediaBlobUrl is updated. i.e. whenever a new recording is created
-  const [audio, setAudio] = useState('');
+  const [recordedAudio, setRecordedAudio] = useState('');
+  const [adAudio, setAdAudio] = useState('');
+  const [isAdAudioPlaying, setIsAdAudioPlaying] = useState(false);
 
   useEffect(() => {
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
     if (mediaBlobUrl !== null) {
-      setAudio(new Audio(mediaBlobUrl));
+      setRecordedAudio(new Audio(mediaBlobUrl));
     }
+    setAdAudio(new Audio(clip_audio_path));
   }, [mediaBlobUrl]);
 
   // function for toggling play pause functionality of the recorded audio
   const handlePlayPauseRecordedAudio = () => {
     if (isRecordedAudioPlaying) {
-      audio.pause();
+      recordedAudio.pause();
       setIsRecordedAudioPlaying(false);
     } else {
-      audio.play();
+      recordedAudio.play();
       setIsRecordedAudioPlaying(true);
       // this is for setting setIsRecordedAudioPlaying variable to false, once the playback is completed.
-      audio.addEventListener('ended', function () {
+      recordedAudio.addEventListener('ended', function () {
         setIsRecordedAudioPlaying(false);
+      });
+    }
+  };
+
+  const handlePlayPauseAdAudio = () => {
+    if (isAdAudioPlaying) {
+      adAudio.pause();
+      setIsAdAudioPlaying(false);
+    } else {
+      adAudio.play();
+      setIsAdAudioPlaying(true);
+      // this is for setting setIsAdAudioPlaying variable to false, once the playback is completed.
+      adAudio.addEventListener('ended', function () {
+        setIsAdAudioPlaying(false);
       });
     }
   };
@@ -39,7 +67,7 @@ const EditDescriptionComponent = (props) => {
       <div className="d-flex justify-content-evenly align-items-center">
         <div className="description-section mt-1">
           <div className="d-flex justify-content-between">
-            <h6 className="text-white text-center">Visual Description</h6>
+            <h6 className="text-white text-center">Description:</h6>
             <h6 className="text-white text-center start-time-title">
               Start Time
             </h6>
@@ -51,14 +79,14 @@ const EditDescriptionComponent = (props) => {
               id="description"
               name="description"
               // defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
-              value={props.clip_description_text}
+              value={clip_description_text}
             ></textarea>
             <div className="edit-time-div">
               <input
                 className="text-white bg-dark edit-time-input text-center"
                 type="text"
                 // defaultValue="00:01:20"
-                value={convertSecondsToCardFormat(props.clip_start_time)}
+                value={convertSecondsToCardFormat(clip_start_time)}
                 readOnly
               />
             </div>
@@ -76,22 +104,33 @@ const EditDescriptionComponent = (props) => {
             >
               <i className="fa fa-save" /> {'  '} Save
             </button>
-
-            <button
-              type="button"
-              className="btn rounded btn-sm primary-btn-color text-white"
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="Play this Description"
-            >
-              <i className="fa fa-play" /> {'  '} Play
-            </button>
+            {isAdAudioPlaying ? (
+              <button
+                type="button"
+                className="btn rounded btn-sm primary-btn-color text-white"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Pause Audio"
+                onClick={handlePlayPauseAdAudio}
+              >
+                <i className="fa fa-pause" /> {'  '} Pause
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn rounded btn-sm primary-btn-color text-white"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Play this Description"
+                onClick={handlePlayPauseAdAudio}
+              >
+                <i className="fa fa-play" /> {'  '} Play
+              </button>
+            )}
           </div>
         </div>
-        <div className="vertical-divider-div">
-          <p></p>
-        </div>
-        <div className="">
+        <div className="vertical-divider-div"></div>
+        <div>
           <h6 className="text-white text-center">
             Record & Replace AI's voice
           </h6>
@@ -121,6 +160,7 @@ const EditDescriptionComponent = (props) => {
                 </button>
               )}
             </div>
+            {/* No recording to Play */}
             {mediaBlobUrl === null ? (
               <>
                 <div
@@ -150,7 +190,7 @@ const EditDescriptionComponent = (props) => {
                   </button>
                 </div>
               </>
-            ) : isRecordedAudioPlaying ? (
+            ) : isRecordedAudioPlaying ? ( //Listen to your recording
               <>
                 <button
                   type="button"
