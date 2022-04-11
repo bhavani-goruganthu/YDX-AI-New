@@ -6,6 +6,8 @@ import EditDescriptionComponent from './EditDescriptionComponent';
 const AudioDescriptionComponent = (props) => {
   // destructuring props
   const unitLength = props.unitLength;
+
+  // all audio clip data
   // const clip_id = props.clip.clip_id;
   const clip_sequence_num = props.clip.clip_sequence_num;
   const clip_title = props.clip.clip_title;
@@ -84,7 +86,7 @@ const AudioDescriptionComponent = (props) => {
                     <div
                       className="ad-timestamp-div"
                       style={{
-                        width: '1px',
+                        width: '2px',
                         height: '20px',
                         backgroundColor: 'var(--extended-color)',
                       }}
@@ -119,7 +121,7 @@ const AudioDescriptionComponent = (props) => {
                   onChange={(e) => setClipPlayBackType(e.target.value)}
                 />
                 <div className="extended-bg text-white inline-extended-radio px-2">
-                  <h6 className="inline-extended-label">Extended</h6>
+                  <label className="inline-extended-label">Extended</label>
                 </div>
               </div>
             </div>

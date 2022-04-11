@@ -1,95 +1,97 @@
 @import '../css/index.css';
 /* rectangular container */
 .home-container {
-    /* height: 100vh; */
-    width: 75%;
-    border: solid 3px;
-    border-radius: 10px;
-    margin-top: 0.3%;
-    margin-bottom: 2%;
+  /* height: 100vh; */
+  width: 100%;
+  border: solid 3px;
+  border-radius: 10px;
+  margin-top: 0.3%;
+  margin-bottom: 2%;
 }
 
 /* primary color */
 .primary-btn-color {
-    background-color: var(--primary-color);
+  background-color: var(--primary-color);
 }
-
 
 /* horizontal line color */
 hr {
-    background-color: #ffffff;
+  background-color: #ffffff;
 }
 
 /* pushing the timeline div a bit higher */
 .div-below-hr {
-    margin-top: -10px;
+  margin-top: -10px;
+  margin-bottom: 2rem;
 }
 
 /* dialog timeline */
 /* label of dialog timeline */
 .dialog-timeline-text {
-    margin-left: 2rem;
-    font-size: large;
+  font-size: large;
+  height: 120%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
 }
 /* white div - dialog timeline */
 .timeline-div {
-    height: 20px;
-    background-color: white;
-    outline: 1.8px #e4a48b solid;
-    border-radius: 10px;
-    position: relative;
+  height: 20px;
+  background-color: white;
+  outline: 1.8px #e4a48b solid;
+  border-radius: 10px;
+  position: relative;
 }
 /* draggable component - div - dialog timeline */
 .draggable-div {
-    position: relative;
+  position: relative;
 }
 /* red draggable div progress bar - dialog timeline */
 .progress-bar-div {
-    /* float: 'left'; */
-    cursor: ew-resize;
-    width: 2px;
-    height: 45px;
-    background-color: red;
-    position: absolute;
-    z-index: 1;
-    margin-top: -14px;
+  /* float: 'left'; */
+  cursor: ew-resize;
+  width: 2px;
+  height: 45px;
+  background-color: red;
+  position: absolute;
+  z-index: 1;
+  margin-top: -14px;
 }
 /* time of the progress-bar draggable */
-.progress-bar-time{
-    font-size: 0.86rem;
-    margin-left: -26px;
+.progress-bar-time {
+  font-size: 0.86rem;
+  margin-left: -26px;
 }
-
 
 /* timeline column widths */
- .timeline-column-width-1 {
-    width: 21%;
+.timeline-column-width-1 {
+  width: 27.5%;
 }
 .timeline-column-width-2 {
-    width: 73%;
+  width: 66%;
 }
 .timeline-column-width-3 {
-    width: 7%;
+  width: 7%;
 }
 .audio-desc-component-list {
-    overflow-y: scroll;
-    height: 45vh;
-    margin-bottom: 2%;
+  overflow-y: scroll;
+  height: 45vh;
+  margin-bottom: 2%;
 }
 
 .inline-bg {
-    background-color: var(--inline-color);
+  background-color: var(--inline-color);
 }
-.extended-bg {    
-    background-color: var(--extended-color);    
+.extended-bg {
+  background-color: var(--extended-color);
 }
 .publish-bg {
-    background-color: var(--success-color);
+  background-color: var(--success-color);
 }
 
 .dialog-timestamps-div {
-    float: left;
-    /* cursor: ew-resize; */
-    position: absolute;
-    background-color: #64B5F6
+  float: left;
+  /* cursor: ew-resize; */
+  position: absolute;
+  background-color: #64b5f6;
 }

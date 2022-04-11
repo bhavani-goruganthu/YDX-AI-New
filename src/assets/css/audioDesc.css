@@ -6,6 +6,7 @@
 
 .ad-title-input {
     margin-top: -16px;
+    margin-left: 5px;
 }
 
 .nudge-btns-div {
@@ -15,6 +16,7 @@
     height: 30px;
     padding-right: 25px;
     padding-left: 25px;
+
 }
 .nudge-icons {
     font-size: 15px;
@@ -33,13 +35,14 @@
 
 /* audio description column widths */
 .component-column-width-1 {
-    width: 14%
+    width: 23%
 }
 .component-column-width-2 {
-    width: 7%
+    width: 7%;
+    margin-bottom: 36px;    
 }
 .component-column-width-3 {
-    width: 73%
+    width: 64%
 }
 .component-column-width-4 {
     width: 4%
@@ -50,7 +53,7 @@
     outline: 1.8px #e4a48b solid;
     border-radius: 10px;
     position: relative;
-    margin-left: 1.4rem;
+    margin-left: 0.88px;
 }
 
 .inline-bg  {

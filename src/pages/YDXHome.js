@@ -217,10 +217,9 @@ const YDXHome = (props) => {
       <hr />
       <div className="row div-below-hr">
         <div className="col-3 text-white timeline-column-width-1">
-          <p className="dialog-timeline-text text-center font-weight-bolder">
-            Dialog Timeline <br />
-            (00:04:59)
-          </p>
+          <h6 className="dialog-timeline-text text-center font-weight-bolder">
+            Dialog Timeline (00:04:59):
+          </h6>
         </div>
         <div className="col-8 mt-3 timeline-column-width-2">
           <div className="row mx-3 timeline-div">
@@ -270,6 +269,7 @@ const YDXHome = (props) => {
             key={key}
             clip={clip}
             unitLength={unitLength}
+            currentTime={currentTime}
           />
         ))}
       </div>
