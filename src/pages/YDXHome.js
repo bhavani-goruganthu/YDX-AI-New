@@ -214,7 +214,10 @@ const YDXHome = (props) => {
             onReady={onReady}
           />
         </div>
-        <Notes currentTime={convertSecondsToCardFormat(currentTime)} />
+        <Notes
+          currentTime={convertSecondsToCardFormat(currentTime)}
+          videoId={videoId}
+        />
       </div>
       <hr />
       <div className="row div-below-hr">
