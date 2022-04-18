@@ -195,6 +195,7 @@ const AudioDescriptionComponent = (props) => {
           is_recorded={is_recorded}
           recorded_audio_path={recorded_audio_path}
           clip_audio_path={clip_audio_path}
+          currentTime={currentTime}
         />
       ) : (
         <> </>

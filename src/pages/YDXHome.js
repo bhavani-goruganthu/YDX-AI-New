@@ -45,9 +45,17 @@ const YDXHome = (props) => {
   const [isPublished, setIsPublished] = useState(false); // holds the published state of the Video & Audio Description
   const [audioClips, setAudioClips] = useState([]); // stores list of Audio Descriptions data for a video from backend db
 
+  const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
+
   useEffect(() => {
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
-  }, [draggableDivWidth, unitLength, videoId, youtubeVideoId]);
+  }, [
+    draggableDivWidth,
+    unitLength,
+    videoId,
+    youtubeVideoId,
+    recentAudioPlayedTime,
+  ]);
 
   // for calculating the draggable-div width of the timeline
   const calculateDraggableDivWidth = () => {
@@ -130,6 +138,15 @@ const YDXHome = (props) => {
         axios
           .get(`http://localhost:4000/api/audio-clips/get-user-ad/${ad_id}`)
           .then((res) => {
+            // setAudioClips(res.data);
+
+            // update the audio path for every clip row - the path might change later- TODO: change the server IP
+            res.data.forEach((clip) => {
+              clip.clip_audio_path = clip.clip_audio_path.replace(
+                '..',
+                'http://18.221.192.73:5001'
+              );
+            });
             setAudioClips(res.data);
           });
       });
@@ -140,6 +157,53 @@ const YDXHome = (props) => {
     setCurrentTime(currentEvent.getCurrentTime());
     // for updating the draggable component position based on current time
     setDraggableTime({ x: unitLength * currentEvent.getCurrentTime(), y: 0 });
+
+    // check if currentEvent.getCurrentTime()).toFixed(2) returns the same number more than once..
+    // the previous current time at which an audio is played is stored in recentAudioPlayedTime
+    // Example: For both the current times 6.69739000 & 6.70439000 => currentEvent.getCurrentTime().toFixed(2) returns 6.70.
+    // If there is an audio clip with start_time as 6.70, it results in the same audio playing twice concurrently,
+    // recentAudioPlayedTime will have the first 6.70 and will not allow the same audio to play again.
+    if (
+      parseFloat(recentAudioPlayedTime).toFixed(2) !==
+      parseFloat(currentEvent.getCurrentTime()).toFixed(2)
+    ) {
+      // To Play audio files based on current time
+      playAudioAtCurrentTime(currentEvent.getCurrentTime());
+    }
+  };
+
+  // To Play audio files based on current time
+  const playAudioAtCurrentTime = (updatedCurrentTime) => {
+    if (currentState === 1) {
+      const filteredClip = audioClips.filter(
+        (clip) =>
+          parseFloat(updatedCurrentTime).toFixed(2) ===
+          parseFloat(clip.clip_start_time).toFixed(2)
+      );
+      if (filteredClip.length !== 0) {
+        //  update recentAudioPlayedTime - which stores the time at which an audio has been played - to stop playing the same audio twice concurrently
+        setRecentAudioPlayedTime(parseFloat(updatedCurrentTime).toFixed(2));
+        // console.log('In here - audio playing');
+        const clip_audio_path = filteredClip[0].clip_audio_path.replace(
+          '..',
+          'http://18.221.192.73:5001'
+        );
+        // play along with the video if the clip is an inline description
+        if (filteredClip[0].playback_type === 'inline') {
+          const currentAudio = new Audio(clip_audio_path);
+          currentAudio.play();
+        }
+        // play after pausing the youtube video if the clip is an extended description - youtube video should be played after the description has finished playing
+        else if (filteredClip[0].playback_type === 'extended') {
+          const currentAudio = new Audio(clip_audio_path);
+          currentEvent.pauseVideo();
+          currentAudio.play();
+          currentAudio.addEventListener('ended', function () {
+            currentEvent.playVideo();
+          });
+        }
+      }
+    }
   };
 
   // YouTube Player Functions

@@ -5,15 +5,14 @@ import '../assets/css/editAudioDesc.css';
 
 const EditDescriptionComponent = (props) => {
   // destructuring props
+  const currentTime = props.currentTime;
+
   const clip_description_text = props.clip_description_text;
   const clip_playback_type = props.clip_playback_type;
   const clip_start_time = props.clip_start_time;
   const is_recorded = props.is_recorded;
   const recorded_audio_path = props.recorded_audio_path;
-  const clip_audio_path = props.clip_audio_path.replace(
-    '..',
-    'http://18.221.192.73:5001'
-  );
+  const clip_audio_path = props.clip_audio_path;
 
   // variable and function declaration of the react-media-recorder package
   const { status, startRecording, stopRecording, mediaBlobUrl } =
@@ -74,8 +73,8 @@ const EditDescriptionComponent = (props) => {
                 rows="2"
                 id="description"
                 name="description"
-                // defaultValue="a car driving down a street next to a tree and a sign that is on the side of the car."
-                value={clip_description_text}
+                defaultValue={clip_description_text}
+                // value={clip_description_text}
               ></textarea>
             </div>
             <div className="d-flex justify-content-center align-items-start flex-column">
