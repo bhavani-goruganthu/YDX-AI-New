@@ -345,6 +345,7 @@ const YDXHome = (props) => {
             currentState={currentState}
             updateData={updateData}
             setUpdateData={setUpdateData}
+            videoLength={videoLength}
           />
         ))}
       </div>

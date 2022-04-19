@@ -9,11 +9,13 @@ const AudioDescriptionComponent = (props) => {
   // destructuring props
   const unitLength = props.unitLength;
   const currentTime = props.currentTime;
+  const videoLength = props.videoLength;
 
+  // props - state for updating and fetching data in YDXHome.js (child to parent component)
   const updateData = props.updateData;
   const setUpdateData = props.setUpdateData;
 
-  // all audio clip data
+  // all audio clip data from props
   const clip_id = props.clip.clip_id;
   const clip_sequence_num = props.clip.clip_sequence_num;
   const clip_title = props.clip.clip_title;
@@ -56,16 +58,24 @@ const AudioDescriptionComponent = (props) => {
 
   // Handle Nudge icons -> add/remove 1 second to start_time
   const handleLeftNudgeClick = (e) => {
-    setClipStartTime((parseFloat(clipStartTime) - 1).toFixed(2));
-    // Also update the draggable div position based on start time
-    setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
-    handleClipStartTimeUpdate((parseFloat(clipStartTime) - 1).toFixed(2));
+    let newClipStartTime = (parseFloat(clipStartTime) - 1).toFixed(2);
+    // so that the audio block isn't out of the timeline
+    if (newClipStartTime >= 0) {
+      setClipStartTime(newClipStartTime);
+      // Also update the draggable div position based on start time
+      setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
+      handleClipStartTimeUpdate(newClipStartTime);
+    }
   };
   const handleRightNudgeClick = (e) => {
-    setClipStartTime((parseFloat(clipStartTime) + 1).toFixed(2));
-    // Also update the draggable div position based on start time
-    setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
-    handleClipStartTimeUpdate((parseFloat(clipStartTime) + 1).toFixed(2));
+    let newClipStartTime = (parseFloat(clipStartTime) + 1).toFixed(2);
+    // so that the audio block isn't out of the timeline
+    if (newClipStartTime <= videoLength) {
+      setClipStartTime(newClipStartTime);
+      // Also update the draggable div position based on start time
+      setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
+      handleClipStartTimeUpdate(newClipStartTime);
+    }
   };
 
   // handle update of start time from handleLeftNudgeClick, handleRightNudgeClick, stopADBar
