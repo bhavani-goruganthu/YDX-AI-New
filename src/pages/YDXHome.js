@@ -45,6 +45,7 @@ const YDXHome = (props) => {
   const [isPublished, setIsPublished] = useState(false); // holds the published state of the Video & Audio Description
   const [audioClips, setAudioClips] = useState([]); // stores list of Audio Descriptions data for a video from backend db
 
+  const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
   const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const YDXHome = (props) => {
     videoId,
     youtubeVideoId,
     recentAudioPlayedTime,
+    updateData,
   ]);
 
   // for calculating the draggable-div width of the timeline
@@ -339,6 +341,8 @@ const YDXHome = (props) => {
             clip={clip}
             unitLength={unitLength}
             currentTime={currentTime}
+            updateData={updateData}
+            setUpdateData={setUpdateData}
           />
         ))}
       </div>

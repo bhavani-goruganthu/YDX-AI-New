@@ -3,14 +3,18 @@ import '../assets/css/audioDesc.css';
 import Draggable from 'react-draggable';
 import EditDescriptionComponent from './EditDescriptionComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
+import axios from 'axios';
 
 const AudioDescriptionComponent = (props) => {
   // destructuring props
   const unitLength = props.unitLength;
   const currentTime = props.currentTime;
 
+  const updateData = props.updateData;
+  const setUpdateData = props.setUpdateData;
+
   // all audio clip data
-  // const clip_id = props.clip.clip_id;
+  const clip_id = props.clip.clip_id;
   const clip_sequence_num = props.clip.clip_sequence_num;
   const clip_title = props.clip.clip_title;
   const clip_description_type = props.clip.description_type;
@@ -61,6 +65,34 @@ const AudioDescriptionComponent = (props) => {
     setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
   };
 
+  // handle put (update) requests
+
+  // update clip title
+  const handleClipTitleUpdate = (e) => {
+    setClipTitle(e.target.value);
+    axios
+      .put(`http://localhost:4000/api/audio-clips/update-ad-title/${clip_id}`, {
+        adTitle: e.target.value,
+      })
+      .then((res) => {
+        // console.log(res.data)
+      });
+  };
+  // update clip playback type - inline/extended
+  const handlePlaybackTypeUpdate = (e) => {
+    setClipPlayBackType(e.target.value);
+    axios
+      .put(
+        `http://localhost:4000/api/audio-clips/update-ad-playback-type/${clip_id}`,
+        {
+          clipPlaybackType: e.target.value,
+        }
+      )
+      .then((res) => {
+        setUpdateData(!updateData);
+      });
+  };
+
   return (
     <React.Fragment>
       {/* React Fragments allow you to wrap or group multiple elements without adding an extra node to the DOM. */}
@@ -74,10 +106,10 @@ const AudioDescriptionComponent = (props) => {
                 className="form-control form-control-sm ad-title-input text-center"
                 placeholder="Title goes here.."
                 value={clipTitle}
-                onChange={(e) => setClipTitle(e.target.value)}
+                onChange={handleClipTitleUpdate}
               />
               <h6 className="mt-1 text-white">
-                Type:{' '}
+                <b>Type: </b>
                 {clip_description_type.charAt(0).toUpperCase() +
                   clip_description_type.slice(1)}
               </h6>
@@ -147,7 +179,7 @@ const AudioDescriptionComponent = (props) => {
                   id="radio1"
                   value="inline"
                   checked={clipPlaybackType === 'inline' ? true : false}
-                  onChange={(e) => setClipPlayBackType(e.target.value)}
+                  onChange={handlePlaybackTypeUpdate}
                 />
                 <div className="inline-bg text-dark inline-extended-radio px-2">
                   <label className="inline-extended-label">Inline</label>
@@ -161,7 +193,7 @@ const AudioDescriptionComponent = (props) => {
                   id="radio2"
                   value="extended"
                   checked={clipPlaybackType === 'extended' ? true : false}
-                  onChange={(e) => setClipPlayBackType(e.target.value)}
+                  onChange={handlePlaybackTypeUpdate}
                 />
                 <div className="extended-bg text-white inline-extended-radio px-2">
                   <label className="inline-extended-label">Extended</label>
