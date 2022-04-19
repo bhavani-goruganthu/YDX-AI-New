@@ -50,23 +50,39 @@ const AudioDescriptionComponent = (props) => {
   const stopADBar = (event, position) => {
     setAdDraggablePosition({ x: position.x, y: 0 });
     let adBarTime = position.x / unitLength;
-    setClipStartTime(adBarTime);
+    setClipStartTime(parseFloat(adBarTime).toFixed(2));
+    handleClipStartTimeUpdate(parseFloat(adBarTime).toFixed(2));
   };
 
   // Handle Nudge icons -> add/remove 1 second to start_time
   const handleLeftNudgeClick = (e) => {
-    setClipStartTime(clipStartTime - 1);
+    setClipStartTime((parseFloat(clipStartTime) - 1).toFixed(2));
     // Also update the draggable div position based on start time
     setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
+    handleClipStartTimeUpdate((parseFloat(clipStartTime) - 1).toFixed(2));
   };
   const handleRightNudgeClick = (e) => {
-    setClipStartTime(clipStartTime + 1);
+    setClipStartTime((parseFloat(clipStartTime) + 1).toFixed(2));
     // Also update the draggable div position based on start time
     setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
+    handleClipStartTimeUpdate((parseFloat(clipStartTime) + 1).toFixed(2));
+  };
+
+  // handle update of start time from handleLeftNudgeClick, handleRightNudgeClick, stopADBar
+  const handleClipStartTimeUpdate = (updatedClipStartTime) => {
+    axios
+      .put(
+        `http://localhost:4000/api/audio-clips/update-ad-start-time/${clip_id}`,
+        {
+          clipStartTime: updatedClipStartTime,
+        }
+      )
+      .then((res) => {
+        setUpdateData(!updateData);
+      });
   };
 
   // handle put (update) requests
-
   // update clip title
   const handleClipTitleUpdate = (e) => {
     setClipTitle(e.target.value);
@@ -115,7 +131,8 @@ const AudioDescriptionComponent = (props) => {
               </h6>
             </div>
           </div>
-          <div className="col-1 component-column-width-2">
+          <div className="col-1 component-column-width-2 text-center">
+            <small className="text-white">Nudge</small>
             <div
               className="nudge-btns-div d-flex justify-content-around align-items-center"
               data-bs-toggle="tooltip"
