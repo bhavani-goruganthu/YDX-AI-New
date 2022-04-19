@@ -341,6 +341,8 @@ const YDXHome = (props) => {
             clip={clip}
             unitLength={unitLength}
             currentTime={currentTime}
+            currentEvent={currentEvent}
+            currentState={currentState}
             updateData={updateData}
             setUpdateData={setUpdateData}
           />

@@ -6,6 +6,8 @@ import '../assets/css/editAudioDesc.css';
 const EditDescriptionComponent = (props) => {
   // destructuring props
   const currentTime = props.currentTime;
+  const currentState = props.currentState;
+  const currentEvent = props.currentEvent;
 
   const clip_description_text = props.clip_description_text;
   const clip_playback_type = props.clip_playback_type;
@@ -23,6 +25,7 @@ const EditDescriptionComponent = (props) => {
   const [recordedAudio, setRecordedAudio] = useState('');
   const [adAudio, setAdAudio] = useState('');
   const [isAdAudioPlaying, setIsAdAudioPlaying] = useState(false);
+  const [isYoutubeVideoPlaying, setIsYoutubeVideoPlaying] = useState(false);
 
   useEffect(() => {
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
@@ -32,7 +35,7 @@ const EditDescriptionComponent = (props) => {
     setAdAudio(new Audio(clip_audio_path));
   }, [mediaBlobUrl]);
 
-  // function for toggling play pause functionality of the recorded audio
+  // function for toggling play pause functionality of the recorded audio - on button click
   const handlePlayPauseRecordedAudio = () => {
     if (isRecordedAudioPlaying) {
       recordedAudio.pause();
@@ -47,6 +50,7 @@ const EditDescriptionComponent = (props) => {
     }
   };
 
+  // function for toggling play pause functionality of audio description - on button click
   const handlePlayPauseAdAudio = () => {
     if (isAdAudioPlaying) {
       adAudio.pause();
@@ -58,6 +62,20 @@ const EditDescriptionComponent = (props) => {
       adAudio.addEventListener('ended', function () {
         setIsAdAudioPlaying(false);
       });
+    }
+  };
+
+  // function for toggling play pause functionality of the YouTube video - on button click
+  const handlePlayPauseYouTubeVideo = () => {
+    // if youTube video is not started or it has ended or it is paused
+    if (currentState === -1 || currentState === 0 || currentState === 2) {
+      currentEvent.playVideo();
+      setIsYoutubeVideoPlaying(true);
+    }
+    // if youTube video is playing
+    else if (currentState === 1) {
+      currentEvent.pauseVideo();
+      setIsYoutubeVideoPlaying(false);
     }
   };
 
@@ -246,17 +264,31 @@ const EditDescriptionComponent = (props) => {
             )}
           </div>
           <div className="d-flex justify-content-center align-items-center rounded mx-auto p-1">
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white primary-btn-color"
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="YouTube Video plays/pauses along with the Audio Description"
-            >
-              <i className="fa fa-play play-pause-icons" />
-              <i className="fa fa-pause play-pause-icons" />
-              {'  '} Play/Pause Video
-            </button>
+            {isYoutubeVideoPlaying ? (
+              <button
+                type="button"
+                className="btn rounded btn-sm text-white primary-btn-color"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="YouTube Video plays/pauses along with the Audio Description"
+                onClick={handlePlayPauseYouTubeVideo}
+              >
+                <i className="fa fa-pause play-pause-icons" />
+                {'  '} Pause Video with AD
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn rounded btn-sm text-white primary-btn-color"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="YouTube Video plays/pauses along with the Audio Descriptions"
+                onClick={handlePlayPauseYouTubeVideo}
+              >
+                <i className="fa fa-play play-pause-icons" />
+                {'  '} Play Video with AD
+              </button>
+            )}
           </div>
         </div>
       </div>
