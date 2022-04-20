@@ -26,14 +26,12 @@
 }
 
 .edit-time-div {
-    /* width: 25%; */
-    margin-bottom: 23px;
-}
-
-.edit-time-input {
-    width: 75%;
+    width: 100px;
+    background-color: white;
+    padding: 6px;
     border: solid white 1px;
-    border-radius: 10px;
+    border-radius: 10px;   
+    margin-bottom: 23px;
 }
 
 .edit-component-title-div {
@@ -48,4 +46,20 @@
     background-color: wheat;
     width: 2px;
     height: 110px;
+}
+
+ /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  outline: none;
+  border-radius: 5px;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+  outline: none;
+  border-radius: 5px;
 }

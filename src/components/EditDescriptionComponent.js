@@ -18,6 +18,13 @@ const EditDescriptionComponent = (props) => {
   const recorded_audio_path = props.recorded_audio_path;
   const clip_audio_path = props.clip_audio_path;
 
+  // calculate videoLength for max Start Time
+  const videoLengthTime = convertSecondsToCardFormat(videoLength).split(':');
+  // use 3 state variables to hold the value of 3 input type number fields
+  const [clipStartTimeHours, setClipStartTimeHours] = useState(0.0);
+  const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(0.0);
+  const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(0.0);
+
   // variable and function declaration of the react-media-recorder package
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true }); // using only the audio recorder here
@@ -33,12 +40,6 @@ const EditDescriptionComponent = (props) => {
   const [clipDescriptionText, setClipDescriptionText] = useState(
     clip_description_text
   );
-  const [clipStartTime, setClipStartTime] = useState(0.0);
-
-  const [clipStartTimeHours, setClipStartTimeHours] = useState(0.0);
-  const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(0.0);
-  const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(0.0);
-  const videoLengthTime = convertSecondsToCardFormat(videoLength).split(':');
 
   useEffect(() => {
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
@@ -46,17 +47,11 @@ const EditDescriptionComponent = (props) => {
       setRecordedAudio(new Audio(mediaBlobUrl));
     }
     setAdAudio(new Audio(clip_audio_path));
-
     // render the start time input fields based on the updated prop value - props_clip_start_time
     handleClipStartTimeInputsRender();
-  }, [
-    mediaBlobUrl,
-    props_clip_start_time,
-    // clipStartTimeHours,
-    // clipStartTimeMinutes,
-    // clipStartTimeSeconds,
-  ]);
+  }, [mediaBlobUrl, props_clip_start_time]);
 
+  // render the values in the input[type='number'] fields of the start time - renders everytime the props_clip_start_time value changes
   const handleClipStartTimeInputsRender = () => {
     setClipStartTimeHours(
       convertSecondsToCardFormat(props_clip_start_time).split(':')[0]
@@ -69,12 +64,12 @@ const EditDescriptionComponent = (props) => {
     );
   };
 
-  // update the start time from the method received from props
-  // let seconds =
-  //   +clipStartTimeHours * 60 * 60 +
-  //   +clipStartTimeMinutes * 60 +
-  //   +clipStartTimeSeconds;
-  // handleClipStartTimeUpdate(seconds);
+  // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
+  const calculateClipStartTimeinSeconds = (hours, minutes, seconds) => {
+    let calculatedSeconds = +hours * 60 * 60 + +minutes * 60 + +seconds;
+    // handleClipStartTimeUpdate is the prop function received from parent component - this runs an axios PUT call and updates the clipStartTime
+    handleClipStartTimeUpdate(calculatedSeconds);
+  };
 
   // function for toggling play pause functionality of the recorded audio - on button click
   const handlePlayPauseRecordedAudio = () => {
@@ -152,37 +147,77 @@ const EditDescriptionComponent = (props) => {
     }
   };
   const handleBlurClipStartTimeHours = (e) => {
+    // store the current clipStartTimeHours in a temp variable,
+    // so that when calculateClipStartTimeinSeconds without going into the loops,
+    // it has the previous value in it
+    let tempStartTimeHours = clipStartTimeHours;
     if (e.target.value.length === 1) {
       setClipStartTimeHours(e.target.value + '0');
+      tempStartTimeHours = e.target.value + '0';
       if (parseInt(e.target.value + '0') >= 60) {
         setClipStartTimeHours('59');
+        tempStartTimeHours = '59';
       }
       if (parseInt(e.target.value + '0') > parseInt(videoLengthTime[0])) {
         setClipStartTimeHours(videoLengthTime[0]);
+        tempStartTimeHours = videoLengthTime[0];
       }
     } else if (e.target.value.length === 0) {
       setClipStartTimeHours('00');
+      tempStartTimeHours = '00';
     }
+    // call the function which will update the clipStartTime in the parent component and the db is updated too.
+    calculateClipStartTimeinSeconds(
+      tempStartTimeHours,
+      clipStartTimeMinutes,
+      clipStartTimeSeconds
+    );
   };
   const handleBlurClipStartTimeMinutes = (e) => {
+    // store the current clipStartTimeMinutes in a temp variable,
+    // so that when calculateClipStartTimeinSeconds without going into the loops,
+    // it has the previous value in it
+    let tempStartTimeMinutes = clipStartTimeMinutes;
     if (e.target.value.length === 1) {
       setClipStartTimeMinutes(e.target.value + '0');
+      tempStartTimeMinutes = e.target.value + '0';
       if (parseInt(e.target.value + '0') >= 60) {
         setClipStartTimeMinutes('59');
+        tempStartTimeMinutes = '59';
       }
     } else if (e.target.value.length === 0) {
       setClipStartTimeMinutes('00');
+      tempStartTimeMinutes = '00';
     }
+    // call the function which will update the clipStartTime in the parent component and the db is updated too.
+    calculateClipStartTimeinSeconds(
+      clipStartTimeHours,
+      tempStartTimeMinutes,
+      clipStartTimeSeconds
+    );
   };
   const handleBlurClipStartTimeSeconds = (e) => {
+    // store the current clipStartTimeSeconds in a temp variable,
+    // so that when calculateClipStartTimeinSeconds without going into the loops,
+    // it has the previous value in it
+    let tempStartTimeSeconds = clipStartTimeSeconds;
     if (e.target.value.length === 1) {
       setClipStartTimeSeconds(e.target.value + '0');
+      tempStartTimeSeconds = e.target.value + '0';
       if (parseInt(e.target.value + '0') >= 60) {
         setClipStartTimeSeconds('59');
+        tempStartTimeSeconds = '59';
       }
     } else if (e.target.value.length === 0) {
       setClipStartTimeSeconds('00');
+      tempStartTimeSeconds = '00';
     }
+    // call the function which will update the clipStartTime in the parent component and the db is updated too.
+    calculateClipStartTimeinSeconds(
+      clipStartTimeHours,
+      clipStartTimeMinutes,
+      tempStartTimeSeconds
+    );
   };
 
   return (

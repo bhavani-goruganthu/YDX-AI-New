@@ -32,7 +32,7 @@ const AudioDescriptionComponent = (props) => {
   // React State Variables
   const [clipPlaybackType, setClipPlayBackType] = useState(clip_playback_type);
   const [clipTitle, setClipTitle] = useState(clip_title);
-  const [clipStartTime, setClipStartTime] = useState(clip_start_time);
+  const [clipStartTime, setClipStartTime] = useState(0);
 
   // toggle variable to show or hide the edit component.
   const [showEditComponent, setShowEditComponent] = useState(false);
@@ -43,10 +43,16 @@ const AudioDescriptionComponent = (props) => {
   });
 
   useEffect(() => {
+    //  update the clip start time based on the value from the props
+    setClipStartTime(clip_start_time);
     // set draggable position & width
-    setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
+    setAdDraggablePosition({ x: clip_start_time * unitLength, y: 0 });
     setAdDraggableWidth(clip_duration * unitLength);
-  }, [unitLength, clipStartTime]);
+  }, [
+    unitLength, // re-render when unit-length from the props changes
+    clipStartTime, // re-render when the state variable clipStartTime
+    clip_start_time, // re-render when the clipStartTime from props changes
+  ]);
 
   // Dialog Timeline Draggable Functions
   const stopADBar = (event, position) => {
@@ -88,6 +94,7 @@ const AudioDescriptionComponent = (props) => {
         }
       )
       .then((res) => {
+        // below prop is used to re-render the parent component i.e. fetch audio clip data
         setUpdateData(!updateData);
       });
   };
@@ -247,6 +254,7 @@ const AudioDescriptionComponent = (props) => {
       {/* Based on the state of the showEditComponent variable, the edit component will be displayed*/}
       {showEditComponent ? (
         <EditDescriptionComponent
+          handleClipStartTimeUpdate={handleClipStartTimeUpdate}
           clip_description_type={clip_description_type}
           clip_description_text={clip_description_text}
           clip_playback_type={clip_playback_type}
@@ -259,6 +267,7 @@ const AudioDescriptionComponent = (props) => {
           setUpdateData={setUpdateData}
           currentEvent={props.currentEvent}
           currentState={props.currentState}
+          videoLength={videoLength}
         />
       ) : (
         <> </>

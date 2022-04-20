@@ -55,8 +55,8 @@ const YDXHome = (props) => {
     unitLength,
     videoId,
     youtubeVideoId,
-    recentAudioPlayedTime,
-    updateData,
+    recentAudioPlayedTime, // changing this state variable, will fetch user data again
+    updateData, // to fetch data whenever updateData state is changed.
   ]);
 
   // for calculating the draggable-div width of the timeline
