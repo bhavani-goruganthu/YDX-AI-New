@@ -8,10 +8,12 @@ const EditDescriptionComponent = (props) => {
   const currentTime = props.currentTime;
   const currentState = props.currentState;
   const currentEvent = props.currentEvent;
+  const videoLength = props.videoLength;
+  const handleClipStartTimeUpdate = props.handleClipStartTimeUpdate;
 
   const clip_description_text = props.clip_description_text;
   const clip_playback_type = props.clip_playback_type;
-  const clip_start_time = props.clip_start_time;
+  const props_clip_start_time = props.clip_start_time;
   const is_recorded = props.is_recorded;
   const recorded_audio_path = props.recorded_audio_path;
   const clip_audio_path = props.clip_audio_path;
@@ -27,13 +29,52 @@ const EditDescriptionComponent = (props) => {
   const [isAdAudioPlaying, setIsAdAudioPlaying] = useState(false);
   const [isYoutubeVideoPlaying, setIsYoutubeVideoPlaying] = useState(false);
 
+  // initialize state variables from props
+  const [clipDescriptionText, setClipDescriptionText] = useState(
+    clip_description_text
+  );
+  const [clipStartTime, setClipStartTime] = useState(0.0);
+
+  const [clipStartTimeHours, setClipStartTimeHours] = useState(0.0);
+  const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(0.0);
+  const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(0.0);
+  const videoLengthTime = convertSecondsToCardFormat(videoLength).split(':');
+
   useEffect(() => {
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
     if (mediaBlobUrl !== null) {
       setRecordedAudio(new Audio(mediaBlobUrl));
     }
     setAdAudio(new Audio(clip_audio_path));
-  }, [mediaBlobUrl]);
+
+    // render the start time input fields based on the updated prop value - props_clip_start_time
+    handleClipStartTimeInputsRender();
+  }, [
+    mediaBlobUrl,
+    props_clip_start_time,
+    // clipStartTimeHours,
+    // clipStartTimeMinutes,
+    // clipStartTimeSeconds,
+  ]);
+
+  const handleClipStartTimeInputsRender = () => {
+    setClipStartTimeHours(
+      convertSecondsToCardFormat(props_clip_start_time).split(':')[0]
+    );
+    setClipStartTimeMinutes(
+      convertSecondsToCardFormat(props_clip_start_time).split(':')[1]
+    );
+    setClipStartTimeSeconds(
+      convertSecondsToCardFormat(props_clip_start_time).split(':')[2]
+    );
+  };
+
+  // update the start time from the method received from props
+  // let seconds =
+  //   +clipStartTimeHours * 60 * 60 +
+  //   +clipStartTimeMinutes * 60 +
+  //   +clipStartTimeSeconds;
+  // handleClipStartTimeUpdate(seconds);
 
   // function for toggling play pause functionality of the recorded audio - on button click
   const handlePlayPauseRecordedAudio = () => {
@@ -79,11 +120,76 @@ const EditDescriptionComponent = (props) => {
     }
   };
 
+  const handleClipDescriptionUpdate = (e) => {
+    setClipDescriptionText(e.target.value);
+  };
+
+  // lots of if else conditions to ensure correct input in the start time number fields.
+  const handleOnChangeClipStartTimeHours = (e) => {
+    setClipStartTimeHours(e.target.value);
+    if (e.target.value.length > 2) {
+      setClipStartTimeHours(e.target.value.substring(0, 2));
+    }
+  };
+  const handleOnChangeClipStartTimeMinutes = (e) => {
+    setClipStartTimeMinutes(e.target.value);
+    if (e.target.value.length > 2) {
+      setClipStartTimeMinutes(e.target.value.substring(0, 2));
+    } else if (e.target.value.length === 2) {
+      if (parseInt(e.target.value) >= 60) {
+        setClipStartTimeMinutes('59');
+      }
+    }
+  };
+  const handleOnChangeClipStartTimeSeconds = (e) => {
+    setClipStartTimeSeconds(e.target.value);
+    if (e.target.value.length > 2) {
+      setClipStartTimeSeconds(e.target.value.substring(0, 2));
+    } else if (e.target.value.length === 2) {
+      if (parseInt(e.target.value) >= 60) {
+        setClipStartTimeSeconds('59');
+      }
+    }
+  };
+  const handleBlurClipStartTimeHours = (e) => {
+    if (e.target.value.length === 1) {
+      setClipStartTimeHours(e.target.value + '0');
+      if (parseInt(e.target.value + '0') >= 60) {
+        setClipStartTimeHours('59');
+      }
+      if (parseInt(e.target.value + '0') > parseInt(videoLengthTime[0])) {
+        setClipStartTimeHours(videoLengthTime[0]);
+      }
+    } else if (e.target.value.length === 0) {
+      setClipStartTimeHours('00');
+    }
+  };
+  const handleBlurClipStartTimeMinutes = (e) => {
+    if (e.target.value.length === 1) {
+      setClipStartTimeMinutes(e.target.value + '0');
+      if (parseInt(e.target.value + '0') >= 60) {
+        setClipStartTimeMinutes('59');
+      }
+    } else if (e.target.value.length === 0) {
+      setClipStartTimeMinutes('00');
+    }
+  };
+  const handleBlurClipStartTimeSeconds = (e) => {
+    if (e.target.value.length === 1) {
+      setClipStartTimeSeconds(e.target.value + '0');
+      if (parseInt(e.target.value + '0') >= 60) {
+        setClipStartTimeSeconds('59');
+      }
+    } else if (e.target.value.length === 0) {
+      setClipStartTimeSeconds('00');
+    }
+  };
+
   return (
     <div className="edit-component text-white">
       <div className="d-flex justify-content-evenly align-items-center">
         <div className="description-section mt-1">
-          <div className="d-flex justify-content-evenly align-items-center">
+          <div className="d-flex justify-content-evenly align-items-start">
             <div className="d-flex justify-content-center align-items-start flex-column">
               <h6 className="text-white">Description:</h6>
               <textarea
@@ -91,24 +197,59 @@ const EditDescriptionComponent = (props) => {
                 rows="2"
                 id="description"
                 name="description"
-                defaultValue={clip_description_text}
-                // value={clip_description_text}
+                // defaultValue={clip_description_text}
+                value={clipDescriptionText}
+                onChange={handleClipDescriptionUpdate}
               ></textarea>
             </div>
             <div className="d-flex justify-content-center align-items-start flex-column">
               <h6 className="text-white">Start Time</h6>
               <div className="edit-time-div">
-                <input
-                  className="text-white bg-dark edit-time-input text-center"
-                  type="text"
-                  // defaultValue="00:01:20"
-                  value={convertSecondsToCardFormat(clip_start_time)}
-                  readOnly
-                />
+                <div className="text-dark text-center d-flex justify-content-evenly">
+                  <input
+                    type="number"
+                    style={{ width: '25px' }}
+                    className="text-white bg-dark"
+                    min="0"
+                    value={clipStartTimeHours}
+                    onChange={handleOnChangeClipStartTimeHours}
+                    onBlur={handleBlurClipStartTimeHours}
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) &&
+                      evt.preventDefault()
+                    }
+                  />
+                  <div className="mx-1">:</div>
+                  <input
+                    type="number"
+                    style={{ width: '25px' }}
+                    className="text-white bg-dark"
+                    value={clipStartTimeMinutes}
+                    onChange={handleOnChangeClipStartTimeMinutes}
+                    onBlur={handleBlurClipStartTimeMinutes}
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) &&
+                      evt.preventDefault()
+                    }
+                  />
+                  <div className="mx-1">:</div>
+                  <input
+                    type="number"
+                    style={{ width: '25px' }}
+                    className="text-white bg-dark"
+                    value={clipStartTimeSeconds}
+                    onChange={handleOnChangeClipStartTimeSeconds}
+                    onBlur={handleBlurClipStartTimeSeconds}
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) &&
+                      evt.preventDefault()
+                    }
+                  />
+                </div>
               </div>
             </div>
           </div>
-          <div className="my-2 d-flex justify-content-around align-items-center w-75">
+          <div className="mb-3 d-flex justify-content-around align-items-center w-75">
             <button
               type="button"
               className="btn rounded btn-sm text-white bg-danger"
