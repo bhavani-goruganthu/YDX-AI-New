@@ -7,6 +7,7 @@ import '../assets/css/home.css';
 import AudioDescriptionComponent from '../components/AudioDescriptionComponent';
 import Notes from '../components/NotesComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
+import InsertPublishComponent from '../components/InsertPublishComponent';
 
 const YDXHome = (props) => {
   /* to use params on the url and get userId & youtubeVideoId */
@@ -269,6 +270,7 @@ const YDXHome = (props) => {
 
   return (
     <div className="container home-container">
+      {/* Youtube Iframe & Notes Component Container */}
       <div className="d-flex justify-content-around">
         <div className="text-white">
           <YouTube
@@ -286,6 +288,7 @@ const YDXHome = (props) => {
         />
       </div>
       <hr />
+      {/* Dialog Timeline */}
       <div className="row div-below-hr">
         <div className="col-3 text-white timeline-column-width-1">
           <h6 className="dialog-timeline-text text-center font-weight-bolder">
@@ -333,7 +336,7 @@ const YDXHome = (props) => {
         </div>
         <div className="col-1 timeline-column-width-3"></div>
       </div>
-
+      {/* Map Audio Clips Component */}
       <div className="audio-desc-component-list">
         {audioClips.map((clip, key) => (
           <AudioDescriptionComponent
@@ -349,64 +352,7 @@ const YDXHome = (props) => {
           />
         ))}
       </div>
-      <div className="d-flex justify-content-between my-2">
-        <div className="insert-new-buttons">
-          <button type="button" className="btn inline-bg text-dark">
-            <i className="fa fa-plus" /> {'   '}
-            Insert New Inline
-          </button>
-          <button type="button" className="btn mx-5 extended-bg text-white">
-            <i className="fa fa-plus" /> {'   '}
-            Insert New Extended
-          </button>
-        </div>
-        <div className="publish-buttons mx-4">
-          <button
-            type="button"
-            className="btn publish-bg text-white"
-            data-bs-toggle="modal"
-            data-bs-target="#publishModal"
-          >
-            <i className="fa fa-upload" /> {'   '}
-            Publish
-          </button>
-        </div>
-      </div>
-      {/* <!-- Publish Modal --> Confirmation Modal - opens when user hits Publish button and asks for a confirmation*/}
-      <div className="modal fade text-dark" id="publishModal">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content mx-auto w-75">
-            {/* <!-- Modal Header --> */}
-            <div className="modal-header">
-              <h4 className="modal-title">Publish</h4>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
-            </div>
-            {/* <!-- Modal body --> */}
-            <div className="modal-body text-center">Are you sure?</div>
-            {/* <!-- Modal footer --> */}
-            <div className="modal-footer d-flex justify-content-center align-items-center">
-              <button
-                type="button"
-                className="btn primary-btn-color text-center m-1 text-white"
-                data-dismiss="modal"
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn primary-btn-color text-white"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <InsertPublishComponent />
     </div>
   );
 };
