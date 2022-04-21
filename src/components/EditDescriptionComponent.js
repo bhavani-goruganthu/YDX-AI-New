@@ -18,8 +18,6 @@ const EditDescriptionComponent = (props) => {
   const recorded_audio_path = props.recorded_audio_path;
   const clip_audio_path = props.clip_audio_path;
 
-  // calculate videoLength for max Start Time
-  const videoLengthTime = convertSecondsToCardFormat(videoLength).split(':');
   // use 3 state variables to hold the value of 3 input type number fields
   const [clipStartTimeHours, setClipStartTimeHours] = useState(0.0);
   const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(0.0);
@@ -35,6 +33,14 @@ const EditDescriptionComponent = (props) => {
   const [adAudio, setAdAudio] = useState('');
   const [isAdAudioPlaying, setIsAdAudioPlaying] = useState(false);
   const [isYoutubeVideoPlaying, setIsYoutubeVideoPlaying] = useState(false);
+  const [showStartTimeError, setShowStartTimeError] = useState(false);
+
+  // timeout for the alert
+  if (showStartTimeError) {
+    setTimeout(() => {
+      setShowStartTimeError(false);
+    }, 4000);
+  }
 
   // initialize state variables from props
   const [clipDescriptionText, setClipDescriptionText] = useState(
@@ -67,8 +73,14 @@ const EditDescriptionComponent = (props) => {
   // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
   const calculateClipStartTimeinSeconds = (hours, minutes, seconds) => {
     let calculatedSeconds = +hours * 60 * 60 + +minutes * 60 + +seconds;
-    // handleClipStartTimeUpdate is the prop function received from parent component - this runs an axios PUT call and updates the clipStartTime
-    handleClipStartTimeUpdate(calculatedSeconds);
+    // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
+    if (calculatedSeconds > videoLength) {
+      setShowStartTimeError(true);
+      handleClipStartTimeInputsRender();
+    } else {
+      // handleClipStartTimeUpdate is the prop function received from parent component - this runs an axios PUT call and updates the clipStartTime
+      handleClipStartTimeUpdate(calculatedSeconds);
+    }
   };
 
   // function for toggling play pause functionality of the recorded audio - on button click
@@ -158,10 +170,6 @@ const EditDescriptionComponent = (props) => {
         setClipStartTimeHours('59');
         tempStartTimeHours = '59';
       }
-      if (parseInt(e.target.value + '0') > parseInt(videoLengthTime[0])) {
-        setClipStartTimeHours(videoLengthTime[0]);
-        tempStartTimeHours = videoLengthTime[0];
-      }
     } else if (e.target.value.length === 0) {
       setClipStartTimeHours('00');
       tempStartTimeHours = '00';
@@ -224,7 +232,7 @@ const EditDescriptionComponent = (props) => {
     <div className="edit-component text-white">
       <div className="d-flex justify-content-evenly align-items-center">
         <div className="description-section mt-1">
-          <div className="d-flex justify-content-evenly align-items-start">
+          <div className="d-flex justify-content-between align-items-start">
             <div className="d-flex justify-content-center align-items-start flex-column">
               <h6 className="text-white">Description:</h6>
               <textarea
@@ -236,8 +244,45 @@ const EditDescriptionComponent = (props) => {
                 value={clipDescriptionText}
                 onChange={handleClipDescriptionUpdate}
               ></textarea>
+              <div className="my-2 d-flex justify-content-evenly align-items-center w-100">
+                <button
+                  type="button"
+                  className="btn rounded btn-sm text-white bg-danger"
+                >
+                  <i className="fa fa-trash" /> {'  '} Delete
+                </button>
+                <button
+                  type="button"
+                  className="btn rounded btn-sm text-white save-desc-btn"
+                >
+                  <i className="fa fa-save" /> {'  '} Save
+                </button>
+                {isAdAudioPlaying ? (
+                  <button
+                    type="button"
+                    className="btn rounded btn-sm primary-btn-color text-white"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Pause Audio"
+                    onClick={handlePlayPauseAdAudio}
+                  >
+                    <i className="fa fa-pause" /> {'  '} Pause
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn rounded btn-sm primary-btn-color text-white"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Play this Description"
+                    onClick={handlePlayPauseAdAudio}
+                  >
+                    <i className="fa fa-play" /> {'  '} Play
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="d-flex justify-content-center align-items-start flex-column">
+            <div className="mx-2 d-flex justify-content-between align-items-center flex-column">
               <h6 className="text-white">Start Time</h6>
               <div className="edit-time-div">
                 <div className="text-dark text-center d-flex justify-content-evenly">
@@ -282,44 +327,17 @@ const EditDescriptionComponent = (props) => {
                   />
                 </div>
               </div>
+              {showStartTimeError ? (
+                <div className="time-error-div bg-white rounded p-1 mb-1 text-center">
+                  <h6 className="text-danger small mb-0">
+                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>{' '}
+                    Start Time cannot be later than the video end time
+                  </h6>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
-          </div>
-          <div className="mb-3 d-flex justify-content-around align-items-center w-75">
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white bg-danger"
-            >
-              <i className="fa fa-trash" /> {'  '} Delete
-            </button>
-            <button
-              type="button"
-              className="btn rounded btn-sm text-white save-desc-btn"
-            >
-              <i className="fa fa-save" /> {'  '} Save
-            </button>
-            {isAdAudioPlaying ? (
-              <button
-                type="button"
-                className="btn rounded btn-sm primary-btn-color text-white"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Pause Audio"
-                onClick={handlePlayPauseAdAudio}
-              >
-                <i className="fa fa-pause" /> {'  '} Pause
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn rounded btn-sm primary-btn-color text-white"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Play this Description"
-                onClick={handlePlayPauseAdAudio}
-              >
-                <i className="fa fa-play" /> {'  '} Play
-              </button>
-            )}
           </div>
         </div>
         <div className="vertical-divider-div"></div>
