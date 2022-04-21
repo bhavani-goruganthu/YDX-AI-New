@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import '../assets/css/editAudioDesc.css';
+import axios from 'axios';
 
 const EditDescriptionComponent = (props) => {
   // destructuring props
@@ -11,6 +12,11 @@ const EditDescriptionComponent = (props) => {
   const videoLength = props.videoLength;
   const handleClipStartTimeUpdate = props.handleClipStartTimeUpdate;
 
+  // props - state for updating and fetching data in YDXHome.js (child to parent component)
+  const updateData = props.updateData;
+  const setUpdateData = props.setUpdateData;
+
+  const clip_id = props.clip_id;
   const clip_description_text = props.clip_description_text;
   const clip_playback_type = props.clip_playback_type;
   const props_clip_start_time = props.clip_start_time;
@@ -127,10 +133,6 @@ const EditDescriptionComponent = (props) => {
     }
   };
 
-  const handleClipDescriptionUpdate = (e) => {
-    setClipDescriptionText(e.target.value);
-  };
-
   // lots of if else conditions to ensure correct input in the start time number fields.
   const handleOnChangeClipStartTimeHours = (e) => {
     setClipStartTimeHours(e.target.value);
@@ -228,6 +230,29 @@ const EditDescriptionComponent = (props) => {
     );
   };
 
+  const handleClipDescriptionUpdate = (e) => {
+    setClipDescriptionText(e.target.value);
+  };
+
+  const handleClickSaveDescription = (e) => {
+    e.preventDefault();
+    // check if the description has been updated
+    if (clipDescriptionText !== clip_description_text) {
+      axios
+        .put(
+          `http://localhost:4000/api/audio-clips/update-ad-description/${clip_id}`,
+          {
+            clipDescriptionText: clipDescriptionText,
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          // below prop is used to re-render the parent component i.e. fetch audio clip data
+          setUpdateData(!updateData);
+        });
+    }
+  };
+
   return (
     <div className="edit-component text-white">
       <div className="d-flex justify-content-evenly align-items-center">
@@ -254,6 +279,7 @@ const EditDescriptionComponent = (props) => {
                 <button
                   type="button"
                   className="btn rounded btn-sm text-white save-desc-btn"
+                  onClick={handleClickSaveDescription}
                 >
                   <i className="fa fa-save" /> {'  '} Save
                 </button>

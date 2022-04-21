@@ -255,6 +255,7 @@ const AudioDescriptionComponent = (props) => {
       {showEditComponent ? (
         <EditDescriptionComponent
           handleClipStartTimeUpdate={handleClipStartTimeUpdate}
+          clip_id={clip_id}
           clip_description_type={clip_description_type}
           clip_description_text={clip_description_text}
           clip_playback_type={clip_playback_type}
