@@ -140,14 +140,14 @@ const YDXHome = (props) => {
         axios
           .get(`http://localhost:4000/api/audio-clips/get-user-ad/${ad_id}`)
           .then((res) => {
-            // setAudioClips(res.data);
-
             // update the audio path for every clip row - the path might change later- TODO: change the server IP
-            res.data.forEach((clip) => {
+            res.data.forEach((clip, i) => {
               clip.clip_audio_path = clip.clip_audio_path.replace(
                 '..',
                 'http://18.221.192.73:5001'
               );
+              // add a sequence number for every audio clip
+              clip.clip_sequence_num = i + 1;
             });
             setAudioClips(res.data);
           });
