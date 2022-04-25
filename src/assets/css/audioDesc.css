@@ -91,3 +91,11 @@
   position: absolute;
   background-color: #64b5f6;
 }
+
+/* new AD component */
+.close-icon {
+  cursor: pointer;
+}
+.close-icon:hover {
+  color: red;
+}
