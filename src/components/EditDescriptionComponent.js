@@ -6,6 +6,10 @@ import axios from 'axios';
 
 const EditDescriptionComponent = (props) => {
   // destructuring props
+  //props of URL Params
+  const userId = props.userId;
+  const youtubeVideoId = props.youtubeVideoId;
+  // props of the video
   const currentTime = props.currentTime;
   const currentState = props.currentState;
   const currentEvent = props.currentEvent;
@@ -18,6 +22,7 @@ const EditDescriptionComponent = (props) => {
 
   const clip_id = props.clip_id;
   const clip_description_text = props.clip_description_text;
+  const clip_description_type = props.clip_description_type;
   const clip_playback_type = props.clip_playback_type;
   const props_clip_start_time = props.clip_start_time;
   const is_recorded = props.is_recorded;
@@ -242,13 +247,21 @@ const EditDescriptionComponent = (props) => {
         .put(
           `http://localhost:4000/api/audio-clips/update-ad-description/${clip_id}`,
           {
+            userId: userId,
+            youtubeVideoId: youtubeVideoId,
             clipDescriptionText: clipDescriptionText,
+            clipDescriptionType: clip_description_type,
           }
         )
         .then((res) => {
-          console.log(res.data);
-          // below prop is used to re-render the parent component i.e. fetch audio clip data
-          setUpdateData(!updateData);
+          // handle error response from server
+          if (res.data.message.includes('Please try again')) {
+            alert(res.data);
+          } else if (res.data.message.includes('Success')) {
+            // below prop is used to re-render the parent component i.e. fetch audio clip data
+            setUpdateData(!updateData);
+            alert('Description saved Successfully!!');
+          }
         });
     }
   };

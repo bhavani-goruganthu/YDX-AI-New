@@ -7,6 +7,11 @@ import axios from 'axios';
 
 const AudioDescriptionComponent = (props) => {
   // destructuring props
+  //props of URL Params
+  const userId = props.userId;
+  const youtubeVideoId = props.youtubeVideoId;
+
+  // props of Video
   const unitLength = props.unitLength;
   const currentTime = props.currentTime;
   const videoLength = props.videoLength;
@@ -255,6 +260,8 @@ const AudioDescriptionComponent = (props) => {
       {showEditComponent ? (
         <EditDescriptionComponent
           handleClipStartTimeUpdate={handleClipStartTimeUpdate}
+          userId={userId}
+          youtubeVideoId={youtubeVideoId}
           clip_id={clip_id}
           clip_description_type={clip_description_type}
           clip_description_text={clip_description_text}
