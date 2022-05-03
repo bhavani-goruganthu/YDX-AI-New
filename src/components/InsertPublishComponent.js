@@ -26,16 +26,21 @@ const InsertPublishComponent = (props) => {
     <React.Fragment>
       <hr />
       {showAdComponent ? (
-        <NewADComponent
-          showInlineAdComponent={showInlineAdComponent}
-          //   showExtendedAdComponent={showExtendedAdComponent}
-          setShowAdComponent={setShowAdComponent}
-        />
+        <>
+          <h5 className="text-white">
+            Insert New {showInlineAdComponent ? 'Inline' : 'Extended'} AD
+          </h5>
+          <NewADComponent
+            showInlineAdComponent={showInlineAdComponent}
+            //   showExtendedAdComponent={showExtendedAdComponent}
+            setShowAdComponent={setShowAdComponent}
+          />
+        </>
       ) : (
         <></>
       )}
 
-      <div className="d-flex justify-content-between my-2">
+      <div className="d-flex justify-content-between my-3">
         <div>
           <button
             type="button"
