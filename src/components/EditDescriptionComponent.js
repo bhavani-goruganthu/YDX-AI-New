@@ -272,7 +272,7 @@ const EditDescriptionComponent = (props) => {
         <div className="description-section mt-1">
           <div className="d-flex justify-content-between align-items-start">
             <div className="d-flex justify-content-center align-items-start flex-column">
-              <h6 className="text-white">Description:</h6>
+              <h6 className="text-white">Clip Description:</h6>
               <textarea
                 className="form-control form-control-sm border rounded text-center description-textarea"
                 rows="2"

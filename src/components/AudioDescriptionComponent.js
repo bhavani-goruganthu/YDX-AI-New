@@ -138,7 +138,7 @@ const AudioDescriptionComponent = (props) => {
         <div className="row align-items-center">
           <div className="col-2 component-column-width-1">
             <div className="mx-1 text-center">
-              <p className="ad-title">Audio Description {clip_sequence_num}:</p>
+              <p className="ad-title">Audio Clip {clip_sequence_num}:</p>
               <input
                 type="text"
                 className="form-control form-control-sm ad-title-input text-center"

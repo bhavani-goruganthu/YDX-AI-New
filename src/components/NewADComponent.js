@@ -63,7 +63,7 @@ const NewADComponent = (props) => {
         </div>
         {/* Recording Div */}
         <div>
-          <h6 className="text-white text-center">Record New Description</h6>
+          <h6 className="text-white text-center">Record New Audio Clip</h6>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
             <div className="mx-1">
               <button
