@@ -25,6 +25,7 @@ const EditDescriptionComponent = (props) => {
   const clip_description_type = props.clip_description_type;
   const clip_playback_type = props.clip_playback_type;
   const props_clip_start_time = props.clip_start_time;
+  const clip_duration = props.clip_duration;
   const is_recorded = props.is_recorded;
   const recorded_audio_path = props.recorded_audio_path;
   const clip_audio_path = props.clip_audio_path;
@@ -269,8 +270,10 @@ const EditDescriptionComponent = (props) => {
   return (
     <div className="edit-component text-white">
       <div className="d-flex justify-content-evenly align-items-center">
+        {/* Clip Description & Start time Div */}
         <div className="description-section mt-1">
           <div className="d-flex justify-content-between align-items-start">
+            {/* Description label, text area & buttons*/}
             <div className="d-flex justify-content-center align-items-start flex-column">
               <h6 className="text-white">Clip Description:</h6>
               <textarea
@@ -282,6 +285,7 @@ const EditDescriptionComponent = (props) => {
                 value={clipDescriptionText}
                 onChange={handleClipDescriptionUpdate}
               ></textarea>
+              {/* play, save & Delete buttons */}
               <div className="my-2 d-flex justify-content-evenly align-items-center w-100">
                 <button
                   type="button"
@@ -321,6 +325,7 @@ const EditDescriptionComponent = (props) => {
                 )}
               </div>
             </div>
+            {/* Start Time div */}
             <div className="mx-2 d-flex justify-content-between align-items-center flex-column">
               <h6 className="text-white">Start Time</h6>
               <div className="edit-time-div">
@@ -367,22 +372,29 @@ const EditDescriptionComponent = (props) => {
                 </div>
               </div>
               {showStartTimeError ? (
-                <div className="time-error-div bg-white rounded p-1 mb-1 text-center">
+                <div className="bg-white rounded p-1 mb-1 text-center">
                   <h6 className="text-danger small mb-0">
                     <i class="fa fa-exclamation-circle" aria-hidden="true"></i>{' '}
                     Start Time cannot be later than the video end time
                   </h6>
                 </div>
               ) : (
-                <></>
+                <div>
+                  <h6 className="text-white text-center">
+                    {/* Duration: {convertSecondsToCardFormat(clip_duration)} */}
+                    Duration: {clip_duration} sec
+                  </h6>
+                </div>
               )}
             </div>
           </div>
         </div>
+        {/* vertical divider line */}
         <div className="d-flex flex-column align-items-center">
           <h6>Or</h6>
           <div className="vertical-divider-div"></div>
         </div>
+        {/* Record & Replace Section */}
         <div>
           <h6 className="text-white text-center">
             Record & Replace AI's voice

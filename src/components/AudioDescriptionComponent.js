@@ -267,6 +267,7 @@ const AudioDescriptionComponent = (props) => {
           clip_description_text={clip_description_text}
           clip_playback_type={clip_playback_type}
           clip_start_time={clipStartTime}
+          clip_duration={clip_duration}
           is_recorded={is_recorded}
           recorded_audio_path={recorded_audio_path}
           clip_audio_path={clip_audio_path}
