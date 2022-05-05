@@ -6,20 +6,17 @@ import NewADComponent from './NewADComponent';
 
 const InsertPublishComponent = (props) => {
   const [showInlineAdComponent, setInlineAdComponent] = useState(false);
-  const [showExtendedAdComponent, setExtendedAdComponent] = useState(false);
   const [showAdComponent, setShowAdComponent] = useState(false);
   const handleClickInsertInline = (e) => {
     e.preventDefault();
     setShowAdComponent(true);
     setInlineAdComponent(true);
-    setExtendedAdComponent(false);
   };
 
   const handleClickInsertExtended = (e) => {
     e.preventDefault();
     setShowAdComponent(true);
     setInlineAdComponent(false);
-    setExtendedAdComponent(true);
   };
 
   return (
@@ -32,7 +29,6 @@ const InsertPublishComponent = (props) => {
           </h5>
           <NewADComponent
             showInlineAdComponent={showInlineAdComponent}
-            //   showExtendedAdComponent={showExtendedAdComponent}
             setShowAdComponent={setShowAdComponent}
           />
         </>

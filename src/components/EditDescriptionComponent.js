@@ -379,7 +379,10 @@ const EditDescriptionComponent = (props) => {
             </div>
           </div>
         </div>
-        <div className="vertical-divider-div"></div>
+        <div className="d-flex flex-column align-items-center">
+          <h6>Or</h6>
+          <div className="vertical-divider-div"></div>
+        </div>
         <div>
           <h6 className="text-white text-center">
             Record & Replace AI's voice
