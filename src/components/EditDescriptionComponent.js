@@ -255,14 +255,12 @@ const EditDescriptionComponent = (props) => {
           }
         )
         .then((res) => {
-          // handle error response from server
-          if (res.data.message.includes('Please try again')) {
-            alert(res.data);
-          } else if (res.data.message.includes('Success')) {
-            // below prop is used to re-render the parent component i.e. fetch audio clip data
-            setUpdateData(!updateData);
-            alert('Description saved Successfully!!');
-          }
+          // below prop is used to re-render the parent component i.e. fetch audio clip data
+          setUpdateData(!updateData);
+          alert('Description saved Successfully!!');
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
         });
     }
   };
