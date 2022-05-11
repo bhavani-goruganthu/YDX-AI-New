@@ -67,7 +67,7 @@ const EditClipComponent = (props) => {
     setAdAudio(new Audio(clip_audio_path));
     // render the start time input fields based on the updated prop value - props_clip_start_time
     handleClipStartTimeInputsRender();
-  }, [mediaBlobUrl, props_clip_start_time]);
+  }, [mediaBlobUrl, props_clip_start_time, props.clip_audio_path]);
 
   // render the values in the input[type='number'] fields of the start time - renders everytime the props_clip_start_time value changes
   const handleClipStartTimeInputsRender = () => {
@@ -236,10 +236,12 @@ const EditClipComponent = (props) => {
     );
   };
 
+  // update the clip Description text area
   const handleClipDescriptionUpdate = (e) => {
     setClipDescriptionText(e.target.value);
   };
 
+  // handle save clip description - axios call -> generate audio & update endtime, duration
   const handleClickSaveClipDescription = (e) => {
     e.preventDefault();
     // check if the clip has been updated
@@ -372,7 +374,10 @@ const EditClipComponent = (props) => {
               {showStartTimeError ? (
                 <div className="bg-white rounded p-1 mb-1 text-center">
                   <h6 className="text-danger small mb-0">
-                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>{' '}
+                    <i
+                      className="fa fa-exclamation-circle"
+                      aria-hidden="true"
+                    ></i>{' '}
                     Start Time cannot be later than the video end time
                   </h6>
                 </div>
