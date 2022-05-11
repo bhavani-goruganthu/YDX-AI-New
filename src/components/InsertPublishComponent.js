@@ -6,6 +6,7 @@ import NewAudioClipComponent from './NewAudioClipComponent';
 const InsertPublishComponent = (props) => {
   // destructuring props
   const currentTime = props.currentTime;
+  const videoLength = props.videoLength;
   const [showInlineACComponent, setShowInlineACComponent] = useState(false);
   const [showNewACComponent, setShowNewACComponent] = useState(false);
   const handleClickInsertInline = (e) => {
@@ -33,6 +34,7 @@ const InsertPublishComponent = (props) => {
             showInlineACComponent={showInlineACComponent}
             setShowNewACComponent={setShowNewACComponent}
             currentTime={currentTime}
+            videoLength={videoLength}
           />
         </>
       ) : (

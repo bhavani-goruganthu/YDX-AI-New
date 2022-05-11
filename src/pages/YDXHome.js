@@ -355,7 +355,10 @@ const YDXHome = (props) => {
           />
         ))}
       </div>
-      <InsertPublishComponent currentTime={currentTime} />
+      <InsertPublishComponent
+        currentTime={currentTime}
+        videoLength={videoLength}
+      />
     </div>
   );
 };
