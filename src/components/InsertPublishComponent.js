@@ -1,35 +1,38 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import '../assets/css/insertPublish.css';
 import '../assets/css/audioDesc.css';
-import NewADComponent from './NewADComponent';
+import NewAudioClipComponent from './NewAudioClipComponent';
 
 const InsertPublishComponent = (props) => {
-  const [showInlineAdComponent, setInlineAdComponent] = useState(false);
-  const [showAdComponent, setShowAdComponent] = useState(false);
+  // destructuring props
+  const currentTime = props.currentTime;
+  const [showInlineACComponent, setShowInlineACComponent] = useState(false);
+  const [showNewACComponent, setShowNewACComponent] = useState(false);
   const handleClickInsertInline = (e) => {
     e.preventDefault();
-    setShowAdComponent(true);
-    setInlineAdComponent(true);
+    setShowNewACComponent(true);
+    setShowInlineACComponent(true);
   };
 
   const handleClickInsertExtended = (e) => {
     e.preventDefault();
-    setShowAdComponent(true);
-    setInlineAdComponent(false);
+    setShowNewACComponent(true);
+    setShowInlineACComponent(false);
   };
 
   return (
     <React.Fragment>
       <hr />
-      {showAdComponent ? (
+      {showNewACComponent ? (
         <>
           <h5 className="text-white">
-            Insert New {showInlineAdComponent ? 'Inline' : 'Extended'} AD
+            Insert New {showInlineACComponent ? 'Inline' : 'Extended'} Audio
+            Clip
           </h5>
-          <NewADComponent
-            showInlineAdComponent={showInlineAdComponent}
-            setShowAdComponent={setShowAdComponent}
+          <NewAudioClipComponent
+            showInlineACComponent={showInlineACComponent}
+            setShowNewACComponent={setShowNewACComponent}
+            currentTime={currentTime}
           />
         </>
       ) : (

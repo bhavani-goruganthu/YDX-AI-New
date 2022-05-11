@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import '../assets/css/audioDesc.css';
 import '../assets/css/editAudioDesc.css';
 
-const NewADComponent = (props) => {
+const NewAudioClipComponent = (props) => {
   // destructuring props
-  let showInlineAdComponent = props.showInlineAdComponent;
-  let setShowAdComponent = props.setShowAdComponent;
+  let showInlineACComponent = props.showInlineACComponent;
+  let setShowNewACComponent = props.setShowNewACComponent;
+  const currentTime = props.currentTime;
 
   // state variables - for new AD
   const [newADTitle, setNewADTitle] = useState('');
+  const [newADType, setNewADType] = useState('nonOCR'); // default for Visual
 
   const handleCloseNewAD = () => {
-    setShowAdComponent(false);
+    setShowNewACComponent(false);
   };
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const NewADComponent = (props) => {
       <div className="d-flex justify-content-evenly align-items-center">
         {/* Inline or Extended Radio Button */}
         <div className="">
-          {showInlineAdComponent ? (
+          {showInlineACComponent ? (
             <div className="form-check form-check-inline">
               <input
                 className="form-check-input"
@@ -83,6 +85,7 @@ const NewADComponent = (props) => {
             aria-label="Select the type of new AD"
             required
             defaultValue={'nonOCR'}
+            onChange={(e) => setNewADType(e.target.value)}
           >
             <option value="nonOCR">Visual</option>
             <option value="OCR">Text on Screen</option>
@@ -189,4 +192,4 @@ const NewADComponent = (props) => {
   );
 };
 
-export default NewADComponent;
+export default NewAudioClipComponent;

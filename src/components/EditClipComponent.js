@@ -4,7 +4,7 @@ import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardF
 import '../assets/css/editAudioDesc.css';
 import axios from 'axios';
 
-const EditDescriptionComponent = (props) => {
+const EditClipComponent = (props) => {
   // destructuring props
   //props of URL Params
   const userId = props.userId;
@@ -110,7 +110,7 @@ const EditDescriptionComponent = (props) => {
     }
   };
 
-  // function for toggling play pause functionality of audio description - on button click
+  // function for toggling play pause functionality of audio Clip - on button click
   const handlePlayPauseAdAudio = () => {
     if (isAdAudioPlaying) {
       adAudio.pause();
@@ -240,9 +240,9 @@ const EditDescriptionComponent = (props) => {
     setClipDescriptionText(e.target.value);
   };
 
-  const handleClickSaveDescription = (e) => {
+  const handleClickSaveClipDescription = (e) => {
     e.preventDefault();
-    // check if the description has been updated
+    // check if the clip has been updated
     if (clipDescriptionText !== clip_description_text) {
       axios
         .put(
@@ -294,7 +294,7 @@ const EditDescriptionComponent = (props) => {
                 <button
                   type="button"
                   className="btn rounded btn-sm text-white save-desc-btn"
-                  onClick={handleClickSaveDescription}
+                  onClick={handleClickSaveClipDescription}
                 >
                   <i className="fa fa-save" /> {'  '} Save
                 </button>
@@ -315,7 +315,7 @@ const EditDescriptionComponent = (props) => {
                     className="btn rounded btn-sm primary-btn-color text-white"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
-                    title="Play this Description"
+                    title="Play this Clip"
                     onClick={handlePlayPauseAdAudio}
                   >
                     <i className="fa fa-play" /> {'  '} Play
@@ -379,8 +379,8 @@ const EditDescriptionComponent = (props) => {
               ) : (
                 <div>
                   <h6 className="text-white text-center">
-                    {/* Duration: {convertSecondsToCardFormat(clip_duration)} */}
-                    Duration: {clip_duration} sec
+                    {/* Duration: {convertSecondsToCardFormat(clip_duration)} sec*/}
+                    Duration: {parseFloat(clip_duration).toFixed(2)} sec
                   </h6>
                 </div>
               )}
@@ -516,7 +516,7 @@ const EditDescriptionComponent = (props) => {
                 className="btn rounded btn-sm text-white primary-btn-color"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
-                title="YouTube Video plays/pauses along with the Audio Description"
+                title="YouTube Video plays/pauses along with the Audio Clip"
                 onClick={handlePlayPauseYouTubeVideo}
               >
                 <i className="fa fa-pause play-pause-icons" />
@@ -528,7 +528,7 @@ const EditDescriptionComponent = (props) => {
                 className="btn rounded btn-sm text-white primary-btn-color"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
-                title="YouTube Video plays/pauses along with the Audio Descriptions"
+                title="YouTube Video plays/pauses along with the Audio Clips"
                 onClick={handlePlayPauseYouTubeVideo}
               >
                 <i className="fa fa-play play-pause-icons" />
@@ -581,4 +581,4 @@ const EditDescriptionComponent = (props) => {
   );
 };
 
-export default EditDescriptionComponent;
+export default EditClipComponent;

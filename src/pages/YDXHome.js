@@ -4,7 +4,7 @@ import axios from 'axios';
 import YouTube from 'react-youtube';
 import Draggable from 'react-draggable';
 import '../assets/css/home.css';
-import AudioDescriptionComponent from '../components/AudioDescriptionComponent';
+import AudioClipComponent from '../components/AudioClipComponent';
 import Notes from '../components/NotesComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import InsertPublishComponent from '../components/InsertPublishComponent';
@@ -44,7 +44,7 @@ const YDXHome = (props) => {
   const [draggableTime, setDraggableTime] = useState({ x: -3, y: 0 }); // stores the position of the draggable bar on the #draggable-div
   const [videoDialogTimestamps, setVideoDialogTimestamps] = useState([]); // stores dialog-timestamps data for a video from backend db
   const [isPublished, setIsPublished] = useState(false); // holds the published state of the Video & Audio Description
-  const [audioClips, setAudioClips] = useState([]); // stores list of Audio Descriptions data for a video from backend db
+  const [audioClips, setAudioClips] = useState([]); // stores list of Audio Clips data for a video from backend db
 
   const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
   const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
@@ -104,7 +104,7 @@ const YDXHome = (props) => {
       });
   };
 
-  // fetch videoId based on the youtubeVideoId which is later used to get audioDescriptions
+  // fetch videoId based on the youtubeVideoId which is later used to get audioClips
   const fetchUserVideoData = () => {
     axios
       .get(
@@ -192,12 +192,12 @@ const YDXHome = (props) => {
           '..',
           'http://18.221.192.73:5001'
         );
-        // play along with the video if the clip is an inline description
+        // play along with the video if the clip is an inline clip
         if (filteredClip[0].playback_type === 'inline') {
           const currentAudio = new Audio(clip_audio_path);
           currentAudio.play();
         }
-        // play after pausing the youtube video if the clip is an extended description - youtube video should be played after the description has finished playing
+        // play after pausing the youtube video if the clip is an extended clip - youtube video should be played after the clip has finished playing
         else if (filteredClip[0].playback_type === 'extended') {
           const currentAudio = new Audio(clip_audio_path);
           currentEvent.pauseVideo();
@@ -340,7 +340,7 @@ const YDXHome = (props) => {
       {/* Map Audio Clips Component */}
       <div className="audio-desc-component-list">
         {audioClips.map((clip, key) => (
-          <AudioDescriptionComponent
+          <AudioClipComponent
             key={key}
             clip={clip}
             userId={userId}
@@ -355,7 +355,7 @@ const YDXHome = (props) => {
           />
         ))}
       </div>
-      <InsertPublishComponent />
+      <InsertPublishComponent currentTime={currentTime} />
     </div>
   );
 };

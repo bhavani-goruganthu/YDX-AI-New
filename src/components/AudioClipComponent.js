@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/css/audioDesc.css';
 import Draggable from 'react-draggable';
-import EditDescriptionComponent from './EditDescriptionComponent';
+import EditClipComponent from './EditClipComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import axios from 'axios';
 
-const AudioDescriptionComponent = (props) => {
+const AudioClipComponent = (props) => {
   // destructuring props
   //props of URL Params
   const userId = props.userId;
@@ -240,7 +240,7 @@ const AudioDescriptionComponent = (props) => {
               </div>
             </div>
           </div>
-          {/* toggle the chevron to show or hide the edit Description component */}
+          {/* toggle the chevron to show or hide the edit Clip component */}
           <div className="col-1 component-column-width-4">
             {showEditComponent ? (
               <i
@@ -258,7 +258,7 @@ const AudioDescriptionComponent = (props) => {
       </div>
       {/* Based on the state of the showEditComponent variable, the edit component will be displayed*/}
       {showEditComponent ? (
-        <EditDescriptionComponent
+        <EditClipComponent
           handleClipStartTimeUpdate={handleClipStartTimeUpdate}
           userId={userId}
           youtubeVideoId={youtubeVideoId}
@@ -284,4 +284,4 @@ const AudioDescriptionComponent = (props) => {
     </React.Fragment>
   );
 };
-export default AudioDescriptionComponent;
+export default AudioClipComponent;
