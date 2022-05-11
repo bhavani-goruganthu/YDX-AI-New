@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/css/audioDesc.css';
 import '../assets/css/editAudioDesc.css';
+import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 
 const NewAudioClipComponent = (props) => {
   // destructuring props
   let showInlineACComponent = props.showInlineACComponent;
   let setShowNewACComponent = props.setShowNewACComponent;
   const currentTime = props.currentTime;
+  const videoLength = props.videoLength;
 
   // state variables - for new AD
   const [newADTitle, setNewADTitle] = useState('');
   const [newADType, setNewADType] = useState('nonOCR'); // default for Visual
 
-  const handleCloseNewAD = () => {
-    setShowNewACComponent(false);
-  };
+  // use 3 state variables to hold the value of 3 input type number fields
+  const [clipStartTimeHours, setClipStartTimeHours] = useState(
+    convertSecondsToCardFormat(currentTime).split(':')[0]
+  );
+  const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(
+    convertSecondsToCardFormat(currentTime).split(':')[1]
+  );
+  const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(
+    convertSecondsToCardFormat(currentTime).split(':')[2]
+  );
+  const [showStartTimeError, setShowStartTimeError] = useState(false);
+
+  // timeout for the alert
+  if (showStartTimeError) {
+    setTimeout(() => {
+      setShowStartTimeError(false);
+    }, 4000);
+  }
 
   useEffect(() => {
     // scroll to the bottom of the screen and make the Inline AD component visible
@@ -24,6 +41,125 @@ const NewAudioClipComponent = (props) => {
       behavior: 'smooth',
     });
   }, []);
+
+  // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
+  const calculateClipStartTimeinSeconds = (hours, minutes, seconds) => {
+    let calculatedSeconds = +hours * 60 * 60 + +minutes * 60 + +seconds;
+    // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
+    if (calculatedSeconds > videoLength) {
+      setShowStartTimeError(true);
+      setClipStartTimeHours(
+        convertSecondsToCardFormat(currentTime).split(':')[0]
+      );
+      setClipStartTimeMinutes(
+        convertSecondsToCardFormat(currentTime).split(':')[1]
+      );
+      setClipStartTimeSeconds(
+        convertSecondsToCardFormat(currentTime).split(':')[2]
+      );
+    }
+  };
+
+  // lots of if else conditions to ensure correct input in the start time number fields.
+  const handleOnChangeClipStartTimeHours = (e) => {
+    setClipStartTimeHours(e.target.value);
+    if (e.target.value.length > 2) {
+      setClipStartTimeHours(e.target.value.substring(0, 2));
+    }
+  };
+  const handleOnChangeClipStartTimeMinutes = (e) => {
+    setClipStartTimeMinutes(e.target.value);
+    if (e.target.value.length > 2) {
+      setClipStartTimeMinutes(e.target.value.substring(0, 2));
+    } else if (e.target.value.length === 2) {
+      if (parseInt(e.target.value) >= 60) {
+        setClipStartTimeMinutes('59');
+      }
+    }
+  };
+  const handleOnChangeClipStartTimeSeconds = (e) => {
+    setClipStartTimeSeconds(e.target.value);
+    if (e.target.value.length > 2) {
+      setClipStartTimeSeconds(e.target.value.substring(0, 2));
+    } else if (e.target.value.length === 2) {
+      if (parseInt(e.target.value) >= 60) {
+        setClipStartTimeSeconds('59');
+      }
+    }
+  };
+  const handleBlurClipStartTimeHours = (e) => {
+    // store the current clipStartTimeHours in a temp variable,
+    // so that when calculateClipStartTimeinSeconds without going into the loops,
+    // it has the previous value in it
+    let tempStartTimeHours = clipStartTimeHours;
+    if (e.target.value.length === 1) {
+      setClipStartTimeHours(e.target.value + '0');
+      tempStartTimeHours = e.target.value + '0';
+      if (parseInt(e.target.value + '0') >= 60) {
+        setClipStartTimeHours('59');
+        tempStartTimeHours = '59';
+      }
+    } else if (e.target.value.length === 0) {
+      setClipStartTimeHours('00');
+      tempStartTimeHours = '00';
+    }
+    // call the function which will update the clipStartTime in the parent component and the db is updated too.
+    calculateClipStartTimeinSeconds(
+      tempStartTimeHours,
+      clipStartTimeMinutes,
+      clipStartTimeSeconds
+    );
+  };
+  const handleBlurClipStartTimeMinutes = (e) => {
+    // store the current clipStartTimeMinutes in a temp variable,
+    // so that when calculateClipStartTimeinSeconds without going into the loops,
+    // it has the previous value in it
+    let tempStartTimeMinutes = clipStartTimeMinutes;
+    if (e.target.value.length === 1) {
+      setClipStartTimeMinutes(e.target.value + '0');
+      tempStartTimeMinutes = e.target.value + '0';
+      if (parseInt(e.target.value + '0') >= 60) {
+        setClipStartTimeMinutes('59');
+        tempStartTimeMinutes = '59';
+      }
+    } else if (e.target.value.length === 0) {
+      setClipStartTimeMinutes('00');
+      tempStartTimeMinutes = '00';
+    }
+    // call the function which will update the clipStartTime in the parent component and the db is updated too.
+    calculateClipStartTimeinSeconds(
+      clipStartTimeHours,
+      tempStartTimeMinutes,
+      clipStartTimeSeconds
+    );
+  };
+  const handleBlurClipStartTimeSeconds = (e) => {
+    // store the current clipStartTimeSeconds in a temp variable,
+    // so that when calculateClipStartTimeinSeconds without going into the loops,
+    // it has the previous value in it
+    let tempStartTimeSeconds = clipStartTimeSeconds;
+    if (e.target.value.length === 1) {
+      setClipStartTimeSeconds(e.target.value + '0');
+      tempStartTimeSeconds = e.target.value + '0';
+      if (parseInt(e.target.value + '0') >= 60) {
+        setClipStartTimeSeconds('59');
+        tempStartTimeSeconds = '59';
+      }
+    } else if (e.target.value.length === 0) {
+      setClipStartTimeSeconds('00');
+      tempStartTimeSeconds = '00';
+    }
+    // call the function which will update the clipStartTime in the parent component and the db is updated too.
+    calculateClipStartTimeinSeconds(
+      clipStartTimeHours,
+      clipStartTimeMinutes,
+      tempStartTimeSeconds
+    );
+  };
+
+  const handleCloseNewAD = () => {
+    setShowNewACComponent(false);
+  };
 
   return (
     <div className="text-white component mt-2 rounded border border-1 border-white mx-5 d-flex flex-column pb-3 justify-content-between">
@@ -35,7 +171,7 @@ const NewAudioClipComponent = (props) => {
         ></i>
       </div>
       {/* div for radio button, title, type, start time */}
-      <div className="d-flex justify-content-evenly align-items-center">
+      <div className="d-flex justify-content-evenly align-items-start">
         {/* Inline or Extended Radio Button */}
         <div className="">
           {showInlineACComponent ? (
@@ -68,7 +204,7 @@ const NewAudioClipComponent = (props) => {
         </div>
         {/* Title Text box div */}
         <div className="d-flex justify-content-evenly align-items-center">
-          <h6 className="text-white fw-bolder">Title:</h6>
+          <h6 className="text-white fw-bolder mb-0">Title:</h6>
           <input
             type="text"
             className="form-control form-control-sm text-center mx-2"
@@ -79,7 +215,7 @@ const NewAudioClipComponent = (props) => {
         </div>
         {/* type dropdown div */}
         <div className="d-flex justify-content-evenly align-items-center">
-          <h6 className="text-white fw-bolder">Type:</h6>
+          <h6 className="text-white fw-bolder mb-0">Type:</h6>
           <select
             className="form-select form-select-sm text-center mx-2"
             aria-label="Select the type of new AD"
@@ -92,38 +228,67 @@ const NewAudioClipComponent = (props) => {
           </select>
         </div>
         {/* Start Time Div */}
-        <div className="d-flex justify-content-evenly align-items-center">
-          <h6 className="text-white fw-bolder">Start Time:</h6>
-          <div className="edit-time-div mx-2">
-            <div className="text-dark text-center d-flex justify-content-evenly">
-              <input
-                type="number"
-                style={{ width: '25px' }}
-                className="text-white bg-dark"
-                min="0"
-                onKeyDown={(evt) =>
-                  ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
-                }
-              />
-              <div className="mx-1">:</div>
-              <input
-                type="number"
-                style={{ width: '25px' }}
-                className="text-white bg-dark"
-                onKeyDown={(evt) =>
-                  ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
-                }
-              />
-              <div className="mx-1">:</div>
-              <input
-                type="number"
-                style={{ width: '25px' }}
-                className="text-white bg-dark"
-                onKeyDown={(evt) =>
-                  ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
-                }
-              />
+        <div className="d-flex justify-content-evenly flex-column align-items-center">
+          <div className="d-flex justify-content-evenly align-items-center">
+            <h6 className="text-white fw-bolder mx-2">Start Time:</h6>
+            <div className="edit-time-div mx-auto">
+              <div className="text-dark text-center d-flex justify-content-evenly">
+                <input
+                  type="number"
+                  style={{ width: '25px', height: '28px' }}
+                  className="text-white bg-dark"
+                  min="0"
+                  value={clipStartTimeHours}
+                  onChange={handleOnChangeClipStartTimeHours}
+                  onBlur={handleBlurClipStartTimeHours}
+                  onKeyDown={(evt) =>
+                    ['e', 'E', '+', '-'].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
+                />
+                <div className="mx-1">:</div>
+                <input
+                  type="number"
+                  style={{ width: '25px', height: '28px' }}
+                  className="text-white bg-dark"
+                  value={clipStartTimeMinutes}
+                  onChange={handleOnChangeClipStartTimeMinutes}
+                  onBlur={handleBlurClipStartTimeMinutes}
+                  onKeyDown={(evt) =>
+                    ['e', 'E', '+', '-'].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
+                />
+                <div className="mx-1">:</div>
+                <input
+                  type="number"
+                  style={{ width: '25px', height: '28px' }}
+                  className="text-white bg-dark"
+                  value={clipStartTimeSeconds}
+                  onChange={handleOnChangeClipStartTimeSeconds}
+                  onBlur={handleBlurClipStartTimeSeconds}
+                  onKeyDown={(evt) =>
+                    ['e', 'E', '+', '-'].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
+                />
+              </div>
             </div>
+          </div>
+          <div>
+            {showStartTimeError ? (
+              <div className="bg-white rounded p-1 mb-1 text-center">
+                <h6 className="text-danger small mb-0">
+                  <i
+                    className="fa fa-exclamation-circle"
+                    aria-hidden="true"
+                  ></i>{' '}
+                  Start Time cannot be later than the video end time
+                </h6>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
