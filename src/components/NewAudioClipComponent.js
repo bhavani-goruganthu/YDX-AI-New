@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useReactMediaRecorder } from 'react-media-recorder';
+import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
+import { nanoid } from 'nanoid'; // to generate Unique AudioClip Id
 import '../assets/css/audioDesc.css';
 import '../assets/css/editAudioDesc.css';
-import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 
 const NewAudioClipComponent = (props) => {
   // destructuring props
@@ -10,9 +12,19 @@ const NewAudioClipComponent = (props) => {
   const currentTime = props.currentTime;
   const videoLength = props.videoLength;
 
+  // for audio Recording
+  // variable and function declaration of the react-media-recorder package
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({ audio: true }); // using only the audio recorder here
+  // this state variable keeps track of the play/pause state of the recorded audio
+  const [isRecordedAudioPlaying, setIsRecordedAudioPlaying] = useState(false);
+  // this state variable is updated whenever mediaBlobUrl is updated. i.e. whenever a new recording is created
+  const [recordedAudio, setRecordedAudio] = useState('');
+
   // state variables - for new AD
-  const [newADTitle, setNewADTitle] = useState('');
-  const [newADType, setNewADType] = useState('nonOCR'); // default for Visual
+  const [newACTitle, setNewACTitle] = useState('');
+  const [newACType, setNewACType] = useState('nonOCR'); // default for Visual
+  const [newACDescriptionText, setNewACDescriptionText] = useState('');
 
   // use 3 state variables to hold the value of 3 input type number fields
   const [clipStartTimeHours, setClipStartTimeHours] = useState(
@@ -24,12 +36,20 @@ const NewAudioClipComponent = (props) => {
   const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(
     convertSecondsToCardFormat(currentTime).split(':')[2]
   );
-  const [showStartTimeError, setShowStartTimeError] = useState(false);
+  const [showStartTimeError, setShowStartTimeError] = useState(false); // to show error for start time
+  const [showSaveClipError, setShowSaveClipError] = useState(false); // to show error while saving new audio clip
+  const [errorMessage, setErrorMessage] = useState(''); // set the error message to display after clicking on save
 
   // timeout for the alert
   if (showStartTimeError) {
     setTimeout(() => {
       setShowStartTimeError(false);
+    }, 4000);
+  }
+  // timeout for the errorMessage
+  if (showSaveClipError) {
+    setTimeout(() => {
+      setShowSaveClipError(false);
     }, 4000);
   }
 
@@ -40,7 +60,11 @@ const NewAudioClipComponent = (props) => {
       top: document.body.scrollHeight,
       behavior: 'smooth',
     });
-  }, []);
+    // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
+    if (mediaBlobUrl !== null) {
+      setRecordedAudio(new Audio(mediaBlobUrl));
+    }
+  }, [mediaBlobUrl]);
 
   // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
   const calculateClipStartTimeinSeconds = (hours, minutes, seconds) => {
@@ -161,6 +185,39 @@ const NewAudioClipComponent = (props) => {
     setShowNewACComponent(false);
   };
 
+  // function for toggling play pause functionality of the recorded audio - on button click
+  const handlePlayPauseRecordedAudio = () => {
+    if (isRecordedAudioPlaying) {
+      recordedAudio.pause();
+      setIsRecordedAudioPlaying(false);
+    } else {
+      recordedAudio.play();
+      setIsRecordedAudioPlaying(true);
+      // this is for setting setIsRecordedAudioPlaying variable to false, once the playback is completed.
+      recordedAudio.addEventListener('ended', function () {
+        setIsRecordedAudioPlaying(false);
+      });
+    }
+  };
+
+  // to save the new audio clip into the database
+  const handleSaveNewAudioClip = (e) => {
+    e.preventDefault();
+    if (newACTitle === '') {
+      setErrorMessage('Please enter a Title');
+      setShowSaveClipError(true); // display the appropriate error msg
+    } else {
+      if (newACDescriptionText === '' && mediaBlobUrl === null) {
+        setErrorMessage(
+          'Please enter a description text for the New Clip or record one'
+        );
+        setShowSaveClipError(true); // display the appropriate error msg
+      } else {
+        const playbackType = showInlineACComponent ? 'inline' : 'extended';
+      }
+    }
+  };
+
   return (
     <div className="text-white component mt-2 rounded border border-1 border-white mx-5 d-flex flex-column pb-3 justify-content-between">
       {/* close icon to the top right */}
@@ -209,8 +266,8 @@ const NewAudioClipComponent = (props) => {
             type="text"
             className="form-control form-control-sm text-center mx-2"
             placeholder="Title goes here.."
-            value={newADTitle}
-            onChange={(e) => setNewADTitle(e.target.value)}
+            value={newACTitle}
+            onChange={(e) => setNewACTitle(e.target.value)}
           />
         </div>
         {/* type dropdown div */}
@@ -221,7 +278,7 @@ const NewAudioClipComponent = (props) => {
             aria-label="Select the type of new AD"
             required
             defaultValue={'nonOCR'}
-            onChange={(e) => setNewADType(e.target.value)}
+            onChange={(e) => setNewACType(e.target.value)}
           >
             <option value="nonOCR">Visual</option>
             <option value="OCR">Text on Screen</option>
@@ -298,10 +355,12 @@ const NewAudioClipComponent = (props) => {
         <div className="d-flex justify-content-center align-items-start flex-column">
           <h6 className="text-white">Add New Clip Description:</h6>
           <textarea
-            className="form-control form-control-sm border rounded text-center description-textarea"
+            className="form-control form-control-sm border rounded description-textarea"
             rows="2"
             id="description"
             name="description"
+            value={newACDescriptionText}
+            onChange={(e) => setNewACDescriptionText(e.target.value)}
           ></textarea>
         </div>
         {/* vertical divider line */}
@@ -317,29 +376,68 @@ const NewAudioClipComponent = (props) => {
           <h6 className="text-white text-center">Record New Audio Clip</h6>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
             <div className="mx-1">
-              <button
+              {status === 'recording' ? (
+                <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Click to Stop Recording"
+                  type="button"
+                  className="btn rounded btn-sm mx-auto border border-warning bg-light"
+                  onClick={stopRecording} // default functions given by the react-media-recorder package
+                >
+                  <i className="fa fa-stop text-danger" />
+                </button>
+              ) : (
+                <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Click to Start Recording your voice"
+                  type="button"
+                  className="btn rounded btn-sm mx-auto border border-warning bg-light"
+                  onClick={startRecording} // default functions given by the react-media-recorder package
+                >
+                  <i className="fa fa-microphone text-danger" />
+                </button>
+              )}
+            </div>
+            {/* No recording to Play */}
+            {mediaBlobUrl === null ? (
+              <div
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
-                title="Click to Start Recording your voice"
-                type="button"
-                className="btn rounded btn-sm mx-auto border border-warning bg-light"
+                title="No recording to Play"
               >
-                <i className="fa fa-microphone text-danger" />
-              </button>
-            </div>
-            <div
-              data-bs-toggle="tooltip"
-              data-bs-placement="bottom"
-              title="No recording to Play"
-            >
+                <button
+                  type="button"
+                  className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                  disabled
+                >
+                  Listen
+                </button>
+              </div>
+            ) : isRecordedAudioPlaying ? ( //Listen to your recording
               <button
                 type="button"
                 className="btn rounded btn-sm text-white primary-btn-color mx-3"
-                disabled
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Listen to your recording"
+                onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
+              >
+                Pause/Stop
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn rounded btn-sm text-white primary-btn-color mx-3"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Listen to your recording"
+                onClick={handlePlayPauseRecordedAudio} // toggle function for play / pause
               >
                 Listen
               </button>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -349,9 +447,16 @@ const NewAudioClipComponent = (props) => {
         <button
           type="button"
           className="btn rounded btn-sm text-white save-desc-btn"
+          onClick={handleSaveNewAudioClip}
         >
           <i className="fa fa-save" /> {'  '} Save
         </button>
+        {/* OnSave - show error message if any */}
+        {showSaveClipError ? (
+          <h6 className="mb-0 mt-2">{errorMessage}</h6>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
