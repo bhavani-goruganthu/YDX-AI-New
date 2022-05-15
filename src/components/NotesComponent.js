@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import '../assets/css/editAudioDesc.css';
 import '../assets/css/notes.css';
 
-const Notes = ({ currentTime, videoId }) => {
+const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
   // React State Variables
-  const [noteValue, setNoteValue] = useState(''); // to store Notes
+  const [noteValue, setNoteValue] = useState(''); // to store Notes text
+  const [noteId, setNoteId] = useState(''); // to store Note Id - for POST requests later
   const [noteDetails, setNoteDetails] = useState([]); // to store Notes Details
 
   // this function handles keyUp event in the Notes textarea -> whenever an enter key is hit,
@@ -36,11 +37,15 @@ const Notes = ({ currentTime, videoId }) => {
   const handleNoteAutoSave = (currentNoteValue) => {
     axios
       .post('http://localhost:4000/api/notes/post-note', {
-        adId: videoId,
+        noteId: noteId,
         notes: currentNoteValue,
+        adId: audioDescriptionId,
       })
       .then((res) => {
-        // console.log(res.data);
+        setNoteId(res.data.notes_id); // setting this in the case of inserting new note
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -67,14 +72,17 @@ const Notes = ({ currentTime, videoId }) => {
   };
 
   useEffect(() => {
-    // fetch notes from backend API
-    axios
-      .get(`http://localhost:4000/api/notes/get-note-byAdId/${videoId}`)
-      .then((res) => {
-        // console.log(res.data);
-        setNoteValue(res.data.notes_text);
-      });
-  }, [videoId]);
+    // If there is an notes entry in db
+    if (notesData !== undefined) {
+      // inserting notes_text into the note value
+      setNoteValue(notesData.notes_text);
+      setNoteId(notesData.notes_id);
+    } else {
+      // else insert empty strings - somehow, useState('') is not working
+      setNoteValue('');
+      setNoteId('');
+    }
+  }, [notesData]);
 
   return (
     <div className="notes-bg">
