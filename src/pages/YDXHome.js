@@ -33,7 +33,8 @@ const YDXHome = (props) => {
   const divRef = useRef(null);
 
   // State Variables
-  const [videoId, setVideoId] = useState(0); // retrieved from db, stored to fetch audio_descriptions
+  const [videoId, setVideoId] = useState(''); // retrieved from db, stored to fetch audio_descriptions
+  const [audioDescriptionId, setAudioDescriptionId] = useState(''); // retrieved from db, stored to fetch Notes & Audio Clips
   const [videoLength, setVideoLength] = useState(0); // retrieved from db, stored to display as a label for the dialog timeline
   const [draggableDivWidth, setDraggableDivWidth] = useState(0.0); //stores width of #draggable-div
   const [currentEvent, setCurrentEvent] = useState(0); //stores YouTube video's event
@@ -101,6 +102,9 @@ const YDXHome = (props) => {
           updatedDialogData.push(dialog_start_time);
         });
         setVideoDialogTimestamps(updatedDialogData);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -122,37 +126,42 @@ const YDXHome = (props) => {
         calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
         calculateUnitLength(video_length); // calculate unit length of the timeline width based on video length
         fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline});
-        fetchAudioDescriptions();
+        fetchAudioDescriptionNClips();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
   // use axios to get audio descriptions for the videoId (set in fetchUserVideoData()) & userId passed to the url Params
-  const fetchAudioDescriptions = () => {
+  const fetchAudioDescriptionNClips = () => {
+    //  this API fetches the audioDescription and all related AudioClips based on the UserID & VideoID
     axios
       .get(
         `http://localhost:4000/api/audio-descriptions/get-user-ad/${videoId}&${userId}`
       )
       .then((res) => {
         const ad_id = res.data.ad_id;
+        // data is nested - so AudioClips data is in res.data.Audio_Clips
+        const audioClipsData = res.data.Audio_Clips;
+        setAudioDescriptionId(ad_id);
         setIsPublished(res.data.is_published);
-        return ad_id;
+        return audioClipsData;
       })
-      .then((ad_id) => {
-        axios
-          .get(`http://localhost:4000/api/audio-clips/get-user-ad/${ad_id}`)
-          .then((res) => {
-            // update the audio path for every clip row - the path might change later- TODO: change the server IP
-            res.data.forEach((clip, i) => {
-              clip.clip_audio_path = clip.clip_audio_path.replace(
-                '.',
-                // 'http://18.221.192.73:5001'
-                'http://localhost:4000'
-              );
-              // add a sequence number for every audio clip
-              clip.clip_sequence_num = i + 1;
-            });
-            setAudioClips(res.data);
-          });
+      .then((audioClipsData) => {
+        // update the audio path for every clip row - the path might change later- TODO: change the server IP
+        audioClipsData.forEach((clip, i) => {
+          clip.clip_audio_path = clip.clip_audio_path.replace(
+            '.',
+            'http://localhost:4000'
+          );
+          // add a sequence number for every audio clip
+          clip.clip_sequence_num = i + 1;
+        });
+        setAudioClips(audioClipsData);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -187,11 +196,7 @@ const YDXHome = (props) => {
       if (filteredClip.length !== 0) {
         //  update recentAudioPlayedTime - which stores the time at which an audio has been played - to stop playing the same audio twice concurrently
         setRecentAudioPlayedTime(parseFloat(updatedCurrentTime).toFixed(2));
-        // console.log('In here - audio playing');
-        const clip_audio_path = filteredClip[0].clip_audio_path.replace(
-          '..',
-          'http://18.221.192.73:5001'
-        );
+        const clip_audio_path = filteredClip[0].clip_audio_path;
         // play along with the video if the clip is an inline clip
         if (filteredClip[0].playback_type === 'inline') {
           const currentAudio = new Audio(clip_audio_path);
@@ -285,7 +290,7 @@ const YDXHome = (props) => {
         </div>
         <Notes
           currentTime={convertSecondsToCardFormat(currentTime)}
-          videoId={videoId}
+          audioDescriptionId={audioDescriptionId}
         />
       </div>
       <hr />
