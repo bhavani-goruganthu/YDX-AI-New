@@ -8,6 +8,7 @@ import AudioClipComponent from '../components/AudioClipComponent';
 import Notes from '../components/NotesComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import InsertPublishComponent from '../components/InsertPublishComponent';
+import Spinner from './Spinner';
 
 const YDXHome = (props) => {
   /* to use params on the url and get userId & youtubeVideoId */
@@ -51,7 +52,11 @@ const YDXHome = (props) => {
   const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
   const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
 
+  // Spinner div
+  const [showSpinner, setShowSpinner] = useState(false);
+
   useEffect(() => {
+    setShowSpinner(true);
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
   }, [
     draggableDivWidth,
@@ -87,10 +92,12 @@ const YDXHome = (props) => {
         `http://localhost:4000/api/dialog-timestamps/get-video-dialog/${videoId}`
       )
       .then((res) => {
+        setShowSpinner(false);
         const dialogData = res.data;
         return dialogData;
       })
       .then((dialogData) => {
+        setShowSpinner(false);
         const updatedDialogData = [];
         dialogData.forEach((dialog) => {
           const x = dialog.dialog_start_time * unitLength;
@@ -116,6 +123,7 @@ const YDXHome = (props) => {
         `http://localhost:4000/api/videos/get-by-youtubeVideo/${youtubeVideoId}`
       )
       .then((res) => {
+        setShowSpinner(false);
         const video_id = res.data.video_id;
         const video_length = res.data.video_length;
         setVideoLength(video_length);
@@ -123,10 +131,13 @@ const YDXHome = (props) => {
         return video_length;
       })
       .then((video_length) => {
+        setShowSpinner(false);
         // order of the below function calls is important
         calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
         calculateUnitLength(video_length); // calculate unit length of the timeline width based on video length
+        setShowSpinner(true);
         fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline});
+        setShowSpinner(true);
         fetchAudioDescriptionData();
       })
       .catch((err) => {
@@ -142,11 +153,13 @@ const YDXHome = (props) => {
         `http://localhost:4000/api/audio-descriptions/get-user-ad/${videoId}&${userId}`
       )
       .then((res) => {
+        setShowSpinner(false);
         setAudioDescriptionId(res.data.ad_id);
         setIsPublished(res.data.is_published);
         return res.data;
       })
       .then((data) => {
+        setShowSpinner(false);
         // data is nested - so AudioClips data is in res.data.Audio_Clips
         const audioClipsData = data.Audio_Clips;
         // data is nested - so Notes data is in res.data.Notes
@@ -278,97 +291,102 @@ const YDXHome = (props) => {
   };
 
   return (
-    <div className="container home-container">
-      {/* Youtube Iframe & Notes Component Container */}
-      <div className="d-flex justify-content-around">
-        <div className="text-white">
-          <YouTube
-            videoId={youtubeVideoId}
-            opts={opts}
-            onStateChange={onStateChange}
-            onPlay={onPlay}
-            onPause={onPause}
-            onReady={onReady}
+    <React.Fragment>
+      {/* Spinner div - displayed based on showSpinner */}
+      {showSpinner ? <Spinner /> : <></>}
+      <div className="container home-container">
+        {/* Youtube Iframe & Notes Component Container */}
+        <div className="d-flex justify-content-around">
+          <div className="text-white">
+            <YouTube
+              videoId={youtubeVideoId}
+              opts={opts}
+              onStateChange={onStateChange}
+              onPlay={onPlay}
+              onPause={onPause}
+              onReady={onReady}
+            />
+          </div>
+          <Notes
+            currentTime={convertSecondsToCardFormat(currentTime)}
+            audioDescriptionId={audioDescriptionId}
+            notesData={notesData}
           />
         </div>
-        <Notes
-          currentTime={convertSecondsToCardFormat(currentTime)}
-          audioDescriptionId={audioDescriptionId}
-          notesData={notesData}
-        />
-      </div>
-      <hr />
-      {/* Dialog Timeline */}
-      <div className="row div-below-hr">
-        <div className="col-3 text-white timeline-column-width-1">
-          <h6 className="dialog-timeline-text text-center font-weight-bolder">
-            Dialog Timeline ({convertSecondsToCardFormat(videoLength)}):
-          </h6>
-        </div>
-        <div className="col-8 mt-3 timeline-column-width-2">
-          <div className="row mx-3 timeline-div">
-            <div id="draggable-div" className="draggable-div" ref={divRef}>
-              {/* Dialog Timeline blue & white div's */}
-              {videoDialogTimestamps.map((dialog, key) => (
+        <hr />
+        {/* Dialog Timeline */}
+        <div className="row div-below-hr">
+          <div className="col-3 text-white timeline-column-width-1">
+            <h6 className="dialog-timeline-text text-center font-weight-bolder">
+              Dialog Timeline ({convertSecondsToCardFormat(videoLength)}):
+            </h6>
+          </div>
+          <div className="col-8 mt-3 timeline-column-width-2">
+            <div className="row mx-3 timeline-div">
+              <div id="draggable-div" className="draggable-div" ref={divRef}>
+                {/* Dialog Timeline blue & white div's */}
+                {videoDialogTimestamps.map((dialog, key) => (
+                  <Draggable
+                    axis="x"
+                    key={key}
+                    position={dialog.controlledPosition}
+                    bounds="parent"
+                  >
+                    <div
+                      className="dialog-timestamps-div"
+                      style={{
+                        width: dialog.width,
+                        height: '20px',
+                      }}
+                    ></div>
+                  </Draggable>
+                ))}
+
+                {/* ProgressBar */}
                 <Draggable
                   axis="x"
-                  key={key}
-                  position={dialog.controlledPosition}
                   bounds="parent"
+                  defaultPosition={{ x: 0, y: 0 }}
+                  position={draggableTime}
+                  onDrag={dragProgressBar}
+                  onStop={stopProgressBar}
                 >
-                  <div
-                    className="dialog-timestamps-div"
-                    style={{
-                      width: dialog.width,
-                      height: '20px',
-                    }}
-                  ></div>
+                  <div tabIndex={0} className="progress-bar-div">
+                    <p className="mt-5 text-white progress-bar-time">
+                      {convertSecondsToCardFormat(currentTime)}
+                    </p>
+                  </div>
                 </Draggable>
-              ))}
-
-              {/* ProgressBar */}
-              <Draggable
-                axis="x"
-                bounds="parent"
-                defaultPosition={{ x: 0, y: 0 }}
-                position={draggableTime}
-                onDrag={dragProgressBar}
-                onStop={stopProgressBar}
-              >
-                <div tabIndex={0} className="progress-bar-div">
-                  <p className="mt-5 text-white progress-bar-time">
-                    {convertSecondsToCardFormat(currentTime)}
-                  </p>
-                </div>
-              </Draggable>
+              </div>
             </div>
           </div>
+          <div className="col-1 timeline-column-width-3"></div>
         </div>
-        <div className="col-1 timeline-column-width-3"></div>
+        {/* Map Audio Clips Component */}
+        <div className="audio-desc-component-list">
+          {audioClips.map((clip, key) => (
+            <AudioClipComponent
+              key={key}
+              clip={clip}
+              userId={userId}
+              youtubeVideoId={youtubeVideoId}
+              unitLength={unitLength}
+              currentTime={currentTime}
+              currentEvent={currentEvent}
+              currentState={currentState}
+              updateData={updateData}
+              setUpdateData={setUpdateData}
+              videoLength={videoLength}
+              setShowSpinner={setShowSpinner}
+            />
+          ))}
+        </div>
+        <InsertPublishComponent
+          currentTime={currentTime}
+          videoLength={videoLength}
+        />
       </div>
-      {/* Map Audio Clips Component */}
-      <div className="audio-desc-component-list">
-        {audioClips.map((clip, key) => (
-          <AudioClipComponent
-            key={key}
-            clip={clip}
-            userId={userId}
-            youtubeVideoId={youtubeVideoId}
-            unitLength={unitLength}
-            currentTime={currentTime}
-            currentEvent={currentEvent}
-            currentState={currentState}
-            updateData={updateData}
-            setUpdateData={setUpdateData}
-            videoLength={videoLength}
-          />
-        ))}
-      </div>
-      <InsertPublishComponent
-        currentTime={currentTime}
-        videoLength={videoLength}
-      />
-    </div>
+    </React.Fragment>
   );
 };
 

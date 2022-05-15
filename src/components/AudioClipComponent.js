@@ -101,6 +101,9 @@ const AudioClipComponent = (props) => {
       .then((res) => {
         // below prop is used to re-render the parent component i.e. fetch audio clip data
         setUpdateData(!updateData);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   };
 
@@ -114,6 +117,9 @@ const AudioClipComponent = (props) => {
       })
       .then((res) => {
         // console.log(res.data)
+      })
+      .catch((err) => {
+        console.error(err);
       });
   };
   // update clip playback type - inline/extended
@@ -128,6 +134,9 @@ const AudioClipComponent = (props) => {
       )
       .then((res) => {
         setUpdateData(!updateData);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   };
 
@@ -277,6 +286,7 @@ const AudioClipComponent = (props) => {
           currentEvent={props.currentEvent}
           currentState={props.currentState}
           videoLength={videoLength}
+          setShowSpinner={props.setShowSpinner}
         />
       ) : (
         <> </>
