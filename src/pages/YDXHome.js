@@ -35,6 +35,7 @@ const YDXHome = (props) => {
   // State Variables
   const [videoId, setVideoId] = useState(''); // retrieved from db, stored to fetch audio_descriptions
   const [audioDescriptionId, setAudioDescriptionId] = useState(''); // retrieved from db, stored to fetch Notes & Audio Clips
+  const [notesData, setNotesData] = useState(''); // retrieved from db, stored to pass on to Notes Component
   const [videoLength, setVideoLength] = useState(0); // retrieved from db, stored to display as a label for the dialog timeline
   const [draggableDivWidth, setDraggableDivWidth] = useState(0.0); //stores width of #draggable-div
   const [currentEvent, setCurrentEvent] = useState(0); //stores YouTube video's event
@@ -104,7 +105,7 @@ const YDXHome = (props) => {
         setVideoDialogTimestamps(updatedDialogData);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -126,29 +127,30 @@ const YDXHome = (props) => {
         calculateDraggableDivWidth(); // for calculating the draggable-div width of the timeline
         calculateUnitLength(video_length); // calculate unit length of the timeline width based on video length
         fetchDialogData(); // use axios and get dialog timestamps for the Dialog Timeline});
-        fetchAudioDescriptionNClips();
+        fetchAudioDescriptionData();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
   // use axios to get audio descriptions for the videoId (set in fetchUserVideoData()) & userId passed to the url Params
-  const fetchAudioDescriptionNClips = () => {
+  const fetchAudioDescriptionData = () => {
     //  this API fetches the audioDescription and all related AudioClips based on the UserID & VideoID
     axios
       .get(
         `http://localhost:4000/api/audio-descriptions/get-user-ad/${videoId}&${userId}`
       )
       .then((res) => {
-        const ad_id = res.data.ad_id;
-        // data is nested - so AudioClips data is in res.data.Audio_Clips
-        const audioClipsData = res.data.Audio_Clips;
-        setAudioDescriptionId(ad_id);
+        setAudioDescriptionId(res.data.ad_id);
         setIsPublished(res.data.is_published);
-        return audioClipsData;
+        return res.data;
       })
-      .then((audioClipsData) => {
+      .then((data) => {
+        // data is nested - so AudioClips data is in res.data.Audio_Clips
+        const audioClipsData = data.Audio_Clips;
+        // data is nested - so Notes data is in res.data.Notes
+        const notesData = data.Notes[0];
         // update the audio path for every clip row - the path might change later- TODO: change the server IP
         audioClipsData.forEach((clip, i) => {
           clip.clip_audio_path = clip.clip_audio_path.replace(
@@ -159,9 +161,10 @@ const YDXHome = (props) => {
           clip.clip_sequence_num = i + 1;
         });
         setAudioClips(audioClipsData);
+        setNotesData(notesData);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -291,6 +294,7 @@ const YDXHome = (props) => {
         <Notes
           currentTime={convertSecondsToCardFormat(currentTime)}
           audioDescriptionId={audioDescriptionId}
+          notesData={notesData}
         />
       </div>
       <hr />
