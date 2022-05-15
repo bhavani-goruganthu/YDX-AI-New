@@ -45,7 +45,7 @@ const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
         setNoteId(res.data.notes_id); // setting this in the case of inserting new note
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -63,11 +63,6 @@ const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
         console.log(tempNoteDetails);
         setNoteDetails(tempNoteDetails);
       }
-      // else {
-      //   alert(
-      //     'Please check the format of the note (Timestamp should have only numbers)'
-      //   );
-      // }
     });
   };
 

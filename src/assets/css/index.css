@@ -35,3 +35,11 @@ button:hover {
   --success-color: #19887E;  
   --inactive-color: #cdcdcd;
 }
+
+/* remove box shadow for Toasts */
+.Toastify__close-button {
+  box-shadow: none;
+}
+.Toastify__close-button:hover {
+  box-shadow: none;
+}

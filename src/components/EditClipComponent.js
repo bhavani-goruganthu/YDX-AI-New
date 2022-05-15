@@ -3,6 +3,7 @@ import { useReactMediaRecorder } from 'react-media-recorder';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import '../assets/css/editAudioDesc.css';
 import axios from 'axios';
+import { toast } from 'react-toastify'; // for toast messages
 
 const EditClipComponent = (props) => {
   // destructuring props
@@ -246,6 +247,8 @@ const EditClipComponent = (props) => {
     e.preventDefault();
     // check if the clip has been updated
     if (clipDescriptionText !== clip_description_text) {
+      // show spinner
+      props.setShowSpinner(true);
       axios
         .put(
           `http://localhost:4000/api/audio-clips/update-ad-description/${clip_id}`,
@@ -259,10 +262,12 @@ const EditClipComponent = (props) => {
         .then((res) => {
           // below prop is used to re-render the parent component i.e. fetch audio clip data
           setUpdateData(!updateData);
-          alert('Description saved Successfully!!');
+          props.setShowSpinner(false); // stop showing spinner
+          toast.success('Description Saved Successfully!!'); // show toast message
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          // err.response.data.message has the message text send by the server
+          toast.error(err.response.data.message); // show toast message
         });
     }
   };
