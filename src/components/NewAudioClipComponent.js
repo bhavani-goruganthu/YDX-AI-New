@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
-import { nanoid } from 'nanoid'; // to generate Unique AudioClip Id
 import '../assets/css/audioDesc.css';
 import '../assets/css/editAudioDesc.css';
+import { toast } from 'react-toastify';
 
 const NewAudioClipComponent = (props) => {
   // destructuring props
@@ -36,22 +36,6 @@ const NewAudioClipComponent = (props) => {
   const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(
     convertSecondsToCardFormat(currentTime).split(':')[2]
   );
-  const [showStartTimeError, setShowStartTimeError] = useState(false); // to show error for start time
-  const [showSaveClipError, setShowSaveClipError] = useState(false); // to show error while saving new audio clip
-  const [errorMessage, setErrorMessage] = useState(''); // set the error message to display after clicking on save
-
-  // timeout for the alert
-  if (showStartTimeError) {
-    setTimeout(() => {
-      setShowStartTimeError(false);
-    }, 4000);
-  }
-  // timeout for the errorMessage
-  if (showSaveClipError) {
-    setTimeout(() => {
-      setShowSaveClipError(false);
-    }, 4000);
-  }
 
   useEffect(() => {
     // scroll to the bottom of the screen and make the Inline AD component visible
@@ -71,7 +55,7 @@ const NewAudioClipComponent = (props) => {
     let calculatedSeconds = +hours * 60 * 60 + +minutes * 60 + +seconds;
     // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
     if (calculatedSeconds > videoLength) {
-      setShowStartTimeError(true);
+      toast.error('Oops!! Start Time cannot be later than the video end time.'); // show toast error message
       setClipStartTimeHours(
         convertSecondsToCardFormat(currentTime).split(':')[0]
       );
@@ -204,14 +188,12 @@ const NewAudioClipComponent = (props) => {
   const handleSaveNewAudioClip = (e) => {
     e.preventDefault();
     if (newACTitle === '') {
-      setErrorMessage('Please enter a Title');
-      setShowSaveClipError(true); // display the appropriate error msg
+      toast.error('Please enter a Title');
     } else {
       if (newACDescriptionText === '' && mediaBlobUrl === null) {
-        setErrorMessage(
+        toast.error(
           'Please enter a description text for the New Clip or record one'
         );
-        setShowSaveClipError(true); // display the appropriate error msg
       } else {
         const playbackType = showInlineACComponent ? 'inline' : 'extended';
       }
@@ -332,21 +314,7 @@ const NewAudioClipComponent = (props) => {
               </div>
             </div>
           </div>
-          <div>
-            {showStartTimeError ? (
-              <div className="bg-white rounded p-1 mb-1 text-center">
-                <h6 className="text-danger small mb-0">
-                  <i
-                    className="fa fa-exclamation-circle"
-                    aria-hidden="true"
-                  ></i>{' '}
-                  Start Time cannot be later than the video end time
-                </h6>
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
+          <div></div>
         </div>
       </div>
       <hr className="m-2" />
@@ -451,12 +419,6 @@ const NewAudioClipComponent = (props) => {
         >
           <i className="fa fa-save" /> {'  '} Save
         </button>
-        {/* OnSave - show error message if any */}
-        {showSaveClipError ? (
-          <h6 className="mb-0 mt-2">{errorMessage}</h6>
-        ) : (
-          <></>
-        )}
       </div>
     </div>
   );

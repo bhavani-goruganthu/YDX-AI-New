@@ -46,14 +46,6 @@ const EditClipComponent = (props) => {
   const [adAudio, setAdAudio] = useState('');
   const [isAdAudioPlaying, setIsAdAudioPlaying] = useState(false);
   const [isYoutubeVideoPlaying, setIsYoutubeVideoPlaying] = useState(false);
-  const [showStartTimeError, setShowStartTimeError] = useState(false);
-
-  // timeout for the alert
-  if (showStartTimeError) {
-    setTimeout(() => {
-      setShowStartTimeError(false);
-    }, 4000);
-  }
 
   // initialize state variables from props
   const [clipDescriptionText, setClipDescriptionText] = useState(
@@ -68,7 +60,11 @@ const EditClipComponent = (props) => {
     setAdAudio(new Audio(clip_audio_path));
     // render the start time input fields based on the updated prop value - props_clip_start_time
     handleClipStartTimeInputsRender();
-  }, [mediaBlobUrl, props_clip_start_time, props.clip_audio_path]);
+  }, [
+    mediaBlobUrl,
+    // props_clip_start_time, props.clip_audio_path,
+    props, // re-render whenever the props change
+  ]);
 
   // render the values in the input[type='number'] fields of the start time - renders everytime the props_clip_start_time value changes
   const handleClipStartTimeInputsRender = () => {
@@ -88,7 +84,7 @@ const EditClipComponent = (props) => {
     let calculatedSeconds = +hours * 60 * 60 + +minutes * 60 + +seconds;
     // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
     if (calculatedSeconds > videoLength) {
-      setShowStartTimeError(true);
+      toast.error('Oops!! Start Time cannot be later than the video end time.'); // show toast error message
       handleClipStartTimeInputsRender();
     } else {
       // handleClipStartTimeUpdate is the prop function received from parent component - this runs an axios PUT call and updates the clipStartTime
@@ -376,24 +372,13 @@ const EditClipComponent = (props) => {
                   />
                 </div>
               </div>
-              {showStartTimeError ? (
-                <div className="bg-white rounded p-1 mb-1 text-center">
-                  <h6 className="text-danger small mb-0">
-                    <i
-                      className="fa fa-exclamation-circle"
-                      aria-hidden="true"
-                    ></i>{' '}
-                    Start Time cannot be later than the video end time
-                  </h6>
-                </div>
-              ) : (
-                <div>
-                  <h6 className="text-white text-center">
-                    {/* Duration: {convertSecondsToCardFormat(clip_duration)} sec*/}
-                    Duration: {parseFloat(clip_duration).toFixed(2)} sec
-                  </h6>
-                </div>
-              )}
+              {/* Clip Duration div */}
+              <div>
+                <h6 className="text-white text-center">
+                  {/* Duration: {convertSecondsToCardFormat(clip_duration)} sec*/}
+                  Duration: {parseFloat(clip_duration).toFixed(2)} sec
+                </h6>
+              </div>
             </div>
           </div>
         </div>

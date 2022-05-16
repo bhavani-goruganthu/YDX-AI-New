@@ -55,8 +55,9 @@ const AudioClipComponent = (props) => {
     setAdDraggableWidth(clip_duration * unitLength);
   }, [
     unitLength, // re-render when unit-length from the props changes
-    clipStartTime, // re-render when the state variable clipStartTime
-    clip_start_time, // re-render when the clipStartTime from props changes
+    // clipStartTime, // re-render when the state variable clipStartTime
+    // clip_start_time, // re-render when the clipStartTime from props changes
+    props,
   ]);
 
   // Dialog Timeline Draggable Functions
@@ -89,6 +90,7 @@ const AudioClipComponent = (props) => {
     }
   };
 
+  // handle put (update) requests
   // handle update of start time from handleLeftNudgeClick, handleRightNudgeClick, stopADBar
   const handleClipStartTimeUpdate = (updatedClipStartTime) => {
     axios
@@ -107,7 +109,6 @@ const AudioClipComponent = (props) => {
       });
   };
 
-  // handle put (update) requests
   // update clip title
   const handleClipTitleUpdate = (e) => {
     setClipTitle(e.target.value);
@@ -158,7 +159,9 @@ const AudioClipComponent = (props) => {
               <h6 className="mt-1 text-white">
                 <b>Type: </b>
                 {clip_description_type.charAt(0).toUpperCase() +
-                  clip_description_type.slice(1)}
+                  clip_description_type.slice(1)}{' '}
+                <b>End: </b>
+                {clip_end_time}
               </h6>
             </div>
           </div>

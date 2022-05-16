@@ -21,8 +21,7 @@ const App = () => {
         draggable
         pauseOnFocusLoss
         pauseOnHover
-        theme="dark"
-        transition={Zoom}
+        theme="colored"
       />
     </BrowserRouter>
   );
