@@ -113,6 +113,7 @@ const YDXHome = (props) => {
       })
       .catch((err) => {
         console.error(err);
+        setShowSpinner(true);
       });
   };
 
@@ -142,6 +143,7 @@ const YDXHome = (props) => {
       })
       .catch((err) => {
         console.error(err);
+        setShowSpinner(true);
       });
   };
 
@@ -178,6 +180,7 @@ const YDXHome = (props) => {
       })
       .catch((err) => {
         console.error(err);
+        setShowSpinner(true);
       });
   };
 
