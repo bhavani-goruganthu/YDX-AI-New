@@ -113,12 +113,24 @@ const EditClipComponent = (props) => {
       adAudio.pause();
       setIsAdAudioPlaying(false);
     } else {
-      adAudio.play();
-      setIsAdAudioPlaying(true);
-      // this is for setting setIsAdAudioPlaying variable to false, once the playback is completed.
-      adAudio.addEventListener('ended', function () {
-        setIsAdAudioPlaying(false);
-      });
+      let audioProm = adAudio.play();
+      // handle exceptions in playing audio - like having the wrong url in the audiopath
+      if (audioProm !== undefined) {
+        audioProm
+          .then(() => {
+            // Automatic playback started!
+            setIsAdAudioPlaying(true);
+            // this is for setting setIsAdAudioPlaying variable to false, once the playback is completed.
+            adAudio.addEventListener('ended', function () {
+              setIsAdAudioPlaying(false);
+            });
+          })
+          .catch((err) => {
+            // Auto-play was prevented
+            toast.error('Oops! Cannot find Audio. Please try later.');
+            // console.error(err);
+          });
+      }
     }
   };
 
