@@ -259,7 +259,7 @@ const EditClipComponent = (props) => {
       props.setShowSpinner(true);
       axios
         .put(
-          `http://localhost:4000/api/audio-clips/update-ad-description/${clip_id}`,
+          `http://localhost:4000/api/audio-clips/update-clip-description/${clip_id}`,
           {
             userId: userId,
             youtubeVideoId: youtubeVideoId,

@@ -95,7 +95,7 @@ const AudioClipComponent = (props) => {
   const handleClipStartTimeUpdate = (updatedClipStartTime) => {
     axios
       .put(
-        `http://localhost:4000/api/audio-clips/update-ad-start-time/${clip_id}`,
+        `http://localhost:4000/api/audio-clips/update-clip-start-time/${clip_id}`,
         {
           clipStartTime: updatedClipStartTime,
         }
@@ -113,9 +113,12 @@ const AudioClipComponent = (props) => {
   const handleClipTitleUpdate = (e) => {
     setClipTitle(e.target.value);
     axios
-      .put(`http://localhost:4000/api/audio-clips/update-ad-title/${clip_id}`, {
-        adTitle: e.target.value,
-      })
+      .put(
+        `http://localhost:4000/api/audio-clips/update-clip-title/${clip_id}`,
+        {
+          adTitle: e.target.value,
+        }
+      )
       .then((res) => {
         // console.log(res.data)
       })
@@ -128,7 +131,7 @@ const AudioClipComponent = (props) => {
     setClipPlayBackType(e.target.value);
     axios
       .put(
-        `http://localhost:4000/api/audio-clips/update-ad-playback-type/${clip_id}`,
+        `http://localhost:4000/api/audio-clips/update-clip-playback-type/${clip_id}`,
         {
           clipPlaybackType: e.target.value,
         }
