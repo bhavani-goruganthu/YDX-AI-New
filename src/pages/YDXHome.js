@@ -162,9 +162,13 @@ const YDXHome = (props) => {
         const notesData = data.Notes[0];
         // update the audio path for every clip row - the path might change later- TODO: change the server IP
         audioClipsData.forEach((clip, i) => {
-          clip.clip_audio_path = clip.clip_audio_path.replace('.', '');
+          clip.clip_audio_path = clip.clip_audio_path.replace(
+            '.',
+            '/api/static'
+          );
           // add a sequence number for every audio clip
           clip.clip_sequence_num = i + 1;
+          console.log(clip.clip_audio_path);
         });
         setAudioClips(audioClipsData);
         setNotesData(notesData);
