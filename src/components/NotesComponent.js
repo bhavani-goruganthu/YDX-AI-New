@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import '../assets/css/editAudioDesc.css';
 import '../assets/css/notes.css';
 
@@ -30,8 +31,23 @@ const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
   };
 
   const handleNoteChange = (e) => {
-    setNoteValue(e.target.value);
-    handleNoteAutoSave(e.target.value);
+    let updatedNoteValue = '';
+    if (noteValue === '') {
+      // insert current time if all notes is cleared and didn't lose focus
+      updatedNoteValue = currentTime + ' - ' + e.target.value;
+    } else if (noteValue.split('').reverse().join('').indexOf('\n') === 0) {
+      // After a new line/enter, if user clears the time and enters note directly
+      // e.nativeEvent.data will have the key entered - adding currentime before that
+      if (e.nativeEvent.data !== null) {
+        updatedNoteValue = noteValue + currentTime + ' - ' + e.nativeEvent.data;
+      } else {
+        updatedNoteValue = e.target.value;
+      }
+    } else {
+      updatedNoteValue = e.target.value;
+    }
+    setNoteValue(updatedNoteValue);
+    handleNoteAutoSave(updatedNoteValue);
   };
 
   const handleNoteAutoSave = (currentNoteValue) => {
@@ -46,6 +62,7 @@ const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
       })
       .catch((err) => {
         console.error(err);
+        toast.error('Error Saving Note! Please Try Again');
       });
   };
 

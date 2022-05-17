@@ -163,8 +163,8 @@ const AudioClipComponent = (props) => {
                 <b>Type: </b>
                 {clip_description_type.charAt(0).toUpperCase() +
                   clip_description_type.slice(1)}{' '}
-                <b>End: </b>
-                {clip_end_time}
+                {/* <b>End: </b>
+                {clip_end_time} */}
               </h6>
             </div>
           </div>

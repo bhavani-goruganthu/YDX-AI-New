@@ -112,7 +112,7 @@ const YDXHome = (props) => {
         setVideoDialogTimestamps(updatedDialogData);
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
         setShowSpinner(true);
       });
   };
@@ -142,7 +142,7 @@ const YDXHome = (props) => {
         fetchAudioDescriptionData();
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
         setShowSpinner(true);
       });
   };
@@ -179,7 +179,7 @@ const YDXHome = (props) => {
         setNotesData(notesData);
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
         setShowSpinner(true);
       });
   };
