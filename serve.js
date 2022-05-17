@@ -1,15 +1,28 @@
 const express = require('express');
 const path = require('path');
+const httpProxy = require('http-proxy');
 const app = express();
+const port = process.env.PORT_NUMBER || 80;
 
-app.use(express.static('build'));
+const apiProxy = httpProxy.createProxyServer();
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+apiProxy.on('error', (err, req, res) => {
+  console.log(err);
+  res.status(500).send('Proxy Error');
 });
 
-const PORT = 4000;
-
-app.listen(PORT, () => {
-  console.log(`server started on port ${PORT}`);
+app.all('/api/*', (req, res) => {
+  // sends api requests to the backend
+  console.log(req.path);
+  apiProxy.web(req, res, {
+    target: 'http://localhost:4000',
+  });
 });
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build/index.html'));
+});
+
+app.listen(port, () => console.log(`Front end server on port ${port}!`));
