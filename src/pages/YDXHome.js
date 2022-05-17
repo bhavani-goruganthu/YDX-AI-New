@@ -88,9 +88,7 @@ const YDXHome = (props) => {
   // use axios and get dialog timestamps for the Dialog Timeline
   const fetchDialogData = () => {
     axios
-      .get(
-        `http://localhost:4000/api/dialog-timestamps/get-video-dialog/${videoId}`
-      )
+      .get(`/api/dialog-timestamps/get-video-dialog/${videoId}`)
       .then((res) => {
         setShowSpinner(false);
         const dialogData = res.data;
@@ -120,9 +118,7 @@ const YDXHome = (props) => {
   // fetch videoId based on the youtubeVideoId which is later used to get audioClips
   const fetchUserVideoData = () => {
     axios
-      .get(
-        `http://localhost:4000/api/videos/get-by-youtubeVideo/${youtubeVideoId}`
-      )
+      .get(`/api/videos/get-by-youtubeVideo/${youtubeVideoId}`)
       .then((res) => {
         setShowSpinner(false);
         const video_id = res.data.video_id;
@@ -151,9 +147,7 @@ const YDXHome = (props) => {
   const fetchAudioDescriptionData = () => {
     //  this API fetches the audioDescription and all related AudioClips based on the UserID & VideoID
     axios
-      .get(
-        `http://localhost:4000/api/audio-descriptions/get-user-ad/${videoId}&${userId}`
-      )
+      .get(`/api/audio-descriptions/get-user-ad/${videoId}&${userId}`)
       .then((res) => {
         setShowSpinner(false);
         setAudioDescriptionId(res.data.ad_id);
@@ -168,10 +162,7 @@ const YDXHome = (props) => {
         const notesData = data.Notes[0];
         // update the audio path for every clip row - the path might change later- TODO: change the server IP
         audioClipsData.forEach((clip, i) => {
-          clip.clip_audio_path = clip.clip_audio_path.replace(
-            '.',
-            'http://localhost:4000'
-          );
+          clip.clip_audio_path = clip.clip_audio_path.replace('.', '');
           // add a sequence number for every audio clip
           clip.clip_sequence_num = i + 1;
         });

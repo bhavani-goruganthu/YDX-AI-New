@@ -94,12 +94,9 @@ const AudioClipComponent = (props) => {
   // handle update of start time from handleLeftNudgeClick, handleRightNudgeClick, stopADBar
   const handleClipStartTimeUpdate = (updatedClipStartTime) => {
     axios
-      .put(
-        `http://localhost:4000/api/audio-clips/update-clip-start-time/${clip_id}`,
-        {
-          clipStartTime: updatedClipStartTime,
-        }
-      )
+      .put(`/api/audio-clips/update-clip-start-time/${clip_id}`, {
+        clipStartTime: updatedClipStartTime,
+      })
       .then((res) => {
         // below prop is used to re-render the parent component i.e. fetch audio clip data
         setUpdateData(!updateData);
@@ -113,12 +110,9 @@ const AudioClipComponent = (props) => {
   const handleClipTitleUpdate = (e) => {
     setClipTitle(e.target.value);
     axios
-      .put(
-        `http://localhost:4000/api/audio-clips/update-clip-title/${clip_id}`,
-        {
-          adTitle: e.target.value,
-        }
-      )
+      .put(`/api/audio-clips/update-clip-title/${clip_id}`, {
+        adTitle: e.target.value,
+      })
       .then((res) => {
         // console.log(res.data)
       })
@@ -130,12 +124,9 @@ const AudioClipComponent = (props) => {
   const handlePlaybackTypeUpdate = (e) => {
     setClipPlayBackType(e.target.value);
     axios
-      .put(
-        `http://localhost:4000/api/audio-clips/update-clip-playback-type/${clip_id}`,
-        {
-          clipPlaybackType: e.target.value,
-        }
-      )
+      .put(`/api/audio-clips/update-clip-playback-type/${clip_id}`, {
+        clipPlaybackType: e.target.value,
+      })
       .then((res) => {
         setUpdateData(!updateData);
       })

@@ -258,15 +258,12 @@ const EditClipComponent = (props) => {
       // show spinner
       props.setShowSpinner(true);
       axios
-        .put(
-          `http://localhost:4000/api/audio-clips/update-clip-description/${clip_id}`,
-          {
-            userId: userId,
-            youtubeVideoId: youtubeVideoId,
-            clipDescriptionText: clipDescriptionText,
-            clipDescriptionType: clip_description_type,
-          }
-        )
+        .put(`/api/audio-clips/update-clip-description/${clip_id}`, {
+          userId: userId,
+          youtubeVideoId: youtubeVideoId,
+          clipDescriptionText: clipDescriptionText,
+          clipDescriptionType: clip_description_type,
+        })
         .then((res) => {
           // below prop is used to re-render the parent component i.e. fetch audio clip data
           setUpdateData(!updateData);
@@ -291,7 +288,7 @@ const EditClipComponent = (props) => {
               <h6 className="text-white">Clip Description:</h6>
               <textarea
                 className="form-control form-control-sm border rounded text-center description-textarea"
-                rows="2"
+                rows="3"
                 id="description"
                 name="description"
                 // defaultValue={clip_description_text}
