@@ -52,7 +52,7 @@ const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
 
   const handleNoteAutoSave = (currentNoteValue) => {
     axios
-      .post('http://localhost:4000/api/notes/post-note', {
+      .post('/api/notes/post-note', {
         noteId: noteId,
         notes: currentNoteValue,
         adId: audioDescriptionId,
