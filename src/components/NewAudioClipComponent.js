@@ -4,6 +4,7 @@ import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardF
 import '../assets/css/audioDesc.css';
 import '../assets/css/editAudioDesc.css';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const NewAudioClipComponent = (props) => {
   // destructuring props
@@ -11,6 +12,7 @@ const NewAudioClipComponent = (props) => {
   let setShowNewACComponent = props.setShowNewACComponent;
   const currentTime = props.currentTime;
   const videoLength = props.videoLength;
+  const audioDescriptionId = props.audioDescriptionId;
 
   // for audio Recording
   // variable and function declaration of the react-media-recorder package
@@ -23,8 +25,9 @@ const NewAudioClipComponent = (props) => {
 
   // state variables - for new AD
   const [newACTitle, setNewACTitle] = useState('');
-  const [newACType, setNewACType] = useState('nonOCR'); // default for Visual
+  const [newACType, setNewACType] = useState('Visual'); // default for Visual
   const [newACDescriptionText, setNewACDescriptionText] = useState('');
+  const [newACStartTime, setNewACStartTime] = useState(0.0);
 
   // use 3 state variables to hold the value of 3 input type number fields
   const [clipStartTimeHours, setClipStartTimeHours] = useState(
@@ -65,6 +68,8 @@ const NewAudioClipComponent = (props) => {
       setClipStartTimeSeconds(
         convertSecondsToCardFormat(currentTime).split(':')[2]
       );
+    } else {
+      setNewACStartTime(calculatedSeconds);
     }
   };
 
@@ -165,10 +170,6 @@ const NewAudioClipComponent = (props) => {
     );
   };
 
-  const handleCloseNewAD = () => {
-    setShowNewACComponent(false);
-  };
-
   // function for toggling play pause functionality of the recorded audio - on button click
   const handlePlayPauseRecordedAudio = () => {
     if (isRecordedAudioPlaying) {
@@ -195,9 +196,36 @@ const NewAudioClipComponent = (props) => {
           'Please enter a description text for the New Clip or record one'
         );
       } else {
-        const playbackType = showInlineACComponent ? 'inline' : 'extended';
+        if (mediaBlobUrl !== null) {
+          // axios call to backend with isRecorded true
+          saveNewClipInDB({ isRecorded: true });
+        } else {
+          // axios call to backend with isRecorded false
+          saveNewClipInDB({ isRecorded: false });
+        }
       }
     }
+  };
+
+  const saveNewClipInDB = ({ isRecorded }) => {
+    const newACPlaybackType = showInlineACComponent ? 'inline' : 'extended';
+    axios
+      .post(`/api/audio-clips/add-new-clip/${audioDescriptionId}`, {
+        newACTitle: newACTitle,
+        newACType: newACType,
+        newACDescriptionText: newACDescriptionText,
+        newACPlaybackType: newACPlaybackType,
+        newACStartTime: newACStartTime,
+        isRecorded: isRecorded,
+      })
+      .then((res) => {
+        toast.success('New Clip Added Successfully!!');
+        window.location.reload(); // force reload the page to pull the new audio clip on to the page - Any other efficient way??
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error('Error Adding New Clip. Please try again later.');
+      });
   };
 
   return (
@@ -206,7 +234,9 @@ const NewAudioClipComponent = (props) => {
       <div className="mx-2 text-end">
         <i
           className="fa fa-close fs-4 close-icon "
-          onClick={handleCloseNewAD}
+          onClick={() => {
+            setShowNewACComponent(false);
+          }}
         ></i>
       </div>
       {/* div for radio button, title, type, start time */}
@@ -259,11 +289,11 @@ const NewAudioClipComponent = (props) => {
             className="form-select form-select-sm text-center mx-2"
             aria-label="Select the type of new AD"
             required
-            defaultValue={'nonOCR'}
+            defaultValue={'Visual'}
             onChange={(e) => setNewACType(e.target.value)}
           >
-            <option value="nonOCR">Visual</option>
-            <option value="OCR">Text on Screen</option>
+            <option value="Visual">Visual</option>
+            <option value="Text on Screen">Text on Screen</option>
           </select>
         </div>
         {/* Start Time Div */}
@@ -314,7 +344,6 @@ const NewAudioClipComponent = (props) => {
               </div>
             </div>
           </div>
-          <div></div>
         </div>
       </div>
       <hr className="m-2" />

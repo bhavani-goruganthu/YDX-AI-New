@@ -168,7 +168,7 @@ const YDXHome = (props) => {
           );
           // add a sequence number for every audio clip
           clip.clip_sequence_num = i + 1;
-          console.log(clip.clip_audio_path);
+          // console.log(clip.clip_audio_path);
         });
         setAudioClips(audioClipsData);
         setNotesData(notesData);
@@ -382,6 +382,7 @@ const YDXHome = (props) => {
         <InsertPublishComponent
           currentTime={currentTime}
           videoLength={videoLength}
+          audioDescriptionId={audioDescriptionId}
         />
       </div>
     </React.Fragment>
