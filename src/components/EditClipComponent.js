@@ -4,6 +4,7 @@ import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardF
 import '../assets/css/editAudioDesc.css';
 import axios from 'axios';
 import { toast } from 'react-toastify'; // for toast messages
+import Modal from '../pages/Modal';
 
 const EditClipComponent = (props) => {
   // destructuring props
@@ -277,6 +278,11 @@ const EditClipComponent = (props) => {
     }
   };
 
+  const handleClickDeleteClip = (e) => {
+    e.preventDefault();
+    console.log(clip_id);
+  };
+
   return (
     <div className="edit-component text-white">
       <div className="d-flex justify-content-evenly align-items-center">
@@ -300,6 +306,7 @@ const EditClipComponent = (props) => {
                 <button
                   type="button"
                   className="btn rounded btn-sm text-white bg-danger"
+                  onClick={handleClickDeleteClip}
                 >
                   <i className="fa fa-trash" /> {'  '} Delete
                 </button>
@@ -544,43 +551,11 @@ const EditClipComponent = (props) => {
       </div>
 
       {/* <!-- Replace Modal --> Confirmation Modal - opens when user hits Replace and asks for a confirmation if AI's audio is to be replaced with the user recorded audio*/}
-      <div className="modal fade text-dark" id="replaceModal">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            {/* <!-- Modal Header --> */}
-            <div className="modal-header">
-              <h4 className="modal-title">Replace</h4>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
-            </div>
-            {/* <!-- Modal body --> */}
-            <div className="modal-body text-center">
-              Are you sure you want to replace AI's voice with the one you
-              recorded?
-            </div>
-            {/* <!-- Modal footer --> */}
-            <div className="modal-footer d-flex justify-content-center align-items-center">
-              <button
-                type="button"
-                className="btn primary-btn-color text-center m-1 text-white"
-                data-dismiss="modal"
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn primary-btn-color text-white"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Modal
+        id="replaceModal"
+        title="Replace"
+        text="Are you sure you want to replace AI's voice with the one you recorded?"
+      />
     </div>
   );
 };
