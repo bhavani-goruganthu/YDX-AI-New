@@ -4,6 +4,7 @@ const Modal = (props) => {
   const modalId = props.id;
   const modalTitle = props.title;
   const modalText = props.text;
+  const modalTask = props.modalTask;
 
   return (
     <div className="modal fade text-dark" id={modalId}>
@@ -26,6 +27,9 @@ const Modal = (props) => {
               type="button"
               className="btn primary-btn-color text-center m-1 text-white"
               data-dismiss="modal"
+              onClick={(e) => {
+                modalTask(e);
+              }}
             >
               Yes
             </button>

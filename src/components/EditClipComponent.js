@@ -280,7 +280,21 @@ const EditClipComponent = (props) => {
 
   const handleClickDeleteClip = (e) => {
     e.preventDefault();
-    console.log(clip_id);
+    axios
+      .delete(`/api/audio-clips/delete-clip/${clip_id}`)
+      .then((res) => {
+        toast.success(
+          'Clip Deleted Successfully!! Please wait while we fetch latest Clip Data'
+        );
+        // showspinner;
+        setTimeout(() => {
+          window.location.reload(); // force reload the page to pull the new audio clip on to the page - Any other efficient way??
+        }, 4000); // setting the timeout to show the toast message for 4 sec
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error('Error Deleting Clip. Please try again later.');
+      });
   };
 
   return (
@@ -306,7 +320,8 @@ const EditClipComponent = (props) => {
                 <button
                   type="button"
                   className="btn rounded btn-sm text-white bg-danger"
-                  onClick={handleClickDeleteClip}
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
                 >
                   <i className="fa fa-trash" /> {'  '} Delete
                 </button>
@@ -555,6 +570,13 @@ const EditClipComponent = (props) => {
         id="replaceModal"
         title="Replace"
         text="Are you sure you want to replace AI's voice with the one you recorded?"
+      />
+      {/* <!-- Delete Modal --> Confirmation Modal - opens when user hits Delete and asks for a confirmation if Audio Clip need to be deleted*/}
+      <Modal
+        id="deleteModal"
+        title="Delete"
+        text="Are you sure you want to delete the Audio Clip?"
+        modalTask={handleClickDeleteClip}
       />
     </div>
   );
