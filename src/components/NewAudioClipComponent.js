@@ -8,6 +8,8 @@ import axios from 'axios';
 
 const NewAudioClipComponent = (props) => {
   // destructuring props
+  const userId = props.userId;
+  const youtubeVideoId = props.youtubeVideoId;
   let showInlineACComponent = props.showInlineACComponent;
   let setShowNewACComponent = props.setShowNewACComponent;
   const currentTime = props.currentTime;
@@ -207,16 +209,33 @@ const NewAudioClipComponent = (props) => {
     }
   };
 
-  const saveNewClipInDB = ({ isRecorded }) => {
+  const saveNewClipInDB = async ({ isRecorded }) => {
     const newACPlaybackType = showInlineACComponent ? 'inline' : 'extended';
+    // create a new FormData object for easy file uploads
+    let formData = new FormData();
+    formData.append('newACTitle', newACTitle);
+    formData.append('newACType', newACType);
+    formData.append('newACPlaybackType', newACPlaybackType);
+    formData.append('newACStartTime', newACStartTime);
+    formData.append('isRecorded', isRecorded);
+    formData.append('youtubeVideoId', youtubeVideoId);
+    formData.append('userId', userId);
+    if (!isRecorded) {
+      formData.append('newACDescriptionText', newACDescriptionText);
+    } else {
+      const audioBlob = await fetch(mediaBlobUrl).then((r) => r.blob()); // get blob from the audio URI
+      const audioFile = new File([audioBlob], 'voice.mp3', {
+        type: 'audio/mp3',
+      });
+      formData.append('newACDescriptionText', '');
+      formData.append('file', audioFile);
+    }
+    // upload formData using axios
     axios
-      .post(`/api/audio-clips/add-new-clip/${audioDescriptionId}`, {
-        newACTitle: newACTitle,
-        newACType: newACType,
-        newACDescriptionText: newACDescriptionText,
-        newACPlaybackType: newACPlaybackType,
-        newACStartTime: newACStartTime,
-        isRecorded: isRecorded,
+      .post(`/api/audio-clips/add-new-clip/${audioDescriptionId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        reportProgress: true,
+        observe: 'events',
       })
       .then((res) => {
         toast.success('New Clip Added Successfully!!');

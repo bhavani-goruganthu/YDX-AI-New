@@ -380,6 +380,8 @@ const YDXHome = (props) => {
           ))}
         </div>
         <InsertPublishComponent
+          userId={userId}
+          youtubeVideoId={youtubeVideoId}
           currentTime={currentTime}
           videoLength={videoLength}
           audioDescriptionId={audioDescriptionId}

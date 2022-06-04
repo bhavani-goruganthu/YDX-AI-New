@@ -6,6 +6,8 @@ import Modal from '../pages/Modal';
 
 const InsertPublishComponent = (props) => {
   // destructuring props
+  const userId = props.userId;
+  const youtubeVideoId = props.youtubeVideoId;
   const currentTime = props.currentTime;
   const videoLength = props.videoLength;
   const audioDescriptionId = props.audioDescriptionId;
@@ -33,6 +35,8 @@ const InsertPublishComponent = (props) => {
             Clip
           </h5>
           <NewAudioClipComponent
+            userId={userId}
+            youtubeVideoId={youtubeVideoId}
             showInlineACComponent={showInlineACComponent}
             setShowNewACComponent={setShowNewACComponent}
             currentTime={currentTime}
