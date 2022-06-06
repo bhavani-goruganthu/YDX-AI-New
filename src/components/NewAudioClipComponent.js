@@ -221,6 +221,7 @@ const NewAudioClipComponent = (props) => {
     formData.append('youtubeVideoId', youtubeVideoId);
     formData.append('userId', userId);
     if (!isRecorded) {
+      console.log(isRecorded);
       formData.append('newACDescriptionText', newACDescriptionText);
     } else {
       const audioBlob = await fetch(mediaBlobUrl).then((r) => r.blob()); // get blob from the audio URI
@@ -239,10 +240,12 @@ const NewAudioClipComponent = (props) => {
       })
       .then((res) => {
         toast.success('New Clip Added Successfully!!');
-        window.location.reload(); // force reload the page to pull the new audio clip on to the page - Any other efficient way??
+        setTimeout(() => {
+          window.location.reload(); // force reload the page to pull the new audio clip on to the page - Any other efficient way??
+        }, 2000); // setting the timeout to show the toast message for 2 sec
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data.message);
         toast.error('Error Adding New Clip. Please try again later.');
       });
   };
