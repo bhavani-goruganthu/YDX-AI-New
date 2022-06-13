@@ -241,10 +241,10 @@ const NewAudioClipComponent = (props) => {
         observe: 'events',
       })
       .then((res) => {
-        toast.success('New Clip Added Successfully!!');
+        toast.success(`New Clip Added Successfully!!\n${res.data}`);
         setTimeout(() => {
           window.location.reload(); // force reload the page to pull the new audio clip on to the page - Any other efficient way??
-        }, 2000); // setting the timeout to show the toast message for 2 sec
+        }, 4000); // setting the timeout to show the toast message for 2 sec
       })
       .catch((err) => {
         console.log(err.response.data.message);
