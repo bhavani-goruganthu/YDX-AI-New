@@ -381,6 +381,7 @@ const YDXHome = (props) => {
         </div>
         <InsertPublishComponent
           userId={userId}
+          setShowSpinner={setShowSpinner}
           youtubeVideoId={youtubeVideoId}
           currentTime={currentTime}
           videoLength={videoLength}

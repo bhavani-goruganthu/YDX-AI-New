@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import '../assets/css/editAudioDesc.css';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'; // for toast messages
 import Modal from '../pages/Modal';
 
 const EditClipComponent = (props) => {
+  const ref = useRef();
   // destructuring props
   //props of URL Params
   const userId = props.userId;
@@ -29,8 +30,8 @@ const EditClipComponent = (props) => {
   const props_clip_start_time = props.clip_start_time;
   const clip_duration = props.clip_duration;
   const is_recorded = props.is_recorded;
-  const recorded_audio_path = props.recorded_audio_path;
   const clip_audio_path = props.clip_audio_path;
+  const clip_created_at = props.clip_created_at;
 
   // use 3 state variables to hold the value of 3 input type number fields
   const [clipStartTimeHours, setClipStartTimeHours] = useState(0.0);
@@ -54,6 +55,17 @@ const EditClipComponent = (props) => {
   );
 
   useEffect(() => {
+    // scrolls to the latest clip when a new clip is added
+    var date = new Date();
+    var ONE_MIN = 1 * 60 * 1000;
+    if (date - new Date(clip_created_at) <= ONE_MIN) {
+      ref.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      });
+    }
+
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
     if (mediaBlobUrl !== null) {
       setRecordedAudio(new Audio(mediaBlobUrl));
@@ -279,6 +291,7 @@ const EditClipComponent = (props) => {
   };
 
   const handleClickDeleteClip = (e) => {
+    props.setShowSpinner(true);
     e.preventDefault();
     axios
       .delete(`/api/audio-clips/delete-clip/${clip_id}`)
@@ -286,10 +299,9 @@ const EditClipComponent = (props) => {
         toast.success(
           'Clip Deleted Successfully!! Please wait while we fetch latest Clip Data'
         );
-        // showspinner;
         setTimeout(() => {
           window.location.reload(); // force reload the page to pull the new audio clip on to the page - Any other efficient way??
-        }, 4000); // setting the timeout to show the toast message for 4 sec
+        }, 3000); // setting the timeout to show the toast message for 4 sec
       })
       .catch((err) => {
         console.error(err);
@@ -298,7 +310,7 @@ const EditClipComponent = (props) => {
   };
 
   return (
-    <div className="edit-component text-white">
+    <div className="edit-component text-white" ref={ref}>
       <div className="d-flex justify-content-evenly align-items-center">
         {/* Clip Description & Start time Div */}
         <div className="description-section mt-1">

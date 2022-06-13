@@ -6,6 +6,7 @@ import Modal from '../pages/Modal';
 
 const InsertPublishComponent = (props) => {
   // destructuring props
+  const setShowSpinner = props.setShowSpinner;
   const userId = props.userId;
   const youtubeVideoId = props.youtubeVideoId;
   const currentTime = props.currentTime;
@@ -42,6 +43,7 @@ const InsertPublishComponent = (props) => {
             currentTime={currentTime}
             videoLength={videoLength}
             audioDescriptionId={audioDescriptionId}
+            setShowSpinner={setShowSpinner}
           />
         </>
       ) : (

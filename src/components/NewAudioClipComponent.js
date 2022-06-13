@@ -8,6 +8,7 @@ import axios from 'axios';
 
 const NewAudioClipComponent = (props) => {
   // destructuring props
+  const setShowSpinner = props.setShowSpinner;
   const userId = props.userId;
   const youtubeVideoId = props.youtubeVideoId;
   let showInlineACComponent = props.showInlineACComponent;
@@ -189,6 +190,7 @@ const NewAudioClipComponent = (props) => {
 
   // to save the new audio clip into the database
   const handleSaveNewAudioClip = (e) => {
+    setShowSpinner(true);
     e.preventDefault();
     if (newACTitle === '') {
       toast.error('Please enter a Title');

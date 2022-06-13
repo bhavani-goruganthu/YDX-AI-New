@@ -32,7 +32,7 @@ const AudioClipComponent = (props) => {
   const clip_duration = props.clip.clip_duration;
   const clip_audio_path = props.clip.clip_audio_path;
   const is_recorded = props.clip.is_recorded;
-  const recorded_audio_path = props.clip.recorded_audio_path;
+  const clip_created_at = props.clip.createdAt;
 
   // React State Variables
   const [clipPlaybackType, setClipPlayBackType] = useState(clip_playback_type);
@@ -48,6 +48,12 @@ const AudioClipComponent = (props) => {
   });
 
   useEffect(() => {
+    // show the edit component of the new clip
+    var date = new Date();
+    var ONE_MIN = 1 * 60 * 1000;
+    if (date - new Date(clip_created_at) <= ONE_MIN) {
+      setShowEditComponent(true);
+    }
     //  update the clip start time based on the value from the props
     setClipStartTime(clip_start_time);
     // set draggable position & width
@@ -268,6 +274,7 @@ const AudioClipComponent = (props) => {
           handleClipStartTimeUpdate={handleClipStartTimeUpdate}
           userId={userId}
           youtubeVideoId={youtubeVideoId}
+          clip_created_at={clip_created_at}
           clip_id={clip_id}
           clip_description_type={clip_description_type}
           clip_description_text={clip_description_text}
@@ -275,7 +282,6 @@ const AudioClipComponent = (props) => {
           clip_start_time={clipStartTime}
           clip_duration={clip_duration}
           is_recorded={is_recorded}
-          recorded_audio_path={recorded_audio_path}
           clip_audio_path={clip_audio_path}
           currentTime={currentTime}
           updateData={updateData}
