@@ -61,6 +61,10 @@ const YDXHome = (props) => {
 
   useEffect(() => {
     setShowSpinner(true);
+    // set the toggle list back to empty if we are fetching the data again
+    if (updateData) {
+      setEditComponentToggleList([]);
+    }
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
   }, [
     draggableDivWidth,
@@ -168,6 +172,8 @@ const YDXHome = (props) => {
         const notesData = data.Notes[0];
         // update the audio path for every clip row - the path might change later- TODO: change the server IP
         var tempArray = [];
+        var date = new Date();
+        var ONE_MIN = 1 * 60 * 1000;
         audioClipsData.forEach((clip, i) => {
           clip.clip_audio_path = clip.clip_audio_path.replace(
             '.',
@@ -175,12 +181,21 @@ const YDXHome = (props) => {
           );
           // add a sequence number for every audio clip
           clip.clip_sequence_num = i + 1;
-          // logic to show/hide the edit component and add it to a list along with clip Id
-          // this hides one edit component when the other is opened
-          tempArray.push({
-            clipId: clip.clip_id,
-            showEditComponent: false,
-          });
+          // set the showEditComponent of the new clip to true.. compare time
+          if (date - new Date(clip.createdAt) <= ONE_MIN) {
+            // show Edit Component
+            tempArray.push({
+              clipId: clip.clip_id,
+              showEditComponent: true,
+            });
+          } else {
+            // logic to show/hide the edit component and add it to a list along with clip Id
+            // this hides one edit component when the other is opened
+            tempArray.push({
+              clipId: clip.clip_id,
+              showEditComponent: false,
+            });
+          }
         });
         if (editComponentToggleList.length === 0) {
           setEditComponentToggleList(tempArray);

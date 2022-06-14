@@ -57,14 +57,6 @@ const AudioClipComponent = (props) => {
           : setShowEditComponent(false);
       }
     });
-
-    // show the edit component of the new clip
-    var date = new Date();
-    var ONE_MIN = 1 * 60 * 1000;
-    if (date - new Date(clip_created_at) <= ONE_MIN) {
-      // show Edit Component
-      props.setEditComponentToggle(clip_id, true);
-    }
     //  update the clip start time based on the value from the props
     setClipStartTime(clip_start_time);
     // set draggable position & width
