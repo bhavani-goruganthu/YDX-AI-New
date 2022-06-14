@@ -223,7 +223,6 @@ const NewAudioClipComponent = (props) => {
     formData.append('youtubeVideoId', youtubeVideoId);
     formData.append('userId', userId);
     if (!isRecorded) {
-      console.log(isRecorded);
       formData.append('newACDescriptionText', newACDescriptionText);
     } else {
       const audioBlob = await fetch(mediaBlobUrl).then((r) => r.blob()); // get blob from the audio URI
@@ -377,9 +376,10 @@ const NewAudioClipComponent = (props) => {
           <h6 className="text-white">Add New Clip Description:</h6>
           <textarea
             className="form-control form-control-sm border rounded description-textarea"
-            rows="2"
+            rows="3"
             id="description"
             name="description"
+            placeholder="Start writing a Text Description.."
             value={newACDescriptionText}
             onChange={(e) => setNewACDescriptionText(e.target.value)}
           ></textarea>

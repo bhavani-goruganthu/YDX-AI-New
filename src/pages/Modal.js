@@ -26,7 +26,7 @@ const Modal = (props) => {
             <button
               type="button"
               className="btn primary-btn-color text-center m-1 text-white"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
               onClick={(e) => {
                 modalTask(e);
               }}

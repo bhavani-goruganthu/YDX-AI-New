@@ -50,11 +50,10 @@ const EditClipComponent = (props) => {
   const [isYoutubeVideoPlaying, setIsYoutubeVideoPlaying] = useState(false);
 
   // initialize state variables from props
-  const [clipDescriptionText, setClipDescriptionText] = useState(
-    clip_description_text
-  );
+  const [clipDescriptionText, setClipDescriptionText] = useState('');
 
   useEffect(() => {
+    setClipDescriptionText(clip_description_text);
     // scrolls to the latest clip when a new clip is added
     var date = new Date();
     var ONE_MIN = 1 * 60 * 1000;
@@ -77,6 +76,7 @@ const EditClipComponent = (props) => {
     mediaBlobUrl,
     // props_clip_start_time, props.clip_audio_path,
     props, // re-render whenever the props change
+    // props.clip_audio_path,
   ]);
 
   // render the values in the input[type='number'] fields of the start time - renders everytime the props_clip_start_time value changes
@@ -258,11 +258,6 @@ const EditClipComponent = (props) => {
     );
   };
 
-  // update the clip Description text area
-  const handleClipDescriptionUpdate = (e) => {
-    setClipDescriptionText(e.target.value);
-  };
-
   // handle save clip description - axios call -> generate audio & update endtime, duration
   const handleClickSaveClipDescription = (e) => {
     e.preventDefault();
@@ -290,6 +285,7 @@ const EditClipComponent = (props) => {
     }
   };
 
+  // delete a clip
   const handleClickDeleteClip = (e) => {
     props.setShowSpinner(true);
     e.preventDefault();
@@ -309,6 +305,54 @@ const EditClipComponent = (props) => {
       });
   };
 
+  // handle record & replace
+  const handleClickReplaceClip = async (e) => {
+    props.setShowSpinner(true);
+    e.preventDefault();
+    if (mediaBlobUrl === null) {
+      toast.error(
+        'Error while saving the recorded audio. Please record again.'
+      );
+    } else {
+      // create a new FormData object for easy file uploads
+      let formData = new FormData();
+      const audioBlob = await fetch(mediaBlobUrl).then((r) => r.blob()); // get blob from the audio URI
+      const audioFile = new File([audioBlob], 'voice.mp3', {
+        type: 'audio/mp3',
+      });
+      formData.append('clipStartTime', props_clip_start_time);
+      formData.append('newACType', clip_description_type);
+      formData.append('youtubeVideoId', youtubeVideoId);
+      formData.append('userId', userId);
+      formData.append('file', audioFile);
+
+      // upload formData using axios
+      axios
+        .put(
+          `/api/audio-clips/record-replace-clip-audio/${clip_id}`,
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+            reportProgress: true,
+            observe: 'events',
+          }
+        )
+        .then((res) => {
+          toast.success('Replaced Clip Successfully with the Recorded Audio!!');
+          setTimeout(() => {
+            setUpdateData(!updateData);
+            props.setShowSpinner(false);
+          }, 4000); // setting the timeout to show the toast message for 4 sec
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(
+            'Error while replacing Audio Clip. Please try again later.'
+          );
+        });
+    }
+  };
+
   return (
     <div className="edit-component text-white" ref={ref}>
       <div className="d-flex justify-content-evenly align-items-center">
@@ -324,8 +368,9 @@ const EditClipComponent = (props) => {
                 id="description"
                 name="description"
                 // defaultValue={clip_description_text}
+                placeholder={is_recorded ? 'This is a Recorded Audio Clip' : ''}
                 value={clipDescriptionText}
-                onChange={handleClipDescriptionUpdate}
+                onChange={(e) => setClipDescriptionText(e.target.value)}
               ></textarea>
               {/* play, save & Delete buttons */}
               <div className="my-2 d-flex justify-content-evenly align-items-center w-100">
@@ -582,6 +627,7 @@ const EditClipComponent = (props) => {
         id="replaceModal"
         title="Replace"
         text="Are you sure you want to replace AI's voice with the one you recorded?"
+        modalTask={handleClickReplaceClip}
       />
       {/* <!-- Delete Modal --> Confirmation Modal - opens when user hits Delete and asks for a confirmation if Audio Clip need to be deleted*/}
       <Modal

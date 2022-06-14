@@ -43,3 +43,17 @@ button:hover {
 .Toastify__close-button:hover {
   box-shadow: none;
 }
+
+/* italics for placeholders in text area */
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+:-moz-placeholder {
+  font-style: italic;  
+}
+::-moz-placeholder {
+  font-style: italic;  
+}
+:-ms-input-placeholder {  
+  font-style: italic; 
+}
