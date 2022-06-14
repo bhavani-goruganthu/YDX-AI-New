@@ -55,6 +55,10 @@ const YDXHome = (props) => {
   // Spinner div
   const [showSpinner, setShowSpinner] = useState(false);
 
+  // logic to show/hide the edit component and add it to a list along with clip Id
+  // this hides one edit component when the other is opened
+  const [editComponentToggleList, setEditComponentToggleList] = useState([]);
+
   useEffect(() => {
     setShowSpinner(true);
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
@@ -65,6 +69,8 @@ const YDXHome = (props) => {
     youtubeVideoId,
     recentAudioPlayedTime, // changing this state variable, will fetch user data again
     updateData, // to fetch data whenever updateData state is changed.
+    editComponentToggleList, // logic to show/hide the edit component and add it to a list along with clip Id
+    // this hides one edit component when the other is opened
   ]);
 
   // for calculating the draggable-div width of the timeline
@@ -161,6 +167,7 @@ const YDXHome = (props) => {
         // data is nested - so Notes data is in res.data.Notes
         const notesData = data.Notes[0];
         // update the audio path for every clip row - the path might change later- TODO: change the server IP
+        var tempArray = [];
         audioClipsData.forEach((clip, i) => {
           clip.clip_audio_path = clip.clip_audio_path.replace(
             '.',
@@ -168,8 +175,16 @@ const YDXHome = (props) => {
           );
           // add a sequence number for every audio clip
           clip.clip_sequence_num = i + 1;
-          // console.log(clip.clip_audio_path);
+          // logic to show/hide the edit component and add it to a list along with clip Id
+          // this hides one edit component when the other is opened
+          tempArray.push({
+            clipId: clip.clip_id,
+            showEditComponent: false,
+          });
         });
+        if (editComponentToggleList.length === 0) {
+          setEditComponentToggleList(tempArray);
+        }
         setAudioClips(audioClipsData);
         setNotesData(notesData);
       })
@@ -288,6 +303,28 @@ const YDXHome = (props) => {
     setCurrentTime(currentTime);
   };
 
+  // toggle Show Edit Component
+  // logic to show/hide the edit component and add it to a list along with clip Id
+  // this hides one edit component when the other is opened
+  const setEditComponentToggle = (clipId, value) => {
+    let temp = [...editComponentToggleList];
+    temp.forEach((data) => {
+      if (value) {
+        if (data.clipId === clipId) {
+          data.showEditComponent = value;
+        } else {
+          data.showEditComponent = !value;
+        }
+      } else {
+        // else case is used when false is passed to the function. If false, other edit components are not opened.
+        if (data.clipId === clipId) {
+          data.showEditComponent = value;
+        }
+      }
+    });
+    setEditComponentToggleList(temp);
+  };
+
   return (
     <React.Fragment>
       {/* Spinner div - displayed based on showSpinner */}
@@ -376,6 +413,8 @@ const YDXHome = (props) => {
               setUpdateData={setUpdateData}
               videoLength={videoLength}
               setShowSpinner={setShowSpinner}
+              editComponentToggleList={editComponentToggleList}
+              setEditComponentToggle={setEditComponentToggle}
             />
           ))}
         </div>

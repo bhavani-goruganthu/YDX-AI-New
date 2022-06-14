@@ -48,11 +48,22 @@ const AudioClipComponent = (props) => {
   });
 
   useEffect(() => {
+    // logic to show/hide the edit component based on props.
+    // this hides one edit component when the other is opened
+    props.editComponentToggleList.forEach((item) => {
+      if (item.clipId === clip_id) {
+        item.showEditComponent
+          ? setShowEditComponent(true)
+          : setShowEditComponent(false);
+      }
+    });
+
     // show the edit component of the new clip
     var date = new Date();
     var ONE_MIN = 1 * 60 * 1000;
     if (date - new Date(clip_created_at) <= ONE_MIN) {
-      setShowEditComponent(true);
+      // show Edit Component
+      props.setEditComponentToggle(clip_id, true);
     }
     //  update the clip start time based on the value from the props
     setClipStartTime(clip_start_time);
@@ -257,12 +268,14 @@ const AudioClipComponent = (props) => {
             {showEditComponent ? (
               <i
                 className="fa fa-chevron-up"
-                onClick={() => setShowEditComponent(false)}
+                // show Edit Component
+                onClick={() => props.setEditComponentToggle(clip_id, false)}
               />
             ) : (
               <i
                 className="fa fa-chevron-down"
-                onClick={() => setShowEditComponent(true)}
+                // show Edit Component
+                onClick={() => props.setEditComponentToggle(clip_id, true)}
               />
             )}
           </div>
