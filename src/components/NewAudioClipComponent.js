@@ -483,7 +483,9 @@ const NewAudioClipComponent = (props) => {
               </button>
             )}
           </div>
-          <div>Duration: {parseFloat(newACDuration).toFixed(2)} sec</div>
+          <div>
+            Recording Duration: {parseFloat(newACDuration).toFixed(2)} sec
+          </div>
         </div>
       </div>
       <hr className="m-2" />

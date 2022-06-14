@@ -52,6 +52,8 @@ const EditClipComponent = (props) => {
   // initialize state variables from props
   const [clipDescriptionText, setClipDescriptionText] = useState('');
 
+  const [recordedClipDuration, setRecordedClipDuration] = useState(0.0);
+
   useEffect(() => {
     setClipDescriptionText(clip_description_text);
     // scrolls to the latest clip when a new clip is added
@@ -68,6 +70,27 @@ const EditClipComponent = (props) => {
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
     if (mediaBlobUrl !== null) {
       setRecordedAudio(new Audio(mediaBlobUrl));
+      const aud = new Audio(mediaBlobUrl);
+      // set audio duration if recorded
+      aud.addEventListener(
+        'loadedmetadata',
+        function () {
+          if (aud.duration === Infinity) {
+            // set it to bigger than the actual duration
+            aud.currentTime = 1e101;
+            aud.ontimeupdate = function () {
+              this.ontimeupdate = () => {
+                return;
+              };
+              setRecordedClipDuration(aud.duration);
+              aud.currentTime = 0;
+            };
+          } else {
+            setRecordedClipDuration(aud.duration);
+          }
+        },
+        false
+      );
     }
     setAdAudio(new Audio(clip_audio_path));
     // render the start time input fields based on the updated prop value - props_clip_start_time
@@ -323,6 +346,7 @@ const EditClipComponent = (props) => {
       formData.append('clipStartTime', props_clip_start_time);
       formData.append('newACType', clip_description_type);
       formData.append('youtubeVideoId', youtubeVideoId);
+      formData.append('recordedClipDuration', recordedClipDuration);
       formData.append('userId', userId);
       formData.append('file', audioFile);
 
@@ -591,6 +615,10 @@ const EditClipComponent = (props) => {
                 </div>
               </>
             )}
+          </div>
+          <div className="text-center">
+            Recording Duration: {parseFloat(recordedClipDuration).toFixed(2)}{' '}
+            sec
           </div>
           <div className="d-flex justify-content-center align-items-center rounded mx-auto p-1">
             {isYoutubeVideoPlaying ? (
