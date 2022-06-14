@@ -31,6 +31,7 @@ const NewAudioClipComponent = (props) => {
   const [newACType, setNewACType] = useState('Visual'); // default for Visual
   const [newACDescriptionText, setNewACDescriptionText] = useState('');
   const [newACStartTime, setNewACStartTime] = useState(0.0);
+  const [newACDuration, setNewACDuration] = useState(0.0);
 
   // use 3 state variables to hold the value of 3 input type number fields
   const [clipStartTimeHours, setClipStartTimeHours] = useState(
@@ -53,6 +54,27 @@ const NewAudioClipComponent = (props) => {
     // following statements execute whenever mediaBlobUrl is updated.. used it in the dependency array
     if (mediaBlobUrl !== null) {
       setRecordedAudio(new Audio(mediaBlobUrl));
+      const aud = new Audio(mediaBlobUrl);
+      // set audio duration if recorded
+      aud.addEventListener(
+        'loadedmetadata',
+        function () {
+          if (aud.duration === Infinity) {
+            // set it to bigger than the actual duration
+            aud.currentTime = 1e101;
+            aud.ontimeupdate = function () {
+              this.ontimeupdate = () => {
+                return;
+              };
+              setNewACDuration(aud.duration);
+              aud.currentTime = 0;
+            };
+          } else {
+            setNewACDuration(aud.duration);
+          }
+        },
+        false
+      );
     }
   }, [mediaBlobUrl]);
 
@@ -230,6 +252,7 @@ const NewAudioClipComponent = (props) => {
         type: 'audio/mp3',
       });
       formData.append('newACDescriptionText', '');
+      formData.append('newACDuration', newACDuration);
       formData.append('file', audioFile);
     }
     // upload formData using axios
@@ -393,7 +416,7 @@ const NewAudioClipComponent = (props) => {
           ></div>
         </div>
         {/* Recording Div */}
-        <div>
+        <div className="text-center">
           <h6 className="text-white text-center">Record New Audio Clip</h6>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
             <div className="mx-1">
@@ -460,6 +483,7 @@ const NewAudioClipComponent = (props) => {
               </button>
             )}
           </div>
+          <div>Duration: {parseFloat(newACDuration).toFixed(2)} sec</div>
         </div>
       </div>
       <hr className="m-2" />
