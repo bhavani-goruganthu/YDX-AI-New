@@ -31,7 +31,10 @@ const YDXHome = (props) => {
     },
   };
   // use a reference for the #draggable-div to get the width and use in calculateDraggableDivWidth()
-  const divRef = useRef(null);
+  const divRef1 = useRef(null);
+  const divRef2 = useRef(null);
+  const divRef3 = useRef(null);
+  const [divWidths, setDivWidths] = useState({});
 
   // State Variables
   const [videoId, setVideoId] = useState(''); // retrieved from db, stored to fetch audio_descriptions
@@ -60,6 +63,13 @@ const YDXHome = (props) => {
   const [editComponentToggleList, setEditComponentToggleList] = useState([]);
 
   useEffect(() => {
+    setDivWidths({
+      divRef1:
+        divRef1.current.clientWidth / 3 + divRef1.current.clientWidth / 3,
+      divRef2: divRef1.current.clientWidth / 3,
+      divRef3: divRef2.current.clientWidth,
+      divRef4: divRef3.current.clientWidth,
+    });
     setShowSpinner(true);
     // set the toggle list back to empty if we are fetching the data again
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
@@ -78,7 +88,8 @@ const YDXHome = (props) => {
   // for calculating the draggable-div width of the timeline
   const calculateDraggableDivWidth = () => {
     // remove the left & right margin - leaving about 96% of the total width of the draggable-div
-    const currWidth = divRef.current.clientWidth;
+    const currWidth = divRef3.current.clientWidth;
+    // const currWidth = 700;
     const draggableDivWidth = (96 * currWidth) / 100;
     setDraggableDivWidth(draggableDivWidth);
     // could add this to change the unit length for every window resize.. commenting this for now
@@ -364,14 +375,14 @@ const YDXHome = (props) => {
         <hr />
         {/* Dialog Timeline */}
         <div className="row div-below-hr">
-          <div className="col-3 text-white timeline-column-width-1">
+          <div className="col-3 text-white" ref={divRef1}>
             <h6 className="dialog-timeline-text text-center font-weight-bolder">
               Dialog Timeline ({convertSecondsToCardFormat(videoLength)}):
             </h6>
           </div>
-          <div className="col-8 mt-3 timeline-column-width-2">
-            <div className="row mx-3 timeline-div">
-              <div id="draggable-div" className="draggable-div" ref={divRef}>
+          <div className="col-8 mt-3" ref={divRef2}>
+            <div className="row mx-1 timeline-div">
+              <div id="draggable-div" className="draggable-div" ref={divRef3}>
                 {/* Dialog Timeline blue & white div's */}
                 {videoDialogTimestamps.map((dialog, key) => (
                   <Draggable
@@ -408,7 +419,6 @@ const YDXHome = (props) => {
               </div>
             </div>
           </div>
-          <div className="col-1 timeline-column-width-3"></div>
         </div>
         {/* Map Audio Clips Component */}
         <div className="audio-desc-component-list">
@@ -428,6 +438,7 @@ const YDXHome = (props) => {
               setShowSpinner={setShowSpinner}
               editComponentToggleList={editComponentToggleList}
               setEditComponentToggleFunc={setEditComponentToggleFunc}
+              divWidths={divWidths}
             />
           ))}
         </div>

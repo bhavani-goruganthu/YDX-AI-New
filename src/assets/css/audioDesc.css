@@ -42,20 +42,6 @@
   margin-bottom: 40px;
 }
 
-/* audio description column widths */
-.component-column-width-1 {
-  width: 23%;
-}
-.component-column-width-2 {
-  width: 7%;
-  margin-bottom: 36px;
-}
-.component-column-width-3 {
-  width: 63.745%;
-}
-.component-column-width-4 {
-  width: 4%;
-}
 .component-timeline-div {
   height: 20px;
   background-color: white;

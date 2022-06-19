@@ -47,6 +47,9 @@ const AudioClipComponent = (props) => {
     y: 0,
   });
 
+  // align the timelines based on props from parent
+  const divWidths = props.divWidths;
+
   useEffect(() => {
     // logic to show/hide the edit component based on props.
     // this hides one edit component when the other is opened
@@ -149,7 +152,7 @@ const AudioClipComponent = (props) => {
       {/* React Fragments allow you to wrap or group multiple elements without adding an extra node to the DOM. */}
       <div className="text-white component mt-2 rounded">
         <div className="row align-items-center">
-          <div className="col-2 component-column-width-1">
+          <div className="col-2" style={{ width: divWidths.divRef1 }}>
             <div className="mx-1 text-center">
               <p className="ad-title">Audio Clip {clip_sequence_num}:</p>
               <input
@@ -168,7 +171,10 @@ const AudioClipComponent = (props) => {
               </h6>
             </div>
           </div>
-          <div className="col-1 component-column-width-2 text-center">
+          <div
+            className="col-1 text-center component-column-width-2"
+            style={{ width: divWidths.divRef2, marginBottom: '36px' }}
+          >
             <small className="text-white">Nudge</small>
             <div
               className="nudge-btns-div d-flex justify-content-around align-items-center"
@@ -186,9 +192,13 @@ const AudioClipComponent = (props) => {
               />
             </div>
           </div>
-          <div className="col-8 component-column-width-3">
-            <div className="row component-timeline-div">
-              <div id="ad-draggable-div" className="ad-draggable-div">
+          <div className="col-8" style={{ width: divWidths.divRef3 }}>
+            <div className="row mx-1 component-timeline-div">
+              <div
+                id="ad-draggable-div"
+                className="ad-draggable-div"
+                style={{ width: divWidths.divRef4 }}
+              >
                 <Draggable
                   axis="x"
                   defaultPosition={{ x: 0, y: 0 }}
@@ -256,7 +266,7 @@ const AudioClipComponent = (props) => {
             </div>
           </div>
           {/* toggle the chevron to show or hide the edit Clip component */}
-          <div className="col-1 component-column-width-4">
+          <div className="col-1" style={{ width: 60 }}>
             {showEditComponent ? (
               <i
                 className="fa fa-chevron-up"

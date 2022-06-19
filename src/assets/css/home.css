@@ -77,16 +77,6 @@ hr {
   margin-left: -26px;
 }
 
-/* timeline column widths */
-.timeline-column-width-1 {
-  width: 27.5%;
-}
-.timeline-column-width-2 {
-  width: 66%;
-}
-.timeline-column-width-3 {
-  width: 7%;
-}
 .audio-desc-component-list {
   overflow-y: scroll;
   height: 45vh;
