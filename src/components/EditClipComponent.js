@@ -54,6 +54,8 @@ const EditClipComponent = (props) => {
 
   const [recordedClipDuration, setRecordedClipDuration] = useState(0.0);
 
+  const [readySetGo, setReadySetGo] = useState('');
+
   useEffect(() => {
     setClipDescriptionText(clip_description_text);
     // scrolls to the latest clip when a new clip is added
@@ -377,6 +379,26 @@ const EditClipComponent = (props) => {
     }
   };
 
+  // handle Record Ready Set Go
+  const handleReadySetGo = () => {
+    const _321Go = ['3', '2', '1', 'Go', 'start'];
+    // using the concept of closures & IIFE in JavaScript
+    _321Go.forEach((val, i) => {
+      setTimeout(
+        (function (i_local) {
+          return function () {
+            setReadySetGo(i_local);
+          };
+        })(val),
+        1000 * i
+      );
+    });
+    // start recording once ready set go is completed
+    setTimeout(() => {
+      startRecording();
+    }, 3700);
+  };
+
   return (
     <div className="edit-component text-white" ref={ref}>
       <div className="d-flex justify-content-evenly align-items-center">
@@ -506,7 +528,7 @@ const EditClipComponent = (props) => {
           </h6>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
             <div className="mx-1">
-              {status === 'recording' ? (
+              {status === 'recording' && readySetGo !== '' ? (
                 <button
                   data-bs-toggle="tooltip"
                   data-bs-placement="bottom"
@@ -517,17 +539,31 @@ const EditClipComponent = (props) => {
                 >
                   <i className="fa fa-stop text-danger" />
                 </button>
-              ) : (
+              ) : (readySetGo === '' && status !== 'recording') ||
+                (readySetGo === 'start' && status === 'stopped') ? (
                 <button
                   data-bs-toggle="tooltip"
                   data-bs-placement="bottom"
                   title="Click to Start Recording your voice"
                   type="button"
                   className="btn rounded btn-sm mx-auto border border-warning bg-light"
-                  onClick={startRecording} // default functions given by the react-media-recorder package
+                  onClick={handleReadySetGo} // default functions given by the react-media-recorder package
                 >
                   <i className="fa fa-microphone text-danger" />
                 </button>
+              ) : readySetGo !== 'start' ? (
+                <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Ready Set Go"
+                  type="button"
+                  className="btn rounded btn-sm mx-auto border border-warning bg-light"
+                  disabled
+                >
+                  <b>{readySetGo}</b>
+                </button>
+              ) : (
+                <></>
               )}
             </div>
             {/* No recording to Play */}

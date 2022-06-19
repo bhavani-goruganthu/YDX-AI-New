@@ -21,6 +21,7 @@ const NewAudioClipComponent = (props) => {
   // variable and function declaration of the react-media-recorder package
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true }); // using only the audio recorder here
+  const [readySetGo, setReadySetGo] = useState('');
   // this state variable keeps track of the play/pause state of the recorded audio
   const [isRecordedAudioPlaying, setIsRecordedAudioPlaying] = useState(false);
   // this state variable is updated whenever mediaBlobUrl is updated. i.e. whenever a new recording is created
@@ -274,6 +275,26 @@ const NewAudioClipComponent = (props) => {
       });
   };
 
+  // handle Record Ready Set Go
+  const handleReadySetGo = () => {
+    const _321Go = ['3', '2', '1', 'Go', 'start'];
+    // using the concept of closures & IIFE in JavaScript
+    _321Go.forEach((val, i) => {
+      setTimeout(
+        (function (i_local) {
+          return function () {
+            setReadySetGo(i_local);
+          };
+        })(val),
+        1000 * i
+      );
+    });
+    // start recording once ready set go is completed
+    setTimeout(() => {
+      startRecording();
+    }, 3700);
+  };
+
   return (
     <div className="text-white component mt-2 rounded border border-1 border-white mx-5 d-flex flex-column pb-3 justify-content-between">
       {/* close icon to the top right */}
@@ -420,7 +441,7 @@ const NewAudioClipComponent = (props) => {
           <h6 className="text-white text-center">Record New Audio Clip</h6>
           <div className="bg-white rounded text-dark d-flex justify-content-between align-items-center p-2 w-100 my-2">
             <div className="mx-1">
-              {status === 'recording' ? (
+              {status === 'recording' && readySetGo !== '' ? (
                 <button
                   data-bs-toggle="tooltip"
                   data-bs-placement="bottom"
@@ -431,17 +452,31 @@ const NewAudioClipComponent = (props) => {
                 >
                   <i className="fa fa-stop text-danger" />
                 </button>
-              ) : (
+              ) : (readySetGo === '' && status !== 'recording') ||
+                (readySetGo === 'start' && status === 'stopped') ? (
                 <button
                   data-bs-toggle="tooltip"
                   data-bs-placement="bottom"
                   title="Click to Start Recording your voice"
                   type="button"
                   className="btn rounded btn-sm mx-auto border border-warning bg-light"
-                  onClick={startRecording} // default functions given by the react-media-recorder package
+                  onClick={handleReadySetGo} // default functions given by the react-media-recorder package
                 >
                   <i className="fa fa-microphone text-danger" />
                 </button>
+              ) : readySetGo !== 'start' ? (
+                <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Ready Set Go"
+                  type="button"
+                  className="btn rounded btn-sm mx-auto border border-warning bg-light"
+                  disabled
+                >
+                  <b>{readySetGo}</b>
+                </button>
+              ) : (
+                <></>
               )}
             </div>
             {/* No recording to Play */}
