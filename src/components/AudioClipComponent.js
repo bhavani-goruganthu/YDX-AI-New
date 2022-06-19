@@ -261,13 +261,13 @@ const AudioClipComponent = (props) => {
               <i
                 className="fa fa-chevron-up"
                 // show Edit Component
-                onClick={() => props.setEditComponentToggle(clip_id, false)}
+                onClick={() => props.setEditComponentToggleFunc(clip_id, false)}
               />
             ) : (
               <i
                 className="fa fa-chevron-down"
                 // show Edit Component
-                onClick={() => props.setEditComponentToggle(clip_id, true)}
+                onClick={() => props.setEditComponentToggleFunc(clip_id, true)}
               />
             )}
           </div>

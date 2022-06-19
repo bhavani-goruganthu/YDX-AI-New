@@ -62,9 +62,6 @@ const YDXHome = (props) => {
   useEffect(() => {
     setShowSpinner(true);
     // set the toggle list back to empty if we are fetching the data again
-    if (updateData) {
-      setEditComponentToggleList([]);
-    }
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
   }, [
     draggableDivWidth,
@@ -73,7 +70,8 @@ const YDXHome = (props) => {
     youtubeVideoId,
     recentAudioPlayedTime, // changing this state variable, will fetch user data again
     updateData, // to fetch data whenever updateData state is changed.
-    editComponentToggleList, // logic to show/hide the edit component and add it to a list along with clip Id
+    setEditComponentToggleList,
+    // editComponentToggleList, // logic to show/hide the edit component and add it to a list along with clip Id
     // this hides one edit component when the other is opened
   ]);
 
@@ -321,7 +319,7 @@ const YDXHome = (props) => {
   // toggle Show Edit Component
   // logic to show/hide the edit component and add it to a list along with clip Id
   // this hides one edit component when the other is opened
-  const setEditComponentToggle = (clipId, value) => {
+  const setEditComponentToggleFunc = (clipId, value) => {
     let temp = [...editComponentToggleList];
     temp.forEach((data) => {
       if (value) {
@@ -429,7 +427,7 @@ const YDXHome = (props) => {
               videoLength={videoLength}
               setShowSpinner={setShowSpinner}
               editComponentToggleList={editComponentToggleList}
-              setEditComponentToggle={setEditComponentToggle}
+              setEditComponentToggleFunc={setEditComponentToggleFunc}
             />
           ))}
         </div>
