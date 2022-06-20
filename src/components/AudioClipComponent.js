@@ -35,7 +35,7 @@ const AudioClipComponent = (props) => {
   const clip_created_at = props.clip.createdAt;
 
   // React State Variables
-  const [clipPlaybackType, setClipPlayBackType] = useState(clip_playback_type);
+  const [clipPlaybackType, setClipPlayBackType] = useState('');
   const [clipTitle, setClipTitle] = useState(clip_title);
   const [clipStartTime, setClipStartTime] = useState(0);
 
@@ -51,6 +51,7 @@ const AudioClipComponent = (props) => {
   const divWidths = props.divWidths;
 
   useEffect(() => {
+    setClipPlayBackType(clip_playback_type);
     // logic to show/hide the edit component based on props.
     // this hides one edit component when the other is opened
     props.editComponentToggleList.forEach((item) => {
@@ -305,6 +306,7 @@ const AudioClipComponent = (props) => {
           currentState={props.currentState}
           videoLength={videoLength}
           setShowSpinner={props.setShowSpinner}
+          audioDescriptionId={props.audioDescriptionId}
         />
       ) : (
         <> </>

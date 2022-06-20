@@ -427,6 +427,7 @@ const YDXHome = (props) => {
               key={key}
               clip={clip}
               userId={userId}
+              audioDescriptionId={audioDescriptionId}
               youtubeVideoId={youtubeVideoId}
               unitLength={unitLength}
               currentTime={currentTime}

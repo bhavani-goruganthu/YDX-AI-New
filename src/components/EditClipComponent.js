@@ -296,6 +296,7 @@ const EditClipComponent = (props) => {
           youtubeVideoId: youtubeVideoId,
           clipDescriptionText: clipDescriptionText,
           clipDescriptionType: clip_description_type,
+          audioDescriptionId: props.audioDescriptionId,
         })
         .then((res) => {
           // below prop is used to re-render the parent component i.e. fetch audio clip data
@@ -349,6 +350,7 @@ const EditClipComponent = (props) => {
       formData.append('newACType', clip_description_type);
       formData.append('youtubeVideoId', youtubeVideoId);
       formData.append('recordedClipDuration', recordedClipDuration);
+      formData.append('audioDescriptionId', props.audioDescriptionId);
       formData.append('userId', userId);
       formData.append('file', audioFile);
 
