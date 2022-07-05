@@ -252,7 +252,8 @@ const NewAudioClipComponent = (props) => {
       const audioFile = new File([audioBlob], 'voice.mp3', {
         type: 'audio/mp3',
       });
-      formData.append('newACDescriptionText', '');
+      // formData.append('newACDescriptionText', '');
+      formData.append('newACDescriptionText', newACDescriptionText);
       formData.append('newACDuration', newACDuration);
       formData.append('file', audioFile);
     }
@@ -473,7 +474,7 @@ const NewAudioClipComponent = (props) => {
                   className="btn rounded btn-sm mx-auto border border-warning bg-light"
                   disabled
                 >
-                  <b>{readySetGo}</b>
+                  <b className="fs-6">{readySetGo}</b>
                 </button>
               ) : (
                 <></>

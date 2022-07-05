@@ -346,6 +346,7 @@ const EditClipComponent = (props) => {
       const audioFile = new File([audioBlob], 'voice.mp3', {
         type: 'audio/mp3',
       });
+      formData.append('clipDescriptionText', clipDescriptionText);
       formData.append('clipStartTime', props_clip_start_time);
       formData.append('newACType', clip_description_type);
       formData.append('youtubeVideoId', youtubeVideoId);
@@ -409,14 +410,16 @@ const EditClipComponent = (props) => {
           <div className="d-flex justify-content-between align-items-start">
             {/* Description label, text area & buttons*/}
             <div className="d-flex justify-content-center align-items-start flex-column">
-              <h6 className="text-white">Clip Description:</h6>
+              <h6 className="text-white">
+                Clip Description: {is_recorded ? '(Recorded)' : ''}
+              </h6>
               <textarea
                 className="form-control form-control-sm border rounded text-center description-textarea"
                 rows="3"
                 id="description"
                 name="description"
                 // defaultValue={clip_description_text}
-                placeholder={is_recorded ? 'This is a Recorded Audio Clip' : ''}
+                // placeholder={is_recorded ? 'This is a Recorded Audio Clip' : ''}
                 value={clipDescriptionText}
                 onChange={(e) => setClipDescriptionText(e.target.value)}
               ></textarea>
@@ -560,9 +563,8 @@ const EditClipComponent = (props) => {
                   title="Ready Set Go"
                   type="button"
                   className="btn rounded btn-sm mx-auto border border-warning bg-light"
-                  disabled
                 >
-                  <b>{readySetGo}</b>
+                  <b className="fs-6">{readySetGo}</b>
                 </button>
               ) : (
                 <></>
