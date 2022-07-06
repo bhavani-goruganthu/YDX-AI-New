@@ -58,6 +58,14 @@ const EditClipComponent = (props) => {
 
   useEffect(() => {
     setClipDescriptionText(clip_description_text);
+    // set the button text & state based on YouTube Player's currentState
+    setIsYoutubeVideoPlaying(
+      currentState === -1 || currentState === 0 || currentState === 2
+        ? false
+        : currentState === 1
+        ? true
+        : false
+    );
     // scrolls to the latest clip when a new clip is added
     var date = new Date();
     var ONE_MIN = 1 * 60 * 1000;
