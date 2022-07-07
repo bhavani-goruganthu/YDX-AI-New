@@ -110,6 +110,8 @@ const AudioClipComponent = (props) => {
     axios
       .put(`/api/audio-clips/update-clip-start-time/${clip_id}`, {
         clipStartTime: updatedClipStartTime,
+        audioDescriptionId: props.audioDescriptionId,
+        youtubeVideoId: youtubeVideoId,
       })
       .then((res) => {
         // below prop is used to re-render the parent component i.e. fetch audio clip data
