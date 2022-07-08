@@ -131,6 +131,7 @@ const AudioClipComponent = (props) => {
       })
       .then((res) => {
         // console.log(res.data)
+        setUpdateData(!updateData);
       })
       .catch((err) => {
         console.error(err);
