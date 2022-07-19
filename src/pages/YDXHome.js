@@ -8,7 +8,7 @@ import AudioClipComponent from '../components/AudioClipComponent';
 import Notes from '../components/NotesComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import InsertPublishComponent from '../components/InsertPublishComponent';
-import Spinner from './Spinner';
+import Spinner from '../modules/Spinner';
 
 const YDXHome = (props) => {
   /* to use params on the url and get userId & youtubeVideoId */

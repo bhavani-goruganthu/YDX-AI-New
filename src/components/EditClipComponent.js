@@ -4,7 +4,7 @@ import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardF
 import '../assets/css/editAudioDesc.css';
 import axios from 'axios';
 import { toast } from 'react-toastify'; // for toast messages
-import Modal from '../pages/Modal';
+import Modal from '../modules/Modal';
 
 const EditClipComponent = (props) => {
   const ref = useRef();

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../assets/css/insertPublish.css';
 import '../assets/css/audioDesc.css';
 import NewAudioClipComponent from './NewAudioClipComponent';
-import Modal from '../pages/Modal';
+import Modal from '../modules/Modal';
 
 const InsertPublishComponent = (props) => {
   // destructuring props
