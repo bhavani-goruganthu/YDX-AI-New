@@ -219,22 +219,26 @@ const YDXHome = (props) => {
   };
 
   // function to update currentime state variable & draggable bar time.
-  const updateTime = () => {
-    setCurrentTime(currentEvent.getCurrentTime());
+  const updateTime = (time) => {
+    setCurrentTime(time);
     // for updating the draggable component position based on current time
-    setDraggableTime({ x: unitLength * currentEvent.getCurrentTime(), y: 0 });
+    setDraggableTime({ x: unitLength * time, y: 0 });
 
     // check if currentEvent.getCurrentTime()).toFixed(2) returns the same number more than once..
     // the previous current time at which an audio is played is stored in recentAudioPlayedTime
     // Example: For both the current times 6.69739000 & 6.70439000 => currentEvent.getCurrentTime().toFixed(2) returns 6.70.
     // If there is an audio clip with start_time as 6.70, it results in the same audio playing twice concurrently,
     // recentAudioPlayedTime will have the first 6.70 and will not allow the same audio to play again.
+    // console.log(recentAudioPlayedTime);
+    // console.log(parseFloat(time).toFixed(2));
     if (
       parseFloat(recentAudioPlayedTime).toFixed(2) !==
-      parseFloat(currentEvent.getCurrentTime()).toFixed(2)
+      parseFloat(time).toFixed(2)
     ) {
       // To Play audio files based on current time
-      playAudioAtCurrentTime(currentEvent.getCurrentTime());
+      playAudioAtCurrentTime(time);
+    } else {
+      console.log('IN else');
     }
   };
 
@@ -250,20 +254,25 @@ const YDXHome = (props) => {
         //  update recentAudioPlayedTime - which stores the time at which an audio has been played - to stop playing the same audio twice concurrently
         setRecentAudioPlayedTime(parseFloat(updatedCurrentTime).toFixed(2));
         const clip_audio_path = filteredClip[0].clip_audio_path;
+        console.log(clip_audio_path);
         // play along with the video if the clip is an inline clip
         if (filteredClip[0].playback_type === 'inline') {
           const currentAudio = new Audio(clip_audio_path);
+          console.log(currentAudio);
           currentAudio.play();
         }
         // play after pausing the youtube video if the clip is an extended clip - youtube video should be played after the clip has finished playing
         else if (filteredClip[0].playback_type === 'extended') {
           const currentAudio = new Audio(clip_audio_path);
+          console.log(currentAudio);
           currentEvent.pauseVideo();
           currentAudio.play();
           currentAudio.addEventListener('ended', function () {
             currentEvent.playVideo();
           });
         }
+      } else {
+        console.log(updatedCurrentTime);
       }
     }
   };
@@ -300,8 +309,7 @@ const YDXHome = (props) => {
     setCurrentEvent(event.target);
     setCurrentTime(event.target.getCurrentTime());
     setTimer(
-      setInterval(() => updateTime()),
-      100
+      setInterval(() => updateTime(event.target.getCurrentTime()), 0.01)
     );
     setCurrentEvent(event.target);
   };
