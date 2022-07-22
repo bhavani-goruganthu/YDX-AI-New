@@ -35,15 +35,9 @@ const NewAudioClipComponent = (props) => {
   const [newACDuration, setNewACDuration] = useState(0.0);
 
   // use 3 state variables to hold the value of 3 input type number fields
-  const [clipStartTimeHours, setClipStartTimeHours] = useState(
-    convertSecondsToCardFormat(currentTime).split(':')[0]
-  );
-  const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(
-    convertSecondsToCardFormat(currentTime).split(':')[1]
-  );
-  const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(
-    convertSecondsToCardFormat(currentTime).split(':')[2]
-  );
+  const [clipStartTimeHours, setClipStartTimeHours] = useState(0);
+  const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(0);
+  const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(0);
 
   useEffect(() => {
     // scroll to the bottom of the screen and make the Inline AD component visible
@@ -77,7 +71,22 @@ const NewAudioClipComponent = (props) => {
         false
       );
     }
+    handleClipStartTimeInputsRender();
   }, [mediaBlobUrl]);
+
+  // render the values in the input[type='number'] fields of the start time - renders everytime the props_clip_start_time value changes
+  const handleClipStartTimeInputsRender = () => {
+    setClipStartTimeHours(
+      convertSecondsToCardFormat(currentTime).split(':')[0]
+    );
+    setClipStartTimeMinutes(
+      convertSecondsToCardFormat(currentTime).split(':')[1]
+    );
+    setClipStartTimeSeconds(
+      convertSecondsToCardFormat(currentTime).split(':')[2]
+    );
+    setNewACStartTime(currentTime);
+  };
 
   // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
   const calculateClipStartTimeinSeconds = (hours, minutes, seconds) => {
@@ -85,15 +94,7 @@ const NewAudioClipComponent = (props) => {
     // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
     if (calculatedSeconds > videoLength) {
       toast.error('Oops!! Start Time cannot be later than the video end time.'); // show toast error message
-      setClipStartTimeHours(
-        convertSecondsToCardFormat(currentTime).split(':')[0]
-      );
-      setClipStartTimeMinutes(
-        convertSecondsToCardFormat(currentTime).split(':')[1]
-      );
-      setClipStartTimeSeconds(
-        convertSecondsToCardFormat(currentTime).split(':')[2]
-      );
+      handleClipStartTimeInputsRender();
     } else {
       setNewACStartTime(calculatedSeconds);
     }
