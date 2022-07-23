@@ -54,6 +54,7 @@ const YDXHome = (props) => {
 
   const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
   const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
+  const [playedAudioClip, setPlayedAudioClip] = useState('');
 
   // Spinner div
   const [showSpinner, setShowSpinner] = useState(false);
@@ -74,6 +75,8 @@ const YDXHome = (props) => {
     // set the toggle list back to empty if we are fetching the data again
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
   }, [
+    recentAudioPlayedTime,
+    playedAudioClip,
     draggableDivWidth,
     unitLength,
     videoId,
@@ -219,7 +222,7 @@ const YDXHome = (props) => {
   };
 
   // function to update currentime state variable & draggable bar time.
-  const updateTime = (time) => {
+  const updateTime = (time, playedAudioClip, recentAudioPlayedTime) => {
     setCurrentTime(time);
     // for updating the draggable component position based on current time
     setDraggableTime({ x: unitLength * time, y: 0 });
@@ -229,50 +232,65 @@ const YDXHome = (props) => {
     // Example: For both the current times 6.69739000 & 6.70439000 => currentEvent.getCurrentTime().toFixed(2) returns 6.70.
     // If there is an audio clip with start_time as 6.70, it results in the same audio playing twice concurrently,
     // recentAudioPlayedTime will have the first 6.70 and will not allow the same audio to play again.
-    // console.log(recentAudioPlayedTime);
+    console.log(
+      '****************************************** ' + playedAudioClip
+    );
     // console.log(parseFloat(time).toFixed(2));
-    if (
-      parseFloat(recentAudioPlayedTime).toFixed(2) !==
-      parseFloat(time).toFixed(2)
-    ) {
+    if (parseFloat(recentAudioPlayedTime) !== parseFloat(time)) {
       // To Play audio files based on current time
-      playAudioAtCurrentTime(time);
+      playAudioAtCurrentTime(time, playedAudioClip);
     } else {
-      console.log('IN else');
+      console.log('In ELSE: ' + recentAudioPlayedTime);
     }
   };
 
   // To Play audio files based on current time
-  const playAudioAtCurrentTime = (updatedCurrentTime) => {
+  const playAudioAtCurrentTime = (updatedCurrentTime, playedAudioClip) => {
     if (currentState === 1) {
       const filteredClip = audioClips.filter(
         (clip) =>
-          parseFloat(updatedCurrentTime).toFixed(2) ===
-          parseFloat(clip.clip_start_time).toFixed(2)
+          // parseFloat(updatedCurrentTime).toFixed(2) ===
+          // parseFloat(clip.clip_start_time).toFixed(2)
+          parseFloat(updatedCurrentTime).toFixed(2) >=
+            parseFloat(parseFloat(clip.clip_start_time).toFixed(2) - 0.02) &&
+          parseFloat(updatedCurrentTime).toFixed(2) <=
+            parseFloat(parseFloat(clip.clip_start_time).toFixed(2) + 0.02)
       );
       if (filteredClip.length !== 0) {
-        //  update recentAudioPlayedTime - which stores the time at which an audio has been played - to stop playing the same audio twice concurrently
-        setRecentAudioPlayedTime(parseFloat(updatedCurrentTime).toFixed(2));
-        const clip_audio_path = filteredClip[0].clip_audio_path;
-        console.log(clip_audio_path);
-        // play along with the video if the clip is an inline clip
-        if (filteredClip[0].playback_type === 'inline') {
-          const currentAudio = new Audio(clip_audio_path);
-          console.log(currentAudio);
-          currentAudio.play();
-        }
-        // play after pausing the youtube video if the clip is an extended clip - youtube video should be played after the clip has finished playing
-        else if (filteredClip[0].playback_type === 'extended') {
-          const currentAudio = new Audio(clip_audio_path);
-          console.log(currentAudio);
-          currentEvent.pauseVideo();
-          currentAudio.play();
-          currentAudio.addEventListener('ended', function () {
-            currentEvent.playVideo();
-          });
+        if (playedAudioClip != filteredClip[0].clip_id) {
+          setPlayedAudioClip(filteredClip[0].clip_id);
+          console.log('Found One: ' + updatedCurrentTime);
+          //  update recentAudioPlayedTime - which stores the time at which an audio has been played - to stop playing the same audio twice concurrently
+          setRecentAudioPlayedTime(updatedCurrentTime);
+          const clip_audio_path = filteredClip[0].clip_audio_path;
+          console.log(filteredClip[0].clip_id);
+          console.log(clip_audio_path);
+          // play along with the video if the clip is an inline clip
+          if (filteredClip[0].playback_type === 'inline') {
+            const currentAudio = new Audio(clip_audio_path);
+            console.log(currentAudio);
+            currentAudio.play();
+          }
+          // play after pausing the youtube video if the clip is an extended clip - youtube video should be played after the clip has finished playing
+          else if (filteredClip[0].playback_type === 'extended') {
+            const currentAudio = new Audio(clip_audio_path);
+            console.log(currentAudio);
+            currentEvent.pauseVideo();
+            currentAudio.play();
+            currentAudio.addEventListener('ended', function () {
+              currentEvent.playVideo();
+            });
+          }
+        } else {
+          console.log(
+            '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$kipped playing: ' +
+              playedAudioClip +
+              ' ' +
+              updatedCurrentTime
+          );
         }
       } else {
-        console.log(updatedCurrentTime);
+        console.log('No clips: ' + updatedCurrentTime);
       }
     }
   };
@@ -289,15 +307,17 @@ const YDXHome = (props) => {
     setCurrentTime(currentTime);
     setCurrentState(event.data);
     switch (event.data) {
-      case 'YT.PlayerState.PLAYING':
-      case 'YT.PlayerState.CUED':
-      case 'YT.PlayerState.PAUSED':
-        updateTime(currentTime);
+      case 1: //playing
+        break;
+      case 2: //paused
+        console.log(event.data);
+        updateTime(currentTime, playedAudioClip, recentAudioPlayedTime);
         clearInterval(timer);
         break;
-      case 'YT.PlayerState.UNSTARTED':
-      case 'YT.PlayerState.BUFFERING':
-      case 'YT.PlayerState.ENDED':
+      case 3: //buffering
+        // updateTime(currentTime, playedAudioClip);
+        // clearInterval(timer);
+        break;
       default:
         break;
     }
@@ -309,9 +329,16 @@ const YDXHome = (props) => {
     setCurrentEvent(event.target);
     setCurrentTime(event.target.getCurrentTime());
     setTimer(
-      setInterval(() => updateTime(event.target.getCurrentTime()), 0.01)
+      setInterval(
+        () =>
+          updateTime(
+            event.target.getCurrentTime(),
+            playedAudioClip,
+            recentAudioPlayedTime
+          ),
+        15
+      )
     );
-    setCurrentEvent(event.target);
   };
   const onPause = (event) => {
     event.target.pauseVideo();
