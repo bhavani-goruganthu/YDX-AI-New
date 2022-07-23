@@ -75,6 +75,7 @@ const YDXHome = (props) => {
     // set the toggle list back to empty if we are fetching the data again
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
   }, [
+    timer,
     recentAudioPlayedTime,
     playedAudioClip,
     draggableDivWidth,
@@ -251,10 +252,10 @@ const YDXHome = (props) => {
         (clip) =>
           // parseFloat(updatedCurrentTime).toFixed(2) ===
           // parseFloat(clip.clip_start_time).toFixed(2)
-          parseFloat(updatedCurrentTime).toFixed(2) >=
-            parseFloat(parseFloat(clip.clip_start_time).toFixed(2) - 0.02) &&
-          parseFloat(updatedCurrentTime).toFixed(2) <=
-            parseFloat(parseFloat(clip.clip_start_time).toFixed(2) + 0.02)
+          parseFloat(updatedCurrentTime) >=
+            parseFloat(parseFloat(clip.clip_start_time) - 0.02) &&
+          parseFloat(updatedCurrentTime) <=
+            parseFloat(parseFloat(clip.clip_start_time) + 0.02)
       );
       if (filteredClip.length !== 0) {
         if (playedAudioClip != filteredClip[0].clip_id) {
@@ -297,29 +298,19 @@ const YDXHome = (props) => {
 
   // YouTube Player Functions
   const onStateChange = (event) => {
-    // console.log('onStateChange : ', event.data);
-    if (event.data === 0) {
-      console.log('end of the video');
-      event.target.seekTo(0);
-    }
     const currentTime = event.target.getCurrentTime();
     setCurrentEvent(event.target);
     setCurrentTime(currentTime);
     setCurrentState(event.data);
-    switch (event.data) {
-      case 1: //playing
-        break;
-      case 2: //paused
-        console.log(event.data);
-        updateTime(currentTime, playedAudioClip, recentAudioPlayedTime);
-        clearInterval(timer);
-        break;
-      case 3: //buffering
-        // updateTime(currentTime, playedAudioClip);
-        // clearInterval(timer);
-        break;
-      default:
-        break;
+    if (event.data === 0) {
+      // end of the video
+      clearInterval(timer);
+      event.target.seekTo(0);
+    } else if (event.data === 2) {
+      clearInterval(timer);
+      updateTime(currentTime, playedAudioClip, recentAudioPlayedTime);
+    } else if (event.data !== 1) {
+      clearInterval(timer);
     }
   };
   const onReady = (event) => {
@@ -336,7 +327,7 @@ const YDXHome = (props) => {
             playedAudioClip,
             recentAudioPlayedTime
           ),
-        15
+        18
       )
     );
   };
