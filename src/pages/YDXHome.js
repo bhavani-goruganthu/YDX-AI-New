@@ -337,14 +337,29 @@ const YDXHome = (props) => {
         clearInterval(timer);
         event.target.seekTo(0);
         break;
+      case 1:
+        clearInterval(timer);
+        // updateTime(
+        //   currentTime,
+        //   playedAudioClip,
+        //   recentAudioPlayedTime,
+        //   playedClipPath
+        // );
+        break;
       case 2:
         clearInterval(timer);
-        updateTime(
-          currentTime,
-          playedAudioClip,
-          recentAudioPlayedTime,
-          playedClipPath
-        );
+        // updateTime(
+        //   currentTime,
+        //   playedAudioClip,
+        //   recentAudioPlayedTime,
+        //   playedClipPath
+        // );
+        break;
+      case 3:
+        setPlayedClipPath('');
+        setPlayedAudioClip('');
+        setRecentAudioPlayedTime(0.0);
+        clearInterval(timer);
         break;
       default:
         clearInterval(timer);
