@@ -331,20 +331,24 @@ const YDXHome = (props) => {
     setCurrentEvent(event.target);
     setCurrentTime(currentTime);
     setCurrentState(event.data);
-    if (event.data === 0) {
-      // end of the video
-      clearInterval(timer);
-      event.target.seekTo(0);
-    } else if (event.data === 2) {
-      clearInterval(timer);
-      updateTime(
-        currentTime,
-        playedAudioClip,
-        recentAudioPlayedTime,
-        playedClipPath
-      );
-    } else if (event.data !== 1) {
-      clearInterval(timer);
+    switch (event.data) {
+      case 0:
+        // end of the video
+        clearInterval(timer);
+        event.target.seekTo(0);
+        break;
+      case 2:
+        clearInterval(timer);
+        updateTime(
+          currentTime,
+          playedAudioClip,
+          recentAudioPlayedTime,
+          playedClipPath
+        );
+        break;
+      default:
+        clearInterval(timer);
+        break;
     }
   };
   const onReady = (event) => {
