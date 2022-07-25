@@ -79,6 +79,7 @@ const YDXHome = (props) => {
     timer,
     recentAudioPlayedTime,
     playedAudioClip,
+    playedClipPath,
     draggableDivWidth,
     unitLength,
     videoId,
@@ -337,24 +338,24 @@ const YDXHome = (props) => {
         clearInterval(timer);
         event.target.seekTo(0);
         break;
-      case 1:
-        clearInterval(timer);
-        // updateTime(
-        //   currentTime,
-        //   playedAudioClip,
-        //   recentAudioPlayedTime,
-        //   playedClipPath
-        // );
-        break;
-      case 2:
-        clearInterval(timer);
-        // updateTime(
-        //   currentTime,
-        //   playedAudioClip,
-        //   recentAudioPlayedTime,
-        //   playedClipPath
-        // );
-        break;
+      // case 1:
+      //   clearInterval(timer);
+      //   // updateTime(
+      //   //   currentTime,
+      //   //   playedAudioClip,
+      //   //   recentAudioPlayedTime,
+      //   //   playedClipPath
+      //   // );
+      //   break;
+      // case 2:
+      //   clearInterval(timer);
+      //   // updateTime(
+      //   //   currentTime,
+      //   //   playedAudioClip,
+      //   //   recentAudioPlayedTime,
+      //   //   playedClipPath
+      //   // );
+      //   break;
       case 3:
         setPlayedClipPath('');
         setPlayedAudioClip('');
