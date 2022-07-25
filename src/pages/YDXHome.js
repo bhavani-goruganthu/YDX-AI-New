@@ -54,7 +54,8 @@ const YDXHome = (props) => {
 
   const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
   const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
-  const [playedAudioClip, setPlayedAudioClip] = useState('');
+  const [playedAudioClip, setPlayedAudioClip] = useState(''); // store clip_id of the audio clip that is already played.
+  const [playedClipPath, setPlayedClipPath] = useState(''); // store clip_audio_path of the audio clip that is already played.
 
   // Spinner div
   const [showSpinner, setShowSpinner] = useState(false);
@@ -223,7 +224,12 @@ const YDXHome = (props) => {
   };
 
   // function to update currentime state variable & draggable bar time.
-  const updateTime = (time, playedAudioClip, recentAudioPlayedTime) => {
+  const updateTime = (
+    time,
+    playedAudioClip,
+    recentAudioPlayedTime,
+    playedClipPath
+  ) => {
     setCurrentTime(time);
     // for updating the draggable component position based on current time
     setDraggableTime({ x: unitLength * time, y: 0 });
@@ -239,14 +245,18 @@ const YDXHome = (props) => {
     // console.log(parseFloat(time).toFixed(2));
     if (parseFloat(recentAudioPlayedTime) !== parseFloat(time)) {
       // To Play audio files based on current time
-      playAudioAtCurrentTime(time, playedAudioClip);
+      playAudioAtCurrentTime(time, playedAudioClip, playedClipPath);
     } else {
       console.log('In ELSE: ' + recentAudioPlayedTime);
     }
   };
 
   // To Play audio files based on current time
-  const playAudioAtCurrentTime = (updatedCurrentTime, playedAudioClip) => {
+  const playAudioAtCurrentTime = (
+    updatedCurrentTime,
+    playedAudioClip,
+    playedClipPath
+  ) => {
     if (currentState === 1) {
       const filteredClip = audioClips.filter(
         (clip) =>
@@ -268,19 +278,38 @@ const YDXHome = (props) => {
           console.log(clip_audio_path);
           // play along with the video if the clip is an inline clip
           if (filteredClip[0].playback_type === 'inline') {
-            const currentAudio = new Audio(clip_audio_path);
-            console.log(currentAudio);
-            currentAudio.play();
+            if (clip_audio_path !== playedClipPath) {
+              setPlayedClipPath(clip_audio_path);
+              const currentAudio = new Audio(clip_audio_path);
+              console.log(currentAudio);
+              currentAudio.play();
+            } else {
+              console.log(
+                '*************************NOT PLAYING: ' +
+                  clip_audio_path +
+                  ' ' +
+                  playedClipPath
+              );
+            }
           }
           // play after pausing the youtube video if the clip is an extended clip - youtube video should be played after the clip has finished playing
           else if (filteredClip[0].playback_type === 'extended') {
-            const currentAudio = new Audio(clip_audio_path);
-            console.log(currentAudio);
-            currentEvent.pauseVideo();
-            currentAudio.play();
-            currentAudio.addEventListener('ended', function () {
-              currentEvent.playVideo();
-            });
+            if (clip_audio_path !== playedClipPath) {
+              const currentAudio = new Audio(clip_audio_path);
+              console.log(currentAudio);
+              currentEvent.pauseVideo();
+              currentAudio.play();
+              currentAudio.addEventListener('ended', function () {
+                currentEvent.playVideo();
+              });
+            } else {
+              console.log(
+                '*************************NOT PLAYING: ' +
+                  clip_audio_path +
+                  ' ' +
+                  playedClipPath
+              );
+            }
           }
         } else {
           console.log(
@@ -308,7 +337,12 @@ const YDXHome = (props) => {
       event.target.seekTo(0);
     } else if (event.data === 2) {
       clearInterval(timer);
-      updateTime(currentTime, playedAudioClip, recentAudioPlayedTime);
+      updateTime(
+        currentTime,
+        playedAudioClip,
+        recentAudioPlayedTime,
+        playedClipPath
+      );
     } else if (event.data !== 1) {
       clearInterval(timer);
     }
@@ -325,9 +359,10 @@ const YDXHome = (props) => {
           updateTime(
             event.target.getCurrentTime(),
             playedAudioClip,
-            recentAudioPlayedTime
+            recentAudioPlayedTime,
+            playedClipPath
           ),
-        18
+        20
       )
     );
   };
