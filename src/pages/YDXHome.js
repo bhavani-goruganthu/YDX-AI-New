@@ -76,10 +76,6 @@ const YDXHome = (props) => {
     // set the toggle list back to empty if we are fetching the data again
     fetchUserVideoData(); // use axios to get audio descriptions for the youtubeVideoId & userId passed to the url Params
   }, [
-    timer,
-    recentAudioPlayedTime,
-    playedAudioClip,
-    playedClipPath,
     draggableDivWidth,
     unitLength,
     videoId,
