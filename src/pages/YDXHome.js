@@ -231,17 +231,10 @@ const YDXHome = (props) => {
     setCurrentTime(time);
     // for updating the draggable component position based on current time
     setDraggableTime({ x: unitLength * time, y: 0 });
-
-    console.log(
-      '****************************************** ' + playedAudioClip
-    );
-
     // check if the audio is not played recently. do not play it again.
     if (parseFloat(recentAudioPlayedTime) !== parseFloat(time)) {
       // To Play audio files based on current time
       playAudioAtCurrentTime(time, playedAudioClip, playedClipPath);
-    } else {
-      console.log('In ELSE: ' + recentAudioPlayedTime);
     }
   };
 
@@ -262,26 +255,15 @@ const YDXHome = (props) => {
       if (filteredClip.length !== 0) {
         if (playedAudioClip != filteredClip[0].clip_id) {
           setPlayedAudioClip(filteredClip[0].clip_id);
-          console.log('Found One: ' + updatedCurrentTime);
           //  update recentAudioPlayedTime - which stores the time at which an audio has been played - to stop playing the same audio twice concurrently
           setRecentAudioPlayedTime(updatedCurrentTime);
           const clip_audio_path = filteredClip[0].clip_audio_path;
-          console.log(filteredClip[0].clip_id);
-          console.log(clip_audio_path);
           // play along with the video if the clip is an inline clip
           if (filteredClip[0].playback_type === 'inline') {
             if (clip_audio_path !== playedClipPath) {
               setPlayedClipPath(clip_audio_path);
               const currentAudio = filteredClip[0].clip_audio;
-              console.log(currentAudio);
               currentAudio.play();
-            } else {
-              console.log(
-                '*************************NOT PLAYING: ' +
-                  clip_audio_path +
-                  ' ' +
-                  playedClipPath
-              );
             }
           }
           // play after pausing the youtube video if the clip is an extended clip
@@ -289,32 +271,15 @@ const YDXHome = (props) => {
             if (clip_audio_path !== playedClipPath) {
               setPlayedClipPath(clip_audio_path);
               const currentAudio = filteredClip[0].clip_audio;
-              console.log(currentAudio);
               currentEvent.pauseVideo();
               currentAudio.play();
               // youtube video should be played after the clip has finished playing
               currentAudio.addEventListener('ended', function () {
                 currentEvent.playVideo();
               });
-            } else {
-              console.log(
-                '*************************NOT PLAYING: ' +
-                  clip_audio_path +
-                  ' ' +
-                  playedClipPath
-              );
             }
           }
-        } else {
-          console.log(
-            '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$kipped playing: ' +
-              playedAudioClip +
-              ' ' +
-              updatedCurrentTime
-          );
         }
-      } else {
-        console.log('No clips: ' + updatedCurrentTime);
       }
     }
   };
