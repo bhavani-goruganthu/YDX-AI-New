@@ -61,8 +61,8 @@ const Notes = ({ currentTime, audioDescriptionId, notesData }) => {
         setNoteId(res.data.notes_id); // setting this in the case of inserting new note
       })
       .catch((err) => {
-        console.error(err);
-        toast.error('Error Saving Note! Please Try Again');
+        console.error(err.response.data);
+        toast.error('Error Saving Note! Please Try Again...');
       });
   };
 

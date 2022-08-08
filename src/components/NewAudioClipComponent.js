@@ -214,7 +214,6 @@ const NewAudioClipComponent = (props) => {
 
   // to save the new audio clip into the database
   const handleSaveNewAudioClip = (e) => {
-    setShowSpinner(true);
     e.preventDefault();
     if (newACTitle === '') {
       toast.error('Please enter a Title');
@@ -224,6 +223,7 @@ const NewAudioClipComponent = (props) => {
           'Please enter a description text for the New Clip or record one'
         );
       } else {
+        setShowSpinner(true);
         if (mediaBlobUrl !== null) {
           // axios call to backend with isRecorded true
           saveNewClipInDB({ isRecorded: true });

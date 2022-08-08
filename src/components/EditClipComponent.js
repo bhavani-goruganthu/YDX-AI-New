@@ -50,14 +50,16 @@ const EditClipComponent = (props) => {
   const [isYoutubeVideoPlaying, setIsYoutubeVideoPlaying] = useState(false);
 
   // initialize state variables from props
-  const [clipDescriptionText, setClipDescriptionText] = useState('');
+  const [clipDescriptionText, setClipDescriptionText] = useState(
+    clip_description_text
+  );
 
   const [recordedClipDuration, setRecordedClipDuration] = useState(0.0);
 
   const [readySetGo, setReadySetGo] = useState('');
 
   useEffect(() => {
-    setClipDescriptionText(clip_description_text);
+    // setClipDescriptionText(clip_description_text);
     // set the button text & state based on YouTube Player's currentState
     setIsYoutubeVideoPlaying(
       currentState === -1 || currentState === 0 || currentState === 2
@@ -347,6 +349,7 @@ const EditClipComponent = (props) => {
       toast.error(
         'Error while saving the recorded audio. Please record again.'
       );
+      props.setShowSpinner(false);
     } else {
       // create a new FormData object for easy file uploads
       let formData = new FormData();
