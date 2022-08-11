@@ -129,7 +129,7 @@ const YDXHome = (props) => {
         setVideoDialogTimestamps(updatedDialogData);
       })
       .catch((err) => {
-        // console.error(err);
+        // console.error(err.response.data);
         setShowSpinner(true);
       });
   };
@@ -157,7 +157,7 @@ const YDXHome = (props) => {
         fetchAudioDescriptionData();
       })
       .catch((err) => {
-        // console.error(err);
+        // console.error(err.response.data);
         setShowSpinner(true);
       });
   };
@@ -216,7 +216,7 @@ const YDXHome = (props) => {
         setNotesData(notesData);
       })
       .catch((err) => {
-        // console.error(err);
+        // console.error(err.response.data);
         setShowSpinner(true);
       });
   };
@@ -262,6 +262,8 @@ const YDXHome = (props) => {
           if (filteredClip[0].playback_type === 'inline') {
             if (clip_audio_path !== playedClipPath) {
               setPlayedClipPath(clip_audio_path);
+              // when an audio clip is playing, that particular Audio Clip component will be opened up - UX Improvement
+              setEditComponentToggleFunc(filteredClip[0].clip_id, true);
               const currentAudio = filteredClip[0].clip_audio;
               currentAudio.play();
             }
@@ -270,6 +272,8 @@ const YDXHome = (props) => {
           else if (filteredClip[0].playback_type === 'extended') {
             if (clip_audio_path !== playedClipPath) {
               setPlayedClipPath(clip_audio_path);
+              // when an audio clip is playing, that particular Audio Clip component will be opened up - UX Improvement
+              setEditComponentToggleFunc(filteredClip[0].clip_id, true);
               const currentAudio = filteredClip[0].clip_audio;
               currentEvent.pauseVideo();
               currentAudio.play();
