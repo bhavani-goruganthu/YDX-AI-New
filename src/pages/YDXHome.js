@@ -376,6 +376,10 @@ const YDXHome = (props) => {
     setEditComponentToggleList(temp);
   };
 
+  const handlePlayAudioClip = (clipStartTime) => {
+    currentEvent.seekTo(parseFloat(clipStartTime) - 0.3);
+  };
+
   return (
     <React.Fragment>
       {/* Spinner div - displayed based on showSpinner */}
@@ -467,6 +471,7 @@ const YDXHome = (props) => {
               editComponentToggleList={editComponentToggleList}
               setEditComponentToggleFunc={setEditComponentToggleFunc}
               divWidths={divWidths}
+              handlePlayAudioClip={handlePlayAudioClip}
             />
           ))}
         </div>

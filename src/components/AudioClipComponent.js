@@ -50,6 +50,9 @@ const AudioClipComponent = (props) => {
   // align the timelines based on props from parent
   const divWidths = props.divWidths;
 
+  // props from YDXHome to play YoutubeVideo from current Audio Clip
+  const handlePlayAudioClip = props.handlePlayAudioClip;
+
   useEffect(() => {
     setClipPlayBackType(clip_playback_type);
     setClipTitle(clip_title);
@@ -159,7 +162,12 @@ const AudioClipComponent = (props) => {
         <div className="row align-items-center">
           <div className="col-2" style={{ width: divWidths.divRef1 }}>
             <div className="mx-1 text-center">
-              <p className="ad-title">Audio Clip {clip_sequence_num}:</p>
+              <p
+                className="ad-title"
+                onClick={(e) => handlePlayAudioClip(clip_start_time)}
+              >
+                Audio Clip {clip_sequence_num}:
+              </p>
               <input
                 type="text"
                 className="form-control form-control-sm ad-title-input text-center"
