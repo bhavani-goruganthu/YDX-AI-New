@@ -109,9 +109,7 @@ const EditClipComponent = (props) => {
     handleClipStartTimeInputsRender();
   }, [
     mediaBlobUrl,
-    // props_clip_start_time, props.clip_audio_path,
     props, // re-render whenever the props change
-    // props.clip_audio_path,
   ]);
 
   // render the values in the input[type='number'] fields of the start time - renders everytime the props_clip_start_time value changes
@@ -130,13 +128,32 @@ const EditClipComponent = (props) => {
   // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
   const calculateClipStartTimeinSeconds = (hours, minutes, seconds) => {
     let calculatedSeconds = +hours * 60 * 60 + +minutes * 60 + +seconds;
-    // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
-    if (calculatedSeconds > videoLength) {
-      toast.error('Oops!! Start Time cannot be later than the video end time.'); // show toast error message
-      handleClipStartTimeInputsRender();
-    } else {
-      // handleClipStartTimeUpdate is the prop function received from parent component - this runs an axios PUT call and updates the clipStartTime
-      handleClipStartTimeUpdate(calculatedSeconds);
+    // restrict the audio block to the timeline
+    if (clip_playback_type === 'inline') {
+      if (
+        parseFloat(calculatedSeconds) + parseFloat(clip_duration) <=
+        videoLength
+      ) {
+        handleClipStartTimeUpdate(calculatedSeconds);
+      } else {
+        toast.error(
+          'Audio Clip cannot be outside the timeline. Change it to extended and adjust the start time.'
+        );
+        handleClipStartTimeInputsRender();
+      }
+    }
+    // extended clip
+    else {
+      // check if the updated start time is more than the videolength, if yes, throw error and retain the old state
+      if (calculatedSeconds < videoLength) {
+        // handleClipStartTimeUpdate is the prop function received from parent component - this runs an axios PUT call and updates the clipStartTime
+        handleClipStartTimeUpdate(calculatedSeconds);
+      } else {
+        toast.error(
+          'Oops!! Start Time cannot be later than the video end time.'
+        ); // show toast error message
+        handleClipStartTimeInputsRender();
+      }
     }
   };
 
@@ -196,7 +213,7 @@ const EditClipComponent = (props) => {
     }
   };
 
-  // lots of if else conditions to ensure correct input in the start time number fields.
+  // lot of if else conditions to ensure correct input in the start time number fields.
   const handleOnChangeClipStartTimeHours = (e) => {
     setClipStartTimeHours(e.target.value);
     if (e.target.value.length > 2) {

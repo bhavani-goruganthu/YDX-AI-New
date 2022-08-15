@@ -4,6 +4,7 @@ import Draggable from 'react-draggable';
 import EditClipComponent from './EditClipComponent';
 import convertSecondsToCardFormat from '../helperFunctions/convertSecondsToCardFormat';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AudioClipComponent = (props) => {
   // destructuring props
@@ -71,40 +72,77 @@ const AudioClipComponent = (props) => {
     setAdDraggablePosition({ x: clip_start_time * unitLength, y: 0 });
     setAdDraggableWidth(clip_duration * unitLength);
   }, [
-    unitLength, // re-render when unit-length from the props changes
-    // clipStartTime, // re-render when the state variable clipStartTime
-    // clip_start_time, // re-render when the clipStartTime from props changes
-    props,
+    props, // re-render whenever the props change
   ]);
 
   // Dialog Timeline Draggable Functions
   const stopADBar = (event, position) => {
-    setAdDraggablePosition({ x: position.x, y: 0 });
     let adBarTime = position.x / unitLength;
-    setClipStartTime(parseFloat(adBarTime).toFixed(2));
-    handleClipStartTimeUpdate(parseFloat(adBarTime).toFixed(2));
+    let newClipStartTime = parseFloat(adBarTime).toFixed(2);
+    // set left and right bounds
+    if (newClipStartTime >= 1 && newClipStartTime < videoLength) {
+      if (clipPlaybackType === 'inline') {
+        // calculate the duration too for inline clips
+        if (
+          parseFloat(newClipStartTime) + parseFloat(clip_duration) <=
+          videoLength
+        ) {
+          updateStartTimeNDraggablePosition(newClipStartTime);
+        } else {
+          toast.error(
+            'Audio Clip cannot be outside the timeline. Change it to extended and adjust the start time.'
+          );
+        }
+      }
+      // extended clip
+      else {
+        if (newClipStartTime < videoLength) {
+          updateStartTimeNDraggablePosition(newClipStartTime);
+        }
+      }
+    } else {
+      toast.error(
+        'Audio Clip is bounded to the timeline. Please try adjusting the start time..'
+      );
+    }
   };
 
   // Handle Nudge icons -> add/remove 1 second to start_time
   const handleLeftNudgeClick = (e) => {
     let newClipStartTime = (parseFloat(clipStartTime) - 1).toFixed(2);
     // so that the audio block isn't out of the timeline
-    if (newClipStartTime >= 0) {
-      setClipStartTime(newClipStartTime);
-      // Also update the draggable div position based on start time
-      setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
-      handleClipStartTimeUpdate(newClipStartTime);
+    if (newClipStartTime >= 1) {
+      updateStartTimeNDraggablePosition(newClipStartTime);
     }
   };
   const handleRightNudgeClick = (e) => {
     let newClipStartTime = (parseFloat(clipStartTime) + 1).toFixed(2);
     // so that the audio block isn't out of the timeline
-    if (newClipStartTime <= videoLength) {
-      setClipStartTime(newClipStartTime);
-      // Also update the draggable div position based on start time
-      setAdDraggablePosition({ x: clipStartTime * unitLength, y: 0 });
-      handleClipStartTimeUpdate(newClipStartTime);
+    if (clipPlaybackType === 'inline') {
+      if (
+        parseFloat(newClipStartTime) + parseFloat(clip_duration) <=
+        videoLength
+      ) {
+        updateStartTimeNDraggablePosition(newClipStartTime);
+      } else {
+        toast.error(
+          'Audio Clip cannot be outside the timeline. Change it to extended and adjust the start time.'
+        );
+      }
     }
+    // extended clip
+    else {
+      if (newClipStartTime < videoLength) {
+        updateStartTimeNDraggablePosition(newClipStartTime);
+      }
+    }
+  };
+
+  const updateStartTimeNDraggablePosition = (newClipStartTime) => {
+    setClipStartTime(newClipStartTime);
+    // Also update the draggable div position based on start time
+    setAdDraggablePosition({ x: newClipStartTime * unitLength, y: 0 });
+    handleClipStartTimeUpdate(newClipStartTime);
   };
 
   // handle put (update) requests
@@ -142,17 +180,29 @@ const AudioClipComponent = (props) => {
   };
   // update clip playback type - inline/extended
   const handlePlaybackTypeUpdate = (e) => {
-    setClipPlayBackType(e.target.value);
-    axios
-      .put(`/api/audio-clips/update-clip-playback-type/${clip_id}`, {
-        clipPlaybackType: e.target.value,
-      })
-      .then((res) => {
-        setUpdateData(!updateData);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    // check if user is trying to change the clip Playback type to inline at the end of the timeline
+    if (
+      clipPlaybackType === 'extended' &&
+      e.target.value === 'inline' &&
+      parseFloat(clipStartTime) + parseFloat(clip_duration) > videoLength
+    ) {
+      // if yes, throw an error message
+      toast.error(
+        'Audio Clip cannot be changed to Inline as it is bounded to the timeline. Please try adjusting the start time first.'
+      );
+    } else {
+      setClipPlayBackType(e.target.value);
+      axios
+        .put(`/api/audio-clips/update-clip-playback-type/${clip_id}`, {
+          clipPlaybackType: e.target.value,
+        })
+        .then((res) => {
+          setUpdateData(!updateData);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   };
 
   return (
