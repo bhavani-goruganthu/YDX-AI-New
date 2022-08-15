@@ -171,11 +171,14 @@ const AudioClipComponent = (props) => {
         adTitle: e.target.value,
       })
       .then((res) => {
-        // console.log(res.data)
-        setUpdateData(!updateData);
+        // for simple text field update, the update Data is causing loading of the page.
+        // so for each char update in the title, the spinner displays - Very bad UX
+        // hence commenting below. Data is updated anyhow
+        // setUpdateData(!updateData);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(err.response.data);
+        toast.error('Error updating Title. Please try again!!');
       });
   };
   // update clip playback type - inline/extended
