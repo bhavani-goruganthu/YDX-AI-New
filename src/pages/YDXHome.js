@@ -52,6 +52,8 @@ const YDXHome = (props) => {
   const [isPublished, setIsPublished] = useState(false); // holds the published state of the Video & Audio Description
   const [audioClips, setAudioClips] = useState([]); // stores list of Audio Clips data for a video from backend db
 
+  const [extendedAudioClip, setExtendedAudioClip] = useState(null); // Special Case for Extended Audio Clips - see onStateChange()
+
   const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
 
   const [recentAudioPlayedTime, setRecentAudioPlayedTime] = useState(0.0); // used to store the time of a recent AD played to stop playing the same Audio twice concurrently - due to an issue found in updateTime() method because it returns the same currentTime twice or more
@@ -277,8 +279,11 @@ const YDXHome = (props) => {
               const currentAudio = filteredClip[0].clip_audio;
               currentEvent.pauseVideo();
               currentAudio.play();
+              // Special Case for Extended Audio Clips - see onStateChange()
+              setExtendedAudioClip(currentAudio);
               // youtube video should be played after the clip has finished playing
               currentAudio.addEventListener('ended', function () {
+                setExtendedAudioClip(null); // setting back to null, as it is played completely.
                 currentEvent.playVideo();
               });
             }
@@ -298,6 +303,20 @@ const YDXHome = (props) => {
       case 0: // end of the video
         clearInterval(timer);
         event.target.seekTo(0);
+        break;
+      case 1: // Playing
+        // Special Case for Extended Audio Clips
+        // When an extended Audio Clip is playing, YT video is paused
+        // User clicks on the YT video and plays it. Extended is still played along with the video. Overlapping with Dialogs &/ other audio clips
+        // Work around - add current extended audio clip to a state variable & check if YT state is changed to playing i.e. 1
+        // if yes, stop playing the extended audio clip & set the state back to null
+        if (extendedAudioClip !== null) {
+          // to stop playing -> pause and set time to 0
+          extendedAudioClip.pause();
+          extendedAudioClip.currentTime = 0;
+          setExtendedAudioClip(null);
+        }
+        clearInterval(timer);
         break;
       case 3: // Buffering
         // onSeek - Buffering event is also called
