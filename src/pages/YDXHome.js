@@ -377,7 +377,8 @@ const YDXHome = (props) => {
   };
 
   const handlePlayAudioClip = (clipStartTime) => {
-    currentEvent.seekTo(parseFloat(clipStartTime) - 0.3);
+    currentEvent.seekTo(parseFloat(clipStartTime) - parseFloat(0.4));
+    currentEvent.playVideo(); // if paused
   };
 
   return (

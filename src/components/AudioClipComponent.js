@@ -214,6 +214,7 @@ const AudioClipComponent = (props) => {
             <div className="mx-1 text-center">
               <p
                 className="ad-title"
+                // props from YDXHome to play YoutubeVideo from current Audio Clip
                 onClick={(e) => handlePlayAudioClip(clip_start_time)}
               >
                 Audio Clip {clip_sequence_num}:
