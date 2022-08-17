@@ -52,7 +52,9 @@ const YDXHome = (props) => {
   const [isPublished, setIsPublished] = useState(false); // holds the published state of the Video & Audio Description
   const [audioClips, setAudioClips] = useState([]); // stores list of Audio Clips data for a video from backend db
 
-  const [extendedAudioClip, setExtendedAudioClip] = useState(null); // Special Case for Extended Audio Clips - see onStateChange()
+  // store current extended & inline Audio Clips to pause/play based on the YT video current state
+  const [currExtendedAC, setCurrExtendedAC] = useState(null); // see onStateChange() - stop extended ac, when Video is played.
+  const [currInlineAC, setCurrInlineAC] = useState(null); // see onStateChange() - stop Inline ac, when Video is paused.
 
   const [updateData, setUpdateData] = useState(false); // passed to child components to use in the dependency array so that data is fetched again after this variable is modified
 
@@ -268,6 +270,12 @@ const YDXHome = (props) => {
               setEditComponentToggleFunc(filteredClip[0].clip_id, true);
               const currentAudio = filteredClip[0].clip_audio;
               currentAudio.play();
+              // see onStateChange() - storing current inline clip.
+              setCurrInlineAC(currentAudio);
+              // ended event listener, to set the currInlineAC back to null
+              currentAudio.addEventListener('ended', function () {
+                setCurrInlineAC(null); // setting back to null, as it is played completely.
+              });
             }
           }
           // play after pausing the youtube video if the clip is an extended clip
@@ -279,11 +287,11 @@ const YDXHome = (props) => {
               const currentAudio = filteredClip[0].clip_audio;
               currentEvent.pauseVideo();
               currentAudio.play();
-              // Special Case for Extended Audio Clips - see onStateChange()
-              setExtendedAudioClip(currentAudio);
+              // see onStateChange() - storing current Extended Clip
+              setCurrExtendedAC(currentAudio);
               // youtube video should be played after the clip has finished playing
               currentAudio.addEventListener('ended', function () {
-                setExtendedAudioClip(null); // setting back to null, as it is played completely.
+                setCurrExtendedAC(null); // setting back to null, as it is played completely.
                 currentEvent.playVideo();
               });
             }
@@ -305,16 +313,30 @@ const YDXHome = (props) => {
         event.target.seekTo(0);
         break;
       case 1: // Playing
-        // Special Case for Extended Audio Clips
+        // Case for Extended Audio Clips:
         // When an extended Audio Clip is playing, YT video is paused
-        // User clicks on the YT video and plays it. Extended is still played along with the video. Overlapping with Dialogs &/ other audio clips
+        // User plays the YT Video. Extended is still played along with the video. Overlapping with Dialogs &/ other audio clips
         // Work around - add current extended audio clip to a state variable & check if YT state is changed to playing i.e. 1
         // if yes, stop playing the extended audio clip & set the state back to null
-        if (extendedAudioClip !== null) {
+        if (currExtendedAC !== null) {
           // to stop playing -> pause and set time to 0
-          extendedAudioClip.pause();
-          extendedAudioClip.currentTime = 0;
-          setExtendedAudioClip(null);
+          currExtendedAC.pause();
+          currExtendedAC.currentTime = 0;
+          setCurrExtendedAC(null);
+        }
+        clearInterval(timer);
+        break;
+      case 2: // Paused
+        // Case for Inline Audio Clips:
+        // When an inline Audio Clip is playing along with the Video,
+        // If user pauses the YT video, Inline Clip is still played.
+        // Work around - add current inline audio clip to a state variable & check if YT state is changed to paused i.e. 2
+        // if yes, stop playing the inline audio clip & set the state back to null
+        if (currInlineAC !== null) {
+          // to stop playing -> pause and set time to 0
+          currInlineAC.pause();
+          currInlineAC.currentTime = 0;
+          setCurrInlineAC(null);
         }
         clearInterval(timer);
         break;
@@ -325,6 +347,8 @@ const YDXHome = (props) => {
         setPlayedAudioClip('');
         setRecentAudioPlayedTime(0.0);
         clearInterval(timer);
+        setCurrExtendedAC(null);
+        setCurrInlineAC(null);
         break;
       default: // All other states
         clearInterval(timer);
@@ -395,9 +419,10 @@ const YDXHome = (props) => {
     setEditComponentToggleList(temp);
   };
 
+  // when "AudioClip <seq no>" is clicked, video is playing from that audio clip start time
   const handlePlayAudioClip = (clipStartTime) => {
-    currentEvent.seekTo(parseFloat(clipStartTime) - parseFloat(0.4));
-    currentEvent.playVideo(); // if paused
+    currentEvent.seekTo(parseFloat(clipStartTime) - parseFloat(0.4)); // 0.4 is added for some buffering time
+    currentEvent.playVideo(); // if paused, video is played from that audio clip.
   };
 
   return (
