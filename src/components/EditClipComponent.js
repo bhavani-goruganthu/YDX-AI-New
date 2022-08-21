@@ -37,6 +37,8 @@ const EditClipComponent = (props) => {
   const [clipStartTimeHours, setClipStartTimeHours] = useState(0.0);
   const [clipStartTimeMinutes, setClipStartTimeMinutes] = useState(0.0);
   const [clipStartTimeSeconds, setClipStartTimeSeconds] = useState(0.0);
+  // const [clipStartTimeMilliSeconds, setClipStartTimeMilliSeconds] =
+  //   useState(0.0);
 
   // variable and function declaration of the react-media-recorder package
   const { status, startRecording, stopRecording, mediaBlobUrl } =
@@ -123,6 +125,11 @@ const EditClipComponent = (props) => {
     setClipStartTimeSeconds(
       convertSecondsToCardFormat(props_clip_start_time).split(':')[2]
     );
+    // setClipStartTimeMilliSeconds(
+    //   Math.floor(
+    //     (props_clip_start_time - Math.floor(props_clip_start_time)) * 100
+    //   )
+    // );
   };
 
   // calculate the Start Time in seconds from the Hours, Minutes & Seconds passed from handleBlur functions
@@ -495,7 +502,9 @@ const EditClipComponent = (props) => {
             </div>
             {/* Start Time div */}
             <div className="mx-2 d-flex justify-content-between align-items-center flex-column">
-              <h6 className="text-white">Start Time</h6>
+              <h6 className="text-white">
+                Start Time: {props_clip_start_time}
+              </h6>
               <div className="edit-time-div">
                 <div className="text-dark text-center d-flex justify-content-evenly">
                   <input
@@ -537,6 +546,18 @@ const EditClipComponent = (props) => {
                       evt.preventDefault()
                     }
                   />
+                  {/* <div className="mx-1">.</div>
+                  <input
+                    type="number"
+                    style={{ width: '25px' }}
+                    className="text-white bg-dark"
+                    value={
+                      clipStartTimeMilliSeconds < 10
+                        ? `0` + clipStartTimeMilliSeconds
+                        : clipStartTimeMilliSeconds
+                    }
+                    readOnly
+                  /> */}
                 </div>
               </div>
               {/* Clip Duration div */}
