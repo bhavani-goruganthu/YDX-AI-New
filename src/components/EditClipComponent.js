@@ -72,8 +72,8 @@ const EditClipComponent = (props) => {
     );
     // scrolls to the latest clip when a new clip is added
     var date = new Date();
-    var ONE_MIN = 1 * 60 * 1000;
-    if (date - new Date(clip_created_at) <= ONE_MIN) {
+    var TEN_SEC = 10 * 1000;
+    if (date - new Date(clip_created_at) <= TEN_SEC) {
       ref.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
